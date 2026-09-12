@@ -1,0 +1,26 @@
+/*
+ * 현재는 SEED Design의 당근 기본 컬러 토큰을 그대로 사용합니다.
+ * 브랜드 색상이 확정되면 `TODO(TECHMUJIN-COLOR)` 항목만 교체하면 됩니다.
+ */
+:root,
+:root[data-seed-color-mode="light-only"] {
+  /* TODO(TECHMUJIN-COLOR): 행사 배경과 카드 표면 색상 */
+  --tm-color-background: var(--seed-color-bg-layer-default);
+  --tm-color-surface: var(--seed-color-bg-layer-floating);
+  --tm-color-surface-muted: var(--seed-color-bg-neutral-weak);
+
+  /* TODO(TECHMUJIN-COLOR): 본문·보조 문구·경계선 색상 */
+  --tm-color-text: var(--seed-color-fg-neutral);
+  --tm-color-text-strong: var(--seed-color-fg-neutral);
+  --tm-color-text-muted: var(--seed-color-fg-neutral-muted);
+  --tm-color-border: var(--seed-color-stroke-neutral-weak);
+
+  /* TODO(TECHMUJIN-COLOR): 테크무진 브랜드가 정해지면 가장 먼저 교체할 색상 */
+  --tm-color-brand: var(--seed-color-bg-brand-solid);
+  --tm-color-brand-pressed: var(--seed-color-bg-brand-solid-pressed);
+  --tm-color-brand-weak: var(--seed-color-bg-brand-weak);
+
+  /* TODO(TECHMUJIN-COLOR): 접근성 포커스와 오류 상태 색상 */
+  --tm-color-focus: var(--seed-color-stroke-focus-ring);
+  --tm-color-critical: var(--seed-color-fg-critical);
+}

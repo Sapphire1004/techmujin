@@ -1,0 +1,40 @@
+{
+  "eventSchedule": {
+    "dateLabel": "開催日未定",
+    "startTime": "10:00",
+    "endTime": "17:00",
+    "slotMinutes": 10
+  },
+  "tracks": [
+    { "id": "track-a", "label": "メイントラック A", "location": "メインホール" },
+    { "id": "track-b", "label": "サブトラック B", "location": "サブホール" }
+  ],
+  "sessions": [
+    { "id": "opening", "startTime": "10:00", "endTime": "10:30", "title": "オープニング", "speaker": "司会者未定", "tags": ["オープニングセッション"], "trackId": "all", "format": "talk" },
+    { "id": "track-a-1", "startTime": "10:30", "endTime": "11:00", "title": "メインセッション 1 — テーマ未定", "speaker": "登壇者未定", "speakerImage": "", "tags": ["LTセッション"], "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-1", "startTime": "10:30", "endTime": "11:00", "title": "サブセッション 1 — テーマ未定", "speaker": "登壇者未定", "speakerImage": "", "tags": ["スポンサーセッション"], "trackId": "track-b", "format": "talk" },
+    { "id": "break-1", "startTime": "11:00", "endTime": "11:10", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-2", "startTime": "11:10", "endTime": "11:40", "title": "メインセッション 2 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-2", "startTime": "11:10", "endTime": "11:40", "title": "サブセッション 2 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "break-2", "startTime": "11:40", "endTime": "11:50", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-3", "startTime": "11:50", "endTime": "12:20", "title": "メインセッション 3 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-3", "startTime": "11:50", "endTime": "12:20", "title": "サブセッション 3 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "lunch", "startTime": "12:20", "endTime": "13:20", "title": "昼休み", "speaker": "全参加者", "trackId": "all", "format": "break" },
+    { "id": "move-after-lunch", "startTime": "13:20", "endTime": "13:30", "title": "移動時間", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-4", "startTime": "13:30", "endTime": "14:00", "title": "メインセッション 4 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-4", "startTime": "13:30", "endTime": "14:00", "title": "サブセッション 4 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "break-3", "startTime": "14:00", "endTime": "14:10", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-5", "startTime": "14:10", "endTime": "14:40", "title": "メインセッション 5 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-5", "startTime": "14:10", "endTime": "14:40", "title": "サブセッション 5 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "networking" },
+    { "id": "break-4", "startTime": "14:40", "endTime": "14:50", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-6", "startTime": "14:50", "endTime": "15:20", "title": "メインセッション 6 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-6", "startTime": "14:50", "endTime": "15:20", "title": "サブセッション 6 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "break-5", "startTime": "15:20", "endTime": "15:30", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-7", "startTime": "15:30", "endTime": "16:00", "title": "メインセッション 7 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-7", "startTime": "15:30", "endTime": "16:00", "title": "サブセッション 7 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "break-6", "startTime": "16:00", "endTime": "16:10", "title": "休憩・移動", "speaker": "", "trackId": "all", "format": "break" },
+    { "id": "track-a-8", "startTime": "16:10", "endTime": "16:40", "title": "メインセッション 8 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-a", "format": "talk" },
+    { "id": "track-b-8", "startTime": "16:10", "endTime": "16:40", "title": "サブセッション 8 — テーマ未定", "speaker": "登壇者未定", "trackId": "track-b", "format": "talk" },
+    { "id": "closing", "startTime": "16:40", "endTime": "17:00", "title": "クロージング", "speaker": "司会者未定", "tags": ["クロージングセッション"], "trackId": "all", "format": "talk" }
+  ]
+}

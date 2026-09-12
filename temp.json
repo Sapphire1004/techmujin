@@ -1,0 +1,939 @@
+{
+  "schemaVersion": 1,
+  "version": "f3e143a0780d",
+  "updatedAt": "2026-09-12T20:17:16+09:00",
+  "event": {
+    "id": "techmujin-2026",
+    "title": "テック無尽 2026",
+    "date": "2026-11-22",
+    "timezone": "Asia/Tokyo",
+    "venue": "山梨大学 甲府キャンパス 共創環境棟 治ホール",
+    "url": null
+  },
+  "sessions": [
+    {
+      "id": "c1",
+      "kind": "session",
+      "group": null,
+      "title": "オリエンテーション",
+      "startsAt": "2026-11-22T10:00:00+09:00",
+      "endsAt": "2026-11-22T10:10:00+09:00",
+      "communities": [],
+      "speakers": [
+        {
+          "name": "ダミー 進",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-01"
+        }
+      ],
+      "descriptionMarkdown": "オリエンテーションのためのダミーテキストです。**太字**や[リンク](https://techmujin.example.com/)を含みます。\n\n- ダミーの箇条書き 1\n- ダミーの箇条書き 2",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "x1",
+      "kind": "break",
+      "group": null,
+      "title": "転換",
+      "startsAt": "2026-11-22T10:10:00+09:00",
+      "endsAt": "2026-11-22T10:15:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-01",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "JAWS-UG山梨 の紹介",
+      "startsAt": "2026-11-22T10:15:00+09:00",
+      "endsAt": "2026-11-22T10:22:00+09:00",
+      "communities": [
+        {
+          "id": "jawsug-yamanashi",
+          "name": "JAWS-UG山梨",
+          "url": "https://jaws-ug-yamanashi.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=jawsug-yamanashi",
+          "descriptionMarkdown": "JAWS-UG山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 花子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-03"
+        }
+      ],
+      "descriptionMarkdown": "JAWS-UG山梨 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-02",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "コーダー道場甲府 の紹介",
+      "startsAt": "2026-11-22T10:22:00+09:00",
+      "endsAt": "2026-11-22T10:29:00+09:00",
+      "communities": [
+        {
+          "id": "coderdojo-kofu",
+          "name": "コーダー道場甲府",
+          "url": "https://coderdojokofu.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=coderdojo-kofu",
+          "descriptionMarkdown": "コーダー道場甲府 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 次郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-04"
+        }
+      ],
+      "descriptionMarkdown": "コーダー道場甲府 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-03",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "Houtou.pm の紹介",
+      "startsAt": "2026-11-22T10:29:00+09:00",
+      "endsAt": "2026-11-22T10:36:00+09:00",
+      "communities": [
+        {
+          "id": "houtou-pm",
+          "name": "Houtou.pm",
+          "url": "https://houtoupm.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=houtou-pm",
+          "descriptionMarkdown": "Houtou.pm の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 桃子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-13"
+        }
+      ],
+      "descriptionMarkdown": "Houtou.pm の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-04",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "Kofu.rb の紹介",
+      "startsAt": "2026-11-22T10:36:00+09:00",
+      "endsAt": "2026-11-22T10:43:00+09:00",
+      "communities": [
+        {
+          "id": "kofu-rb",
+          "name": "Kofu.rb",
+          "url": "https://kofurb.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=kofu-rb",
+          "descriptionMarkdown": "Kofu.rb の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 紅子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-14"
+        }
+      ],
+      "descriptionMarkdown": "Kofu.rb の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-05",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "裏テック無尽 の紹介",
+      "startsAt": "2026-11-22T10:43:00+09:00",
+      "endsAt": "2026-11-22T10:50:00+09:00",
+      "communities": [
+        {
+          "id": "ura-techmujin",
+          "name": "裏テック無尽",
+          "url": "https://ura-techmujin.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=ura-techmujin",
+          "descriptionMarkdown": "裏テック無尽 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 太郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-02"
+        }
+      ],
+      "descriptionMarkdown": "裏テック無尽 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-06",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "甲斐国もくもく会 の紹介",
+      "startsAt": "2026-11-22T10:50:00+09:00",
+      "endsAt": "2026-11-22T10:57:00+09:00",
+      "communities": [
+        {
+          "id": "kainokuni-mokumoku",
+          "name": "甲斐国もくもく会",
+          "url": "https://kainokuni.org",
+          "iconUrl": "https://placehold.co/400x400.png?text=kainokuni-mokumoku",
+          "descriptionMarkdown": "甲斐国もくもく会 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 三郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-05"
+        }
+      ],
+      "descriptionMarkdown": "甲斐国もくもく会 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-07",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "Shingen.py の紹介",
+      "startsAt": "2026-11-22T10:57:00+09:00",
+      "endsAt": "2026-11-22T11:04:00+09:00",
+      "communities": [
+        {
+          "id": "shingen-py",
+          "name": "Shingen.py",
+          "url": "https://shingenpy.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=shingen-py",
+          "descriptionMarkdown": "Shingen.py の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 四郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-06"
+        }
+      ],
+      "descriptionMarkdown": "Shingen.py の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-break",
+      "kind": "break",
+      "group": "コミュニティ紹介",
+      "title": "中間ブレイク",
+      "startsAt": "2026-11-22T11:04:00+09:00",
+      "endsAt": "2026-11-22T11:09:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-08",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "Yamanashi WordPress Meetup の紹介",
+      "startsAt": "2026-11-22T11:09:00+09:00",
+      "endsAt": "2026-11-22T11:16:00+09:00",
+      "communities": [
+        {
+          "id": "yamanashi-wordpress-meetup",
+          "name": "Yamanashi WordPress Meetup",
+          "url": "https://www.meetup.com/ja-jp/yamanashi-wordpress-meetup/",
+          "iconUrl": "https://placehold.co/400x400.png?text=yamanashi-wordpress-meetup",
+          "descriptionMarkdown": "Yamanashi WordPress Meetup の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 五郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-07"
+        }
+      ],
+      "descriptionMarkdown": "Yamanashi WordPress Meetup の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-09",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "kintone Café 山梨 の紹介",
+      "startsAt": "2026-11-22T11:16:00+09:00",
+      "endsAt": "2026-11-22T11:23:00+09:00",
+      "communities": [
+        {
+          "id": "kintone-cafe-yamanashi",
+          "name": "kintone Café 山梨",
+          "url": "https://kintonecafe-yamanashi.qloba.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=kintone-cafe-yamanashi",
+          "descriptionMarkdown": "kintone Café 山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 六郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-08"
+        }
+      ],
+      "descriptionMarkdown": "kintone Café 山梨 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-10",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "SORACOM UG 山梨 の紹介",
+      "startsAt": "2026-11-22T11:23:00+09:00",
+      "endsAt": "2026-11-22T11:30:00+09:00",
+      "communities": [
+        {
+          "id": "soracom-ug-yamanashi",
+          "name": "SORACOM UG 山梨",
+          "url": "https://soracom.jp/user-group/",
+          "iconUrl": "https://placehold.co/400x400.png?text=soracom-ug-yamanashi",
+          "descriptionMarkdown": "SORACOM UG 山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 七海",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-09"
+        }
+      ],
+      "descriptionMarkdown": "SORACOM UG 山梨 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-11",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "東京-山梨 AI ミートアップ の紹介",
+      "startsAt": "2026-11-22T11:30:00+09:00",
+      "endsAt": "2026-11-22T11:37:00+09:00",
+      "communities": [
+        {
+          "id": "tokyo-yamanashi-ai-meetup",
+          "name": "東京-山梨 AI ミートアップ",
+          "url": "https://ai-meetup.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=tokyo-yamanashi-ai-meetup",
+          "descriptionMarkdown": "東京-山梨 AI ミートアップ の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 八重",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-10"
+        }
+      ],
+      "descriptionMarkdown": "東京-山梨 AI ミートアップ の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-12",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "AI BASE の紹介",
+      "startsAt": "2026-11-22T11:37:00+09:00",
+      "endsAt": "2026-11-22T11:44:00+09:00",
+      "communities": [
+        {
+          "id": "ai-base",
+          "name": "AI BASE",
+          "url": "https://aibase.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=ai-base",
+          "descriptionMarkdown": "AI BASE の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 九郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-11"
+        }
+      ],
+      "descriptionMarkdown": "AI BASE の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-13",
+      "kind": "session",
+      "group": "コミュニティ紹介",
+      "title": "スクラッチディ in 山梨 の紹介",
+      "startsAt": "2026-11-22T11:44:00+09:00",
+      "endsAt": "2026-11-22T11:51:00+09:00",
+      "communities": [
+        {
+          "id": "scratch-day-yamanashi",
+          "name": "スクラッチディ in 山梨",
+          "url": "https://scratch.itolab.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=scratch-day-yamanashi",
+          "descriptionMarkdown": "スクラッチディ in 山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 十郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-12"
+        }
+      ],
+      "descriptionMarkdown": "スクラッチディ in 山梨 の紹介セッションのためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c2-reserve",
+      "kind": "break",
+      "group": "コミュニティ紹介",
+      "title": "予備",
+      "startsAt": "2026-11-22T11:51:00+09:00",
+      "endsAt": "2026-11-22T11:55:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c8-01",
+      "kind": "session",
+      "group": "スポンサーLT",
+      "title": "スポンサーLT 1（未定）",
+      "startsAt": "2026-11-22T11:55:00+09:00",
+      "endsAt": "2026-11-22T12:02:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c8-02",
+      "kind": "session",
+      "group": "スポンサーLT",
+      "title": "スポンサーLT 2（未定）",
+      "startsAt": "2026-11-22T12:02:00+09:00",
+      "endsAt": "2026-11-22T12:09:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c8-03",
+      "kind": "session",
+      "group": "スポンサーLT",
+      "title": "スポンサーLT 3（未定）",
+      "startsAt": "2026-11-22T12:09:00+09:00",
+      "endsAt": "2026-11-22T12:16:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c8-reserve",
+      "kind": "break",
+      "group": "スポンサーLT",
+      "title": "予備",
+      "startsAt": "2026-11-22T12:16:00+09:00",
+      "endsAt": "2026-11-22T12:20:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "f1",
+      "kind": "free",
+      "group": null,
+      "title": "回遊タイム＋昼休憩",
+      "startsAt": "2026-11-22T12:20:00+09:00",
+      "endsAt": "2026-11-22T13:50:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": "ステージは休止。ブース（ホール内）とコミュニケーションスペース（ホール外）を自由に回ってください。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-01",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 1（テーマ未定）",
+      "startsAt": "2026-11-22T13:50:00+09:00",
+      "endsAt": "2026-11-22T13:57:00+09:00",
+      "communities": [
+        {
+          "id": "jawsug-yamanashi",
+          "name": "JAWS-UG山梨",
+          "url": "https://jaws-ug-yamanashi.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=jawsug-yamanashi",
+          "descriptionMarkdown": "JAWS-UG山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 花子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-03"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 1 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-02",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 2（テーマ未定）",
+      "startsAt": "2026-11-22T13:57:00+09:00",
+      "endsAt": "2026-11-22T14:04:00+09:00",
+      "communities": [
+        {
+          "id": "coderdojo-kofu",
+          "name": "コーダー道場甲府",
+          "url": "https://coderdojokofu.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=coderdojo-kofu",
+          "descriptionMarkdown": "コーダー道場甲府 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 次郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-04"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 2 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-03",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "Houtou.pm × Kofu.rb 合同LT（テーマ未定）",
+      "startsAt": "2026-11-22T14:04:00+09:00",
+      "endsAt": "2026-11-22T14:11:00+09:00",
+      "communities": [
+        {
+          "id": "houtou-pm",
+          "name": "Houtou.pm",
+          "url": "https://houtoupm.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=houtou-pm",
+          "descriptionMarkdown": "Houtou.pm の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        },
+        {
+          "id": "kofu-rb",
+          "name": "Kofu.rb",
+          "url": "https://kofurb.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=kofu-rb",
+          "descriptionMarkdown": "Kofu.rb の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 桃子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-13"
+        },
+        {
+          "name": "ダミー 紅子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-14"
+        }
+      ],
+      "descriptionMarkdown": "Houtou.pm × Kofu.rb 合同LT のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-04",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 4（テーマ未定）",
+      "startsAt": "2026-11-22T14:11:00+09:00",
+      "endsAt": "2026-11-22T14:18:00+09:00",
+      "communities": [
+        {
+          "id": "ura-techmujin",
+          "name": "裏テック無尽",
+          "url": "https://ura-techmujin.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=ura-techmujin",
+          "descriptionMarkdown": "裏テック無尽 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 太郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-02"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 4 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-05",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 5（テーマ未定）",
+      "startsAt": "2026-11-22T14:18:00+09:00",
+      "endsAt": "2026-11-22T14:25:00+09:00",
+      "communities": [
+        {
+          "id": "jawsug-yamanashi",
+          "name": "JAWS-UG山梨",
+          "url": "https://jaws-ug-yamanashi.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=jawsug-yamanashi",
+          "descriptionMarkdown": "JAWS-UG山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー ヴィクトリア・アレクサンドラ",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-15"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 5 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-06",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 6（テーマ未定）",
+      "startsAt": "2026-11-22T14:25:00+09:00",
+      "endsAt": "2026-11-22T14:32:00+09:00",
+      "communities": [
+        {
+          "id": "shingen-py",
+          "name": "Shingen.py",
+          "url": "https://shingenpy.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=shingen-py",
+          "descriptionMarkdown": "Shingen.py の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 四郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-06"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 6 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-07",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 7（テーマ未定）",
+      "startsAt": "2026-11-22T14:32:00+09:00",
+      "endsAt": "2026-11-22T14:39:00+09:00",
+      "communities": [
+        {
+          "id": "shingen-py",
+          "name": "Shingen.py",
+          "url": "https://shingenpy.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=shingen-py",
+          "descriptionMarkdown": "Shingen.py の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 一子",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-16"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 7 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-08",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 8（テーマ未定）",
+      "startsAt": "2026-11-22T14:39:00+09:00",
+      "endsAt": "2026-11-22T14:46:00+09:00",
+      "communities": [
+        {
+          "id": "yamanashi-wordpress-meetup",
+          "name": "Yamanashi WordPress Meetup",
+          "url": "https://www.meetup.com/ja-jp/yamanashi-wordpress-meetup/",
+          "iconUrl": "https://placehold.co/400x400.png?text=yamanashi-wordpress-meetup",
+          "descriptionMarkdown": "Yamanashi WordPress Meetup の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 五郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-07"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 8 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-09",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 9（テーマ未定）",
+      "startsAt": "2026-11-22T14:46:00+09:00",
+      "endsAt": "2026-11-22T14:53:00+09:00",
+      "communities": [
+        {
+          "id": "kintone-cafe-yamanashi",
+          "name": "kintone Café 山梨",
+          "url": "https://kintonecafe-yamanashi.qloba.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=kintone-cafe-yamanashi",
+          "descriptionMarkdown": "kintone Café 山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 六郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-08"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 9 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-10",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 10（テーマ未定）",
+      "startsAt": "2026-11-22T14:53:00+09:00",
+      "endsAt": "2026-11-22T15:00:00+09:00",
+      "communities": [
+        {
+          "id": "tokyo-yamanashi-ai-meetup",
+          "name": "東京-山梨 AI ミートアップ",
+          "url": "https://ai-meetup.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=tokyo-yamanashi-ai-meetup",
+          "descriptionMarkdown": "東京-山梨 AI ミートアップ の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 八重",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-10"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 10 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-11",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 11（テーマ未定）",
+      "startsAt": "2026-11-22T15:00:00+09:00",
+      "endsAt": "2026-11-22T15:07:00+09:00",
+      "communities": [
+        {
+          "id": "ai-base",
+          "name": "AI BASE",
+          "url": "https://aibase.connpass.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=ai-base",
+          "descriptionMarkdown": "AI BASE の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 九郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-11"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 11 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-12",
+      "kind": "session",
+      "group": "コミュニティLT",
+      "title": "コミュニティLT 12（テーマ未定）",
+      "startsAt": "2026-11-22T15:07:00+09:00",
+      "endsAt": "2026-11-22T15:14:00+09:00",
+      "communities": [
+        {
+          "id": "scratch-day-yamanashi",
+          "name": "スクラッチディ in 山梨",
+          "url": "https://scratch.itolab.com/",
+          "iconUrl": "https://placehold.co/400x400.png?text=scratch-day-yamanashi",
+          "descriptionMarkdown": "スクラッチディ in 山梨 の説明文のためのダミーテキストです。ここには実際のコミュニティ紹介文が入ります。活動内容や参加方法などを2〜3文程度で記載する想定です。"
+        }
+      ],
+      "speakers": [
+        {
+          "name": "ダミー 十郎",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-12"
+        }
+      ],
+      "descriptionMarkdown": "コミュニティLT 12 のためのダミーテキストです。ここには実際の説明文が入ります。当日の内容や見どころを2〜3文程度で記載する想定です。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c4-reserve",
+      "kind": "break",
+      "group": "コミュニティLT",
+      "title": "予備",
+      "startsAt": "2026-11-22T15:14:00+09:00",
+      "endsAt": "2026-11-22T15:15:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "x2",
+      "kind": "break",
+      "group": null,
+      "title": "転換・小休憩",
+      "startsAt": "2026-11-22T15:15:00+09:00",
+      "endsAt": "2026-11-22T15:25:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c3",
+      "kind": "session",
+      "group": null,
+      "title": "代読LT",
+      "startsAt": "2026-11-22T15:25:00+09:00",
+      "endsAt": "2026-11-22T15:40:00+09:00",
+      "communities": [],
+      "speakers": [
+        {
+          "name": "ダミー 進",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-01"
+        }
+      ],
+      "descriptionMarkdown": "受付のQRから投稿された「来た理由」「気になる技術」「聞いてみたいこと」を司会が代読します。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "n7",
+      "kind": "session",
+      "group": null,
+      "title": "テック無尽ラジオ",
+      "startsAt": "2026-11-22T15:40:00+09:00",
+      "endsAt": "2026-11-22T16:25:00+09:00",
+      "communities": [],
+      "speakers": [
+        {
+          "name": "ダミー 進",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-01"
+        },
+        {
+          "name": "ダミー 遥",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-17"
+        },
+        {
+          "name": "ダミー 陽向",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-18"
+        }
+      ],
+      "descriptionMarkdown": "登壇者やコミュニティ代表をゲストに招く公開トーク。\n\n※ 前のプログラムが押した場合はこの枠が短くなります。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "x3",
+      "kind": "break",
+      "group": null,
+      "title": "転換",
+      "startsAt": "2026-11-22T16:25:00+09:00",
+      "endsAt": "2026-11-22T16:30:00+09:00",
+      "communities": [],
+      "speakers": [],
+      "descriptionMarkdown": null,
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    },
+    {
+      "id": "c6",
+      "kind": "session",
+      "group": null,
+      "title": "クロージング",
+      "startsAt": "2026-11-22T16:30:00+09:00",
+      "endsAt": "2026-11-22T16:55:00+09:00",
+      "communities": [],
+      "speakers": [
+        {
+          "name": "ダミー 進",
+          "iconUrl": "https://placehold.co/200x200.png?text=speaker-01"
+        }
+      ],
+      "descriptionMarkdown": "まとめと、各コミュニティの今後のイベント・参加方法の案内。",
+      "message": null,
+      "isCancelled": false,
+      "links": []
+    }
+  ]
+}
