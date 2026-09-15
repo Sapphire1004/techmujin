@@ -1,3 +1,5 @@
+import type { TrackId } from "techmujin-api";
+
 export type SessionFormat = "talk" | "networking" | "break";
 
 export type EventSchedule = {
@@ -14,6 +16,7 @@ export type Session = {
   speaker: string;
   speakerImage: string;
   tags: string[];
+  trackId: TrackId;
   format: SessionFormat;
 };
 

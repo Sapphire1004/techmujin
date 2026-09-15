@@ -238,7 +238,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                   </div>
                 ) : (
                   <div
-                    className="track-heading"
+                    className="track-heading track-heading--saved"
                     style={{ gridColumn: 2, gridRow: 1 }}
                   >
                     <Text as="strong" textStyle="t5Bold">

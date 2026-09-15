@@ -1,7 +1,7 @@
 import { parseSchedule } from "./parseSchedule";
 
 export const TIMETABLE_ENDPOINT =
-  "https://timetable.t-funabiki08.workers.dev/v1/events/techmujin-2026/timetable";
+  "https://techmujin-api.t-funabiki08.workers.dev/v1/events/techmujin-2026/timetable";
 
 export async function fetchSchedule(signal?: AbortSignal) {
   const response = await fetch(TIMETABLE_ENDPOINT, {

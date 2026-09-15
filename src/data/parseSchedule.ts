@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { Timetable } from "techmujin-api";
+import type { SessionType, Timetable } from "techmujin-api";
 import type { ScheduleData, SessionFormat } from "../types";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -27,7 +27,9 @@ const linkSchema = z.object({
 const apiSessionSchema = z.object({
   id: z.string().min(1),
   kind: z.enum(["session", "break", "free"]),
+  type: z.enum(["opening", "talk", "lt", "sponsor", "closing"]).nullable(),
   group: z.string().nullable(),
+  trackId: z.enum(["track-a", "track-b"]).nullable(),
   title: z.string().min(1),
   startsAt: z.string().regex(DATE_TIME_PATTERN),
   endsAt: z.string().regex(DATE_TIME_PATTERN),
@@ -100,13 +102,16 @@ function getFormat(kind: "session" | "break" | "free"): SessionFormat {
   return kind === "session" ? "talk" : "break";
 }
 
-function getTags(title: string, group: string | null) {
-  if (group) return [group];
-  if (title.includes("オリエンテーション") || title.includes("オープニング")) {
-    return ["オープニングセッション"];
-  }
-  if (title.includes("クロージング")) return ["クロージングセッション"];
-  return ["セッション"];
+const SESSION_TYPE_LABELS: Record<Exclude<SessionType, null>, string> = {
+  opening: "オープニングセッション",
+  talk: "トークセッション",
+  lt: "LTセッション",
+  sponsor: "スポンサーセッション",
+  closing: "クロージングセッション",
+};
+
+function getTags(type: SessionType) {
+  return [type === null ? "セッション" : SESSION_TYPE_LABELS[type]];
 }
 
 export function parseSchedule(value: unknown): ScheduleData {
@@ -128,7 +133,8 @@ export function parseSchedule(value: unknown): ScheduleData {
       speaker: session.speakers.map(({ name }) => name).join(" / "),
       speakerImage:
         session.speakers.find(({ iconUrl }) => iconUrl !== null)?.iconUrl ?? "",
-      tags: getTags(session.title, session.group),
+      tags: getTags(session.type),
+      trackId: session.trackId,
       format: getFormat(session.kind),
     })),
   };

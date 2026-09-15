@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
-  "version": "f3e143a0780d",
-  "updatedAt": "2026-09-12T20:17:16+09:00",
+  "version": "b5f9fe6b874a",
+  "updatedAt": "2026-09-15T20:06:17+09:00",
   "event": {
     "id": "techmujin-2026",
     "title": "テック無尽 2026",
@@ -14,7 +14,9 @@
     {
       "id": "c1",
       "kind": "session",
+      "type": "opening",
       "group": null,
+      "trackId": "track-a",
       "title": "オリエンテーション",
       "startsAt": "2026-11-22T10:00:00+09:00",
       "endsAt": "2026-11-22T10:10:00+09:00",
@@ -33,7 +35,9 @@
     {
       "id": "x1",
       "kind": "break",
+      "type": null,
       "group": null,
+      "trackId": null,
       "title": "転換",
       "startsAt": "2026-11-22T10:10:00+09:00",
       "endsAt": "2026-11-22T10:15:00+09:00",
@@ -47,7 +51,9 @@
     {
       "id": "c2-01",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "JAWS-UG山梨 の紹介",
       "startsAt": "2026-11-22T10:15:00+09:00",
       "endsAt": "2026-11-22T10:22:00+09:00",
@@ -74,7 +80,9 @@
     {
       "id": "c2-02",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "コーダー道場甲府 の紹介",
       "startsAt": "2026-11-22T10:22:00+09:00",
       "endsAt": "2026-11-22T10:29:00+09:00",
@@ -101,7 +109,9 @@
     {
       "id": "c2-03",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "Houtou.pm の紹介",
       "startsAt": "2026-11-22T10:29:00+09:00",
       "endsAt": "2026-11-22T10:36:00+09:00",
@@ -128,7 +138,9 @@
     {
       "id": "c2-04",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "Kofu.rb の紹介",
       "startsAt": "2026-11-22T10:36:00+09:00",
       "endsAt": "2026-11-22T10:43:00+09:00",
@@ -155,7 +167,9 @@
     {
       "id": "c2-05",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "裏テック無尽 の紹介",
       "startsAt": "2026-11-22T10:43:00+09:00",
       "endsAt": "2026-11-22T10:50:00+09:00",
@@ -182,7 +196,9 @@
     {
       "id": "c2-06",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "甲斐国もくもく会 の紹介",
       "startsAt": "2026-11-22T10:50:00+09:00",
       "endsAt": "2026-11-22T10:57:00+09:00",
@@ -209,7 +225,9 @@
     {
       "id": "c2-07",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "Shingen.py の紹介",
       "startsAt": "2026-11-22T10:57:00+09:00",
       "endsAt": "2026-11-22T11:04:00+09:00",
@@ -236,7 +254,9 @@
     {
       "id": "c2-break",
       "kind": "break",
+      "type": null,
       "group": "コミュニティ紹介",
+      "trackId": null,
       "title": "中間ブレイク",
       "startsAt": "2026-11-22T11:04:00+09:00",
       "endsAt": "2026-11-22T11:09:00+09:00",
@@ -250,7 +270,9 @@
     {
       "id": "c2-08",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "Yamanashi WordPress Meetup の紹介",
       "startsAt": "2026-11-22T11:09:00+09:00",
       "endsAt": "2026-11-22T11:16:00+09:00",
@@ -277,7 +299,9 @@
     {
       "id": "c2-09",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "kintone Café 山梨 の紹介",
       "startsAt": "2026-11-22T11:16:00+09:00",
       "endsAt": "2026-11-22T11:23:00+09:00",
@@ -304,7 +328,9 @@
     {
       "id": "c2-10",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "SORACOM UG 山梨 の紹介",
       "startsAt": "2026-11-22T11:23:00+09:00",
       "endsAt": "2026-11-22T11:30:00+09:00",
@@ -331,7 +357,9 @@
     {
       "id": "c2-11",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "東京-山梨 AI ミートアップ の紹介",
       "startsAt": "2026-11-22T11:30:00+09:00",
       "endsAt": "2026-11-22T11:37:00+09:00",
@@ -358,7 +386,9 @@
     {
       "id": "c2-12",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "AI BASE の紹介",
       "startsAt": "2026-11-22T11:37:00+09:00",
       "endsAt": "2026-11-22T11:44:00+09:00",
@@ -385,7 +415,9 @@
     {
       "id": "c2-13",
       "kind": "session",
+      "type": "talk",
       "group": "コミュニティ紹介",
+      "trackId": "track-a",
       "title": "スクラッチディ in 山梨 の紹介",
       "startsAt": "2026-11-22T11:44:00+09:00",
       "endsAt": "2026-11-22T11:51:00+09:00",
@@ -412,7 +444,9 @@
     {
       "id": "c2-reserve",
       "kind": "break",
+      "type": null,
       "group": "コミュニティ紹介",
+      "trackId": null,
       "title": "予備",
       "startsAt": "2026-11-22T11:51:00+09:00",
       "endsAt": "2026-11-22T11:55:00+09:00",
@@ -426,7 +460,9 @@
     {
       "id": "c8-01",
       "kind": "session",
+      "type": "sponsor",
       "group": "スポンサーLT",
+      "trackId": "track-a",
       "title": "スポンサーLT 1（未定）",
       "startsAt": "2026-11-22T11:55:00+09:00",
       "endsAt": "2026-11-22T12:02:00+09:00",
@@ -440,7 +476,9 @@
     {
       "id": "c8-02",
       "kind": "session",
+      "type": "sponsor",
       "group": "スポンサーLT",
+      "trackId": "track-a",
       "title": "スポンサーLT 2（未定）",
       "startsAt": "2026-11-22T12:02:00+09:00",
       "endsAt": "2026-11-22T12:09:00+09:00",
@@ -454,7 +492,9 @@
     {
       "id": "c8-03",
       "kind": "session",
+      "type": "sponsor",
       "group": "スポンサーLT",
+      "trackId": "track-a",
       "title": "スポンサーLT 3（未定）",
       "startsAt": "2026-11-22T12:09:00+09:00",
       "endsAt": "2026-11-22T12:16:00+09:00",
@@ -468,7 +508,9 @@
     {
       "id": "c8-reserve",
       "kind": "break",
+      "type": null,
       "group": "スポンサーLT",
+      "trackId": null,
       "title": "予備",
       "startsAt": "2026-11-22T12:16:00+09:00",
       "endsAt": "2026-11-22T12:20:00+09:00",
@@ -482,7 +524,9 @@
     {
       "id": "f1",
       "kind": "free",
+      "type": null,
       "group": null,
+      "trackId": null,
       "title": "回遊タイム＋昼休憩",
       "startsAt": "2026-11-22T12:20:00+09:00",
       "endsAt": "2026-11-22T13:50:00+09:00",
@@ -496,7 +540,9 @@
     {
       "id": "c4-01",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 1（テーマ未定）",
       "startsAt": "2026-11-22T13:50:00+09:00",
       "endsAt": "2026-11-22T13:57:00+09:00",
@@ -523,7 +569,9 @@
     {
       "id": "c4-02",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 2（テーマ未定）",
       "startsAt": "2026-11-22T13:57:00+09:00",
       "endsAt": "2026-11-22T14:04:00+09:00",
@@ -550,7 +598,9 @@
     {
       "id": "c4-03",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "Houtou.pm × Kofu.rb 合同LT（テーマ未定）",
       "startsAt": "2026-11-22T14:04:00+09:00",
       "endsAt": "2026-11-22T14:11:00+09:00",
@@ -588,7 +638,9 @@
     {
       "id": "c4-04",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 4（テーマ未定）",
       "startsAt": "2026-11-22T14:11:00+09:00",
       "endsAt": "2026-11-22T14:18:00+09:00",
@@ -615,7 +667,9 @@
     {
       "id": "c4-05",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 5（テーマ未定）",
       "startsAt": "2026-11-22T14:18:00+09:00",
       "endsAt": "2026-11-22T14:25:00+09:00",
@@ -642,7 +696,9 @@
     {
       "id": "c4-06",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 6（テーマ未定）",
       "startsAt": "2026-11-22T14:25:00+09:00",
       "endsAt": "2026-11-22T14:32:00+09:00",
@@ -669,7 +725,9 @@
     {
       "id": "c4-07",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 7（テーマ未定）",
       "startsAt": "2026-11-22T14:32:00+09:00",
       "endsAt": "2026-11-22T14:39:00+09:00",
@@ -696,7 +754,9 @@
     {
       "id": "c4-08",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 8（テーマ未定）",
       "startsAt": "2026-11-22T14:39:00+09:00",
       "endsAt": "2026-11-22T14:46:00+09:00",
@@ -723,7 +783,9 @@
     {
       "id": "c4-09",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 9（テーマ未定）",
       "startsAt": "2026-11-22T14:46:00+09:00",
       "endsAt": "2026-11-22T14:53:00+09:00",
@@ -750,7 +812,9 @@
     {
       "id": "c4-10",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 10（テーマ未定）",
       "startsAt": "2026-11-22T14:53:00+09:00",
       "endsAt": "2026-11-22T15:00:00+09:00",
@@ -777,7 +841,9 @@
     {
       "id": "c4-11",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 11（テーマ未定）",
       "startsAt": "2026-11-22T15:00:00+09:00",
       "endsAt": "2026-11-22T15:07:00+09:00",
@@ -804,7 +870,9 @@
     {
       "id": "c4-12",
       "kind": "session",
+      "type": "lt",
       "group": "コミュニティLT",
+      "trackId": "track-a",
       "title": "コミュニティLT 12（テーマ未定）",
       "startsAt": "2026-11-22T15:07:00+09:00",
       "endsAt": "2026-11-22T15:14:00+09:00",
@@ -831,7 +899,9 @@
     {
       "id": "c4-reserve",
       "kind": "break",
+      "type": null,
       "group": "コミュニティLT",
+      "trackId": null,
       "title": "予備",
       "startsAt": "2026-11-22T15:14:00+09:00",
       "endsAt": "2026-11-22T15:15:00+09:00",
@@ -845,7 +915,9 @@
     {
       "id": "x2",
       "kind": "break",
+      "type": null,
       "group": null,
+      "trackId": null,
       "title": "転換・小休憩",
       "startsAt": "2026-11-22T15:15:00+09:00",
       "endsAt": "2026-11-22T15:25:00+09:00",
@@ -859,7 +931,9 @@
     {
       "id": "c3",
       "kind": "session",
+      "type": "lt",
       "group": null,
+      "trackId": "track-a",
       "title": "代読LT",
       "startsAt": "2026-11-22T15:25:00+09:00",
       "endsAt": "2026-11-22T15:40:00+09:00",
@@ -878,7 +952,9 @@
     {
       "id": "n7",
       "kind": "session",
+      "type": "talk",
       "group": null,
+      "trackId": "track-a",
       "title": "テック無尽ラジオ",
       "startsAt": "2026-11-22T15:40:00+09:00",
       "endsAt": "2026-11-22T16:25:00+09:00",
@@ -905,7 +981,9 @@
     {
       "id": "x3",
       "kind": "break",
+      "type": null,
       "group": null,
+      "trackId": null,
       "title": "転換",
       "startsAt": "2026-11-22T16:25:00+09:00",
       "endsAt": "2026-11-22T16:30:00+09:00",
@@ -919,7 +997,9 @@
     {
       "id": "c6",
       "kind": "session",
+      "type": "closing",
       "group": null,
+      "trackId": "track-a",
       "title": "クロージング",
       "startsAt": "2026-11-22T16:30:00+09:00",
       "endsAt": "2026-11-22T16:55:00+09:00",

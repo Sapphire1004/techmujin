@@ -5,7 +5,7 @@
 현재 타임테이블은 아래 API를 한 개 트랙 일정으로 해석해 표시합니다.
 
 ```text
-https://timetable.t-funabiki08.workers.dev/v1/events/techmujin-2026/timetable
+https://techmujin-api.t-funabiki08.workers.dev/v1/events/techmujin-2026/timetable
 ```
 
 응답은 Zod로 검증한 뒤 화면에 필요한 형식으로 변환합니다.
