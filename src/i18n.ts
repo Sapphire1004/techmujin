@@ -37,10 +37,6 @@ const resources = {
         allTracks: "すべてのトラック",
         mySchedule: "マイスケジュール {{count}}",
       },
-      guide: {
-        title: "マイスケジュールの使い方",
-        body: "セッションカードを選ぶと、このブラウザに参加予定として保存されます。同じ時間のセッションを複数選ぶと重複が表示され、ほかの端末とは同期されません。",
-      },
       storage: {
         unavailable:
           "このブラウザではストレージを利用できません。選択内容は現在の画面でのみ保持されます。",
@@ -73,7 +69,10 @@ const resources = {
         body: "絞り込みを変更するか、全スケジュールを確認してください。",
         reset: "全スケジュールを見る",
       },
-      footer: "TECHMUJIN · ログインせず、このブラウザにのみ保存されます。",
+      calendar: {
+        download: "ICSをダウンロード",
+        noSessions: "セッションを選択するとダウンロードできます。",
+      },
     },
   },
   en: {
@@ -94,10 +93,6 @@ const resources = {
         tracks: "Track filters",
         allTracks: "All tracks",
         mySchedule: "My schedule {{count}}",
-      },
-      guide: {
-        title: "How to use My schedule",
-        body: "Select a session card to save it in this browser. Overlapping selections are highlighted and are not synced with other devices.",
       },
       storage: {
         unavailable:
@@ -131,7 +126,10 @@ const resources = {
         body: "Change the filter or return to the full schedule.",
         reset: "View full schedule",
       },
-      footer: "TECHMUJIN · Saved only in this browser without signing in.",
+      calendar: {
+        download: "Download ICS",
+        noSessions: "Select a session to download your schedule.",
+      },
     },
   },
   ko: {
@@ -152,10 +150,6 @@ const resources = {
         tracks: "트랙 필터",
         allTracks: "전체 트랙",
         mySchedule: "내 일정 {{count}}",
-      },
-      guide: {
-        title: "내 타임테이블 사용 안내",
-        body: "세션 카드를 누르면 이 브라우저에 참석 예정으로 저장됩니다. 같은 시간의 세션을 여러 개 고르면 겹침을 표시하며, 다른 기기와는 동기화되지 않습니다.",
       },
       storage: {
         unavailable:
@@ -189,7 +183,10 @@ const resources = {
         body: "필터를 바꾸거나 전체 일정을 다시 확인해 주세요.",
         reset: "전체 일정 보기",
       },
-      footer: "TECHMUJIN · 로그인 없이 이 브라우저에만 저장됩니다.",
+      calendar: {
+        download: "ICS 다운로드",
+        noSessions: "세션을 선택하면 일정을 다운로드할 수 있습니다.",
+      },
     },
   },
 };
