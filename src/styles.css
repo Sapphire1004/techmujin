@@ -286,6 +286,23 @@ main {
   font-variant-numeric: tabular-nums;
 }
 
+.schedule-export {
+  display: grid;
+  gap: var(--space-xs);
+}
+
+.schedule-export__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);
+}
+
+.schedule-export__error {
+  color: var(--color-error);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
 .timetable-scroll {
   max-width: 100%;
   margin-top: var(--space-md);
@@ -617,6 +634,10 @@ button[data-state="error"] {
   }
 
   .schedule-heading__summary {
+    justify-content: flex-end;
+  }
+
+  .schedule-export__actions {
     justify-content: flex-end;
   }
 
