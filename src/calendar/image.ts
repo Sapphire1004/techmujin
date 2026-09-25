@@ -1,10 +1,10 @@
 import type { EventSchedule, Session } from "../types";
 
-const IMAGE_WIDTH = 1_080;
-const PAGE_PADDING = 72;
-const CARD_GAP = 24;
-const CARD_PADDING = 36;
-const CARD_RADIUS = 28;
+const IMAGE_WIDTH = 720;
+const PAGE_PADDING = 32;
+const COLUMN_GAP = 14;
+const CARD_GAP = 14;
+const COMPACT_LAYOUT_MINIMUM = 9;
 const FONT_FAMILY =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif';
 
@@ -46,6 +46,45 @@ type SessionCardLayout = {
   titleLines: string[];
   speakerLines: string[];
   height: number;
+};
+
+type LayoutMetrics = {
+  cardPadding: number;
+  cardRadius: number;
+  timeFontSize: number;
+  trackFontSize: number;
+  badgeFontSize: number;
+  badgeHeight: number;
+  titleFontSize: number;
+  titleLineHeight: number;
+  speakerFontSize: number;
+  speakerLineHeight: number;
+};
+
+const detailedMetrics: LayoutMetrics = {
+  cardPadding: 24,
+  cardRadius: 20,
+  timeFontSize: 22,
+  trackFontSize: 16,
+  badgeFontSize: 15,
+  badgeHeight: 28,
+  titleFontSize: 28,
+  titleLineHeight: 38,
+  speakerFontSize: 18,
+  speakerLineHeight: 25,
+};
+
+const compactMetrics: LayoutMetrics = {
+  cardPadding: 18,
+  cardRadius: 16,
+  timeFontSize: 18,
+  trackFontSize: 13,
+  badgeFontSize: 13,
+  badgeHeight: 24,
+  titleFontSize: 22,
+  titleLineHeight: 30,
+  speakerFontSize: 15,
+  speakerLineHeight: 21,
 };
 
 function safeIdentifier(value: string) {
@@ -180,13 +219,15 @@ function createCardLayouts(
   context: CanvasRenderingContext2D,
   sessions: Session[],
   labels: ImageLabels,
+  cardWidth: number,
+  metrics: LayoutMetrics,
 ) {
-  const textWidth = IMAGE_WIDTH - PAGE_PADDING * 2 - CARD_PADDING * 2;
+  const textWidth = cardWidth - metrics.cardPadding * 2;
 
   return sessions.map<SessionCardLayout>((session) => {
-    context.font = `700 36px ${FONT_FAMILY}`;
+    context.font = `700 ${metrics.titleFontSize}px ${FONT_FAMILY}`;
     const titleLines = wrapText(context, session.title, textWidth);
-    context.font = `500 24px ${FONT_FAMILY}`;
+    context.font = `500 ${metrics.speakerFontSize}px ${FONT_FAMILY}`;
     const speakerLines = session.speaker
       ? wrapText(
           context,
@@ -195,13 +236,15 @@ function createCardLayouts(
         )
       : [];
     const height =
-      CARD_PADDING * 2 +
-      34 +
-      22 +
-      26 +
-      22 +
-      titleLines.length * 48 +
-      (speakerLines.length > 0 ? 18 + speakerLines.length * 34 : 0);
+      metrics.cardPadding * 2 +
+      metrics.timeFontSize +
+      14 +
+      metrics.badgeHeight +
+      14 +
+      titleLines.length * metrics.titleLineHeight +
+      (speakerLines.length > 0
+        ? 12 + speakerLines.length * metrics.speakerLineHeight
+        : 0);
 
     return { session, titleLines, speakerLines, height };
   });
@@ -212,19 +255,31 @@ function drawBadge(
   label: string,
   x: number,
   y: number,
+  metrics: LayoutMetrics,
   foreground: string,
   background: string,
 ) {
-  context.font = `700 20px ${FONT_FAMILY}`;
-  const width = context.measureText(label).width + 28;
-  roundedRectangle(context, x, y, width, 36, 18);
+  context.font = `700 ${metrics.badgeFontSize}px ${FONT_FAMILY}`;
+  const horizontalPadding = metrics.badgeFontSize;
+  const width = context.measureText(label).width + horizontalPadding * 2;
+  roundedRectangle(
+    context,
+    x,
+    y,
+    width,
+    metrics.badgeHeight,
+    metrics.badgeHeight / 2,
+  );
   context.fillStyle = background;
   context.fill();
   context.fillStyle = foreground;
   context.textBaseline = "middle";
-  context.fillText(label, x + 14, y + 19);
+  context.fillText(
+    label,
+    x + horizontalPadding,
+    y + metrics.badgeHeight / 2 + 1,
+  );
   context.textBaseline = "alphabetic";
-  return width;
 }
 
 function drawSessionCard(
@@ -232,56 +287,73 @@ function drawSessionCard(
   layout: SessionCardLayout,
   labels: ImageLabels,
   palette: ImagePalette,
+  metrics: LayoutMetrics,
+  x: number,
   y: number,
+  width: number,
+  showTrack: boolean,
 ) {
-  const width = IMAGE_WIDTH - PAGE_PADDING * 2;
-  const contentX = PAGE_PADDING + CARD_PADDING;
+  const contentX = x + metrics.cardPadding;
   const { session } = layout;
 
-  roundedRectangle(context, PAGE_PADDING, y, width, layout.height, CARD_RADIUS);
+  roundedRectangle(context, x, y, width, layout.height, metrics.cardRadius);
   context.fillStyle = palette.surface;
   context.fill();
   context.strokeStyle = palette.border;
-  context.lineWidth = 2;
+  context.lineWidth = 1.5;
   context.stroke();
 
-  let cursorY = y + CARD_PADDING + 26;
+  let cursorY = y + metrics.cardPadding + metrics.timeFontSize;
   context.fillStyle = palette.text;
-  context.font = `800 28px ${FONT_FAMILY}`;
+  context.font = `800 ${metrics.timeFontSize}px ${FONT_FAMILY}`;
   context.fillText(`${session.startTime}–${session.endTime}`, contentX, cursorY);
 
-  const currentTrack = trackLabel(session.trackId, labels);
-  context.font = `700 20px ${FONT_FAMILY}`;
-  context.fillStyle = palette.muted;
-  context.textAlign = "right";
-  context.fillText(currentTrack, IMAGE_WIDTH - PAGE_PADDING - CARD_PADDING, cursorY);
-  context.textAlign = "left";
-
-  cursorY += 56;
-  let badgeX = contentX;
-  for (const tag of session.tags) {
-    const badgeWidth = drawBadge(
-      context,
-      tag,
-      badgeX,
-      cursorY - 24,
-      palette.brand,
-      palette.surfaceMuted,
+  if (showTrack) {
+    context.font = `700 ${metrics.trackFontSize}px ${FONT_FAMILY}`;
+    context.fillStyle = palette.muted;
+    context.textAlign = "right";
+    context.fillText(
+      trackLabel(session.trackId, labels),
+      x + width - metrics.cardPadding,
+      cursorY,
     );
-    badgeX += badgeWidth + 10;
+    context.textAlign = "left";
   }
 
-  cursorY += 60;
+  cursorY += 14;
+  drawBadge(
+    context,
+    session.tags[0] ?? "",
+    contentX,
+    cursorY,
+    metrics,
+    palette.brand,
+    palette.surfaceMuted,
+  );
+
+  cursorY += metrics.badgeHeight + 14 + metrics.titleFontSize;
   context.fillStyle = palette.text;
-  context.font = `700 36px ${FONT_FAMILY}`;
-  drawTextLines(context, layout.titleLines, contentX, cursorY, 48);
-  cursorY += layout.titleLines.length * 48;
+  context.font = `700 ${metrics.titleFontSize}px ${FONT_FAMILY}`;
+  drawTextLines(
+    context,
+    layout.titleLines,
+    contentX,
+    cursorY,
+    metrics.titleLineHeight,
+  );
+  cursorY += layout.titleLines.length * metrics.titleLineHeight;
 
   if (layout.speakerLines.length > 0) {
-    cursorY += 18;
+    cursorY += 12;
     context.fillStyle = palette.muted;
-    context.font = `500 24px ${FONT_FAMILY}`;
-    drawTextLines(context, layout.speakerLines, contentX, cursorY, 34);
+    context.font = `500 ${metrics.speakerFontSize}px ${FONT_FAMILY}`;
+    drawTextLines(
+      context,
+      layout.speakerLines,
+      contentX,
+      cursorY,
+      metrics.speakerLineHeight,
+    );
   }
 }
 
@@ -308,6 +380,12 @@ export async function createScheduleImageFile({
   const sortedSessions = sessions
     .slice()
     .sort((first, second) => first.startsAt.localeCompare(second.startsAt));
+  const compact = sortedSessions.length >= COMPACT_LAYOUT_MINIMUM;
+  const columnCount = compact ? 2 : 1;
+  const metrics = compact ? compactMetrics : detailedMetrics;
+  const cardWidth =
+    (IMAGE_WIDTH - PAGE_PADDING * 2 - COLUMN_GAP * (columnCount - 1)) /
+    columnCount;
   const canvas = document.createElement("canvas");
   canvas.width = IMAGE_WIDTH;
   canvas.height = 1;
@@ -315,14 +393,28 @@ export async function createScheduleImageFile({
 
   if (!measureContext) throw new Error("Canvas is unavailable");
 
-  const headerHeight = 330;
-  const footerHeight = 100;
-  const layouts = createCardLayouts(measureContext, sortedSessions, labels);
-  const cardsHeight = layouts.reduce(
-    (total, layout) => total + layout.height,
-    CARD_GAP * Math.max(0, layouts.length - 1),
+  const headerHeight = 220;
+  const footerHeight = 64;
+  const layouts = createCardLayouts(
+    measureContext,
+    sortedSessions,
+    labels,
+    cardWidth,
+    metrics,
   );
-  const imageHeight = headerHeight + cardsHeight + footerHeight;
+  const rows = Array.from(
+    { length: Math.ceil(layouts.length / columnCount) },
+    (_, rowIndex) =>
+      layouts.slice(rowIndex * columnCount, (rowIndex + 1) * columnCount),
+  );
+  const rowHeights = rows.map((row) =>
+    Math.max(...row.map(({ height }) => height)),
+  );
+  const cardsHeight = rowHeights.reduce(
+    (total, height) => total + height,
+    CARD_GAP * Math.max(0, rows.length - 1),
+  );
+  const imageHeight = Math.ceil(headerHeight + cardsHeight + footerHeight);
 
   canvas.height = imageHeight;
   const context = canvas.getContext("2d");
@@ -333,43 +425,56 @@ export async function createScheduleImageFile({
   context.fillRect(0, 0, IMAGE_WIDTH, imageHeight);
 
   context.fillStyle = palette.brand;
-  context.fillRect(PAGE_PADDING, 64, 72, 8);
-  context.font = `800 22px ${FONT_FAMILY}`;
-  context.fillText("TECHMUJIN EVENT", PAGE_PADDING, 116);
+  context.fillRect(PAGE_PADDING, 38, 48, 6);
+  context.font = `800 16px ${FONT_FAMILY}`;
+  context.fillText("TECHMUJIN EVENT", PAGE_PADDING, 76);
 
   context.fillStyle = palette.text;
-  context.font = `800 52px ${FONT_FAMILY}`;
-  context.fillText(labels.scheduleTitle, PAGE_PADDING, 190);
+  context.font = `800 36px ${FONT_FAMILY}`;
+  context.fillText(labels.scheduleTitle, PAGE_PADDING, 126);
 
   context.fillStyle = palette.muted;
-  context.font = `500 25px ${FONT_FAMILY}`;
-  context.fillText(
-    `${event.dateLabel} · ${event.title}`,
-    PAGE_PADDING,
-    238,
-  );
+  context.font = `500 17px ${FONT_FAMILY}`;
+  context.fillText(`${event.dateLabel} · ${event.title}`, PAGE_PADDING, 158);
   drawBadge(
     context,
     labels.sessionCount,
     PAGE_PADDING,
-    264,
+    176,
+    detailedMetrics,
     palette.brand,
     palette.surfaceMuted,
   );
 
-  let cardY = headerHeight;
-  layouts.forEach((layout) => {
-    drawSessionCard(context, layout, labels, palette, cardY);
-    cardY += layout.height + CARD_GAP;
+  const trackCount = new Set(sortedSessions.map(({ trackId }) => trackId)).size;
+  const showTrack = trackCount > 1;
+  let rowY = headerHeight;
+
+  rows.forEach((row, rowIndex) => {
+    row.forEach((layout, columnIndex) => {
+      const x = PAGE_PADDING + columnIndex * (cardWidth + COLUMN_GAP);
+      drawSessionCard(
+        context,
+        layout,
+        labels,
+        palette,
+        metrics,
+        x,
+        rowY,
+        cardWidth,
+        showTrack,
+      );
+    });
+    rowY += rowHeights[rowIndex] + CARD_GAP;
   });
 
   context.fillStyle = palette.muted;
-  context.font = `600 20px ${FONT_FAMILY}`;
+  context.font = `600 14px ${FONT_FAMILY}`;
   context.textAlign = "center";
   context.fillText(
     "TECHMUJIN · MY SCHEDULE",
     IMAGE_WIDTH / 2,
-    imageHeight - 44,
+    imageHeight - 26,
   );
   context.textAlign = "left";
 
