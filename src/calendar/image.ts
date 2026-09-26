@@ -4,6 +4,8 @@ const IMAGE_WIDTH = 720;
 const PAGE_PADDING = 32;
 const COLUMN_GAP = 14;
 const CARD_GAP = 14;
+const SECTION_HEADER_HEIGHT = 48;
+const SECTION_GAP = 20;
 const COMPACT_LAYOUT_MINIMUM = 9;
 const FONT_FAMILY =
   '-apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", sans-serif';
@@ -15,6 +17,8 @@ type ImageLabels = {
   trackA: string;
   trackB: string;
   allTracks: string;
+  morning: string;
+  afternoon: string;
 };
 
 type CreateScheduleImageOptions = {
@@ -45,6 +49,13 @@ type SessionCardLayout = {
   session: Session;
   titleLines: string[];
   speakerLines: string[];
+  height: number;
+};
+
+type ImageSection = {
+  label: string;
+  rows: SessionCardLayout[][];
+  rowHeights: number[];
   height: number;
 };
 
@@ -213,6 +224,38 @@ function trackLabel(trackId: Session["trackId"], labels: ImageLabels) {
   if (trackId === "track-a") return labels.trackA;
   if (trackId === "track-b") return labels.trackB;
   return labels.allTracks;
+}
+
+function isMorning(session: Session) {
+  return session.startTime < "12:00";
+}
+
+function createSection(
+  label: string,
+  layouts: SessionCardLayout[],
+  columnCount: number,
+): ImageSection | null {
+  if (layouts.length === 0) return null;
+
+  const rows = Array.from(
+    { length: Math.ceil(layouts.length / columnCount) },
+    (_, rowIndex) =>
+      layouts.slice(rowIndex * columnCount, (rowIndex + 1) * columnCount),
+  );
+  const rowHeights = rows.map((row) =>
+    Math.max(...row.map(({ height }) => height)),
+  );
+  const cardsHeight = rowHeights.reduce(
+    (total, height) => total + height,
+    CARD_GAP * Math.max(0, rows.length - 1),
+  );
+
+  return {
+    label,
+    rows,
+    rowHeights,
+    height: SECTION_HEADER_HEIGHT + cardsHeight,
+  };
 }
 
 function createCardLayouts(
@@ -402,19 +445,23 @@ export async function createScheduleImageFile({
     cardWidth,
     metrics,
   );
-  const rows = Array.from(
-    { length: Math.ceil(layouts.length / columnCount) },
-    (_, rowIndex) =>
-      layouts.slice(rowIndex * columnCount, (rowIndex + 1) * columnCount),
+  const sections = [
+    createSection(
+      labels.morning,
+      layouts.filter(({ session }) => isMorning(session)),
+      columnCount,
+    ),
+    createSection(
+      labels.afternoon,
+      layouts.filter(({ session }) => !isMorning(session)),
+      columnCount,
+    ),
+  ].filter((section): section is ImageSection => section !== null);
+  const sectionsHeight = sections.reduce(
+    (total, section) => total + section.height,
+    SECTION_GAP * Math.max(0, sections.length - 1),
   );
-  const rowHeights = rows.map((row) =>
-    Math.max(...row.map(({ height }) => height)),
-  );
-  const cardsHeight = rowHeights.reduce(
-    (total, height) => total + height,
-    CARD_GAP * Math.max(0, rows.length - 1),
-  );
-  const imageHeight = Math.ceil(headerHeight + cardsHeight + footerHeight);
+  const imageHeight = Math.ceil(headerHeight + sectionsHeight + footerHeight);
 
   canvas.height = imageHeight;
   const context = canvas.getContext("2d");
@@ -448,24 +495,41 @@ export async function createScheduleImageFile({
 
   const trackCount = new Set(sortedSessions.map(({ trackId }) => trackId)).size;
   const showTrack = trackCount > 1;
-  let rowY = headerHeight;
+  let sectionY = headerHeight;
 
-  rows.forEach((row, rowIndex) => {
-    row.forEach((layout, columnIndex) => {
-      const x = PAGE_PADDING + columnIndex * (cardWidth + COLUMN_GAP);
-      drawSessionCard(
-        context,
-        layout,
-        labels,
-        palette,
-        metrics,
-        x,
-        rowY,
-        cardWidth,
-        showTrack,
-      );
+  sections.forEach((section, sectionIndex) => {
+    context.fillStyle = palette.text;
+    context.font = `800 22px ${FONT_FAMILY}`;
+    context.fillText(section.label, PAGE_PADDING, sectionY + 29);
+    const labelWidth = context.measureText(section.label).width;
+    context.fillStyle = palette.border;
+    context.fillRect(
+      PAGE_PADDING + labelWidth + 16,
+      sectionY + 20,
+      IMAGE_WIDTH - PAGE_PADDING * 2 - labelWidth - 16,
+      2,
+    );
+
+    let rowY = sectionY + SECTION_HEADER_HEIGHT;
+    section.rows.forEach((row, rowIndex) => {
+      row.forEach((layout, columnIndex) => {
+        const x = PAGE_PADDING + columnIndex * (cardWidth + COLUMN_GAP);
+        drawSessionCard(
+          context,
+          layout,
+          labels,
+          palette,
+          metrics,
+          x,
+          rowY,
+          cardWidth,
+          showTrack,
+        );
+      });
+      rowY += section.rowHeights[rowIndex] + CARD_GAP;
     });
-    rowY += rowHeights[rowIndex] + CARD_GAP;
+    sectionY +=
+      section.height + (sectionIndex < sections.length - 1 ? SECTION_GAP : 0);
   });
 
   context.fillStyle = palette.muted;

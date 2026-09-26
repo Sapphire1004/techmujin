@@ -157,6 +157,8 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
           trackA: t("calendar.trackA"),
           trackB: t("calendar.trackB"),
           allTracks: t("calendar.allTracks"),
+          morning: t("calendar.morning"),
+          afternoon: t("calendar.afternoon"),
         },
       });
       downloadScheduleImageFile(imageFile);
