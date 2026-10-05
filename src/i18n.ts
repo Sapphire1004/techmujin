@@ -71,7 +71,11 @@ const resources = {
       },
       calendar: {
         download: "ICSをダウンロード",
-        noSessions: "セッションを選択するとダウンロードできます。",
+        share: "ICSを共有",
+        sharing: "共有画面を開いています…",
+        shareFallback:
+          "共有できなかったため、ICSファイルをダウンロードしました。",
+        noSessions: "セッションを選択すると利用できます。",
         imageDownload: "画像をダウンロード",
         imageCreating: "画像を作成中…",
         imageError: "画像を作成できませんでした。もう一度お試しください。",
@@ -138,7 +142,10 @@ const resources = {
       },
       calendar: {
         download: "Download ICS",
-        noSessions: "Select a session to download your schedule.",
+        share: "Share ICS",
+        sharing: "Opening share menu…",
+        shareFallback: "Sharing failed, so the ICS file was downloaded.",
+        noSessions: "Select a session to use this feature.",
         imageDownload: "Download image",
         imageCreating: "Creating image…",
         imageError: "The image could not be created. Please try again.",
@@ -205,7 +212,10 @@ const resources = {
       },
       calendar: {
         download: "ICS 다운로드",
-        noSessions: "세션을 선택하면 일정을 다운로드할 수 있습니다.",
+        share: "ICS 공유",
+        sharing: "공유 메뉴 여는 중…",
+        shareFallback: "공유하지 못해 ICS 파일을 다운로드했습니다.",
+        noSessions: "세션을 선택하면 사용할 수 있습니다.",
         imageDownload: "이미지 다운로드",
         imageCreating: "이미지 만드는 중…",
         imageError: "이미지를 만들지 못했습니다. 다시 시도해 주세요.",
