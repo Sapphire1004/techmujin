@@ -86,16 +86,16 @@ const detailedMetrics: LayoutMetrics = {
 };
 
 const compactMetrics: LayoutMetrics = {
-  cardPadding: 18,
-  cardRadius: 16,
-  timeFontSize: 18,
-  trackFontSize: 13,
-  badgeFontSize: 13,
-  badgeHeight: 24,
-  titleFontSize: 22,
-  titleLineHeight: 30,
-  speakerFontSize: 15,
-  speakerLineHeight: 21,
+  cardPadding: 14,
+  cardRadius: 14,
+  timeFontSize: 16,
+  trackFontSize: 12,
+  badgeFontSize: 12,
+  badgeHeight: 22,
+  titleFontSize: 20,
+  titleLineHeight: 27,
+  speakerFontSize: 14,
+  speakerLineHeight: 19,
 };
 
 function safeIdentifier(value: string) {
@@ -424,7 +424,7 @@ export async function createScheduleImageFile({
     .slice()
     .sort((first, second) => first.startsAt.localeCompare(second.startsAt));
   const compact = sortedSessions.length >= COMPACT_LAYOUT_MINIMUM;
-  const columnCount = compact ? 2 : 1;
+  const columnCount = compact ? 3 : 1;
   const metrics = compact ? compactMetrics : detailedMetrics;
   const cardWidth =
     (IMAGE_WIDTH - PAGE_PADDING * 2 - COLUMN_GAP * (columnCount - 1)) /
