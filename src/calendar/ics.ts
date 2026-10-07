@@ -1,6 +1,7 @@
 import type { EventSchedule, Session } from "../types";
 
 export const CALENDAR_MIME_TYPE = "text/calendar;charset=utf-8";
+const CALENDAR_SHARE_MIME_TYPE = "text/calendar";
 
 export type CalendarFile = {
   contents: string;
@@ -162,4 +163,55 @@ export function downloadCalendarFile(calendarFile: CalendarFile) {
   link.remove();
 
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
+}
+
+export function createCalendarShareFile(calendarFile: CalendarFile) {
+  return new File([calendarFile.contents], calendarFile.fileName, {
+    type: CALENDAR_SHARE_MIME_TYPE,
+  });
+}
+
+export function supportsCalendarFileShare() {
+  if (
+    typeof navigator === "undefined" ||
+    typeof File === "undefined" ||
+    navigator.maxTouchPoints <= 0 ||
+    typeof navigator.share !== "function" ||
+    typeof navigator.canShare !== "function"
+  ) {
+    return false;
+  }
+
+  try {
+    const testFile = new File([""], "schedule.ics", {
+      type: CALENDAR_SHARE_MIME_TYPE,
+    });
+    return navigator.canShare({ files: [testFile] });
+  } catch {
+    return false;
+  }
+}
+
+export async function shareCalendarFile(
+  calendarFile: CalendarFile,
+  title: string,
+) {
+  const file = createCalendarShareFile(calendarFile);
+
+  if (
+    typeof navigator.share !== "function" ||
+    typeof navigator.canShare !== "function" ||
+    !navigator.canShare({ files: [file] })
+  ) {
+    throw new Error("Calendar file sharing is not supported");
+  }
+
+  await navigator.share({
+    files: [file],
+    title,
+  });
+}
+
+export function isShareCancellation(error: unknown) {
+  return error instanceof DOMException && error.name === "AbortError";
 }

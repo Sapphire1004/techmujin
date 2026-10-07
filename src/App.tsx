@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
-import { createCalendarFile, downloadCalendarFile } from "./calendar/ics";
+import {
+  createCalendarFile,
+  downloadCalendarFile,
+  isShareCancellation,
+  shareCalendarFile,
+  supportsCalendarFileShare,
+} from "./calendar/ics";
 import {
   createScheduleImageFile,
   downloadScheduleImageFile,
@@ -38,6 +44,10 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
   >("idle");
+  const [calendarExportStatus, setCalendarExportStatus] = useState<
+    "idle" | "sharing" | "fallback"
+  >("idle");
+  const [canShareCalendarFile] = useState(supportsCalendarFileShare);
   const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
@@ -126,15 +136,36 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
     void i18n.changeLanguage(language);
   };
 
-  const downloadSelectedSessions = () => {
-    if (selectedSessions.length === 0) return;
+  const exportSelectedSessionsCalendar = async () => {
+    if (selectedSessions.length === 0 || calendarExportStatus === "sharing") {
+      return;
+    }
 
-    downloadCalendarFile(
-      createCalendarFile({
-        event: eventSchedule,
-        sessions: selectedSessions,
-      }),
-    );
+    const calendarFile = createCalendarFile({
+      event: eventSchedule,
+      sessions: selectedSessions,
+    });
+
+    if (!canShareCalendarFile) {
+      downloadCalendarFile(calendarFile);
+      return;
+    }
+
+    setCalendarExportStatus("sharing");
+
+    try {
+      await shareCalendarFile(calendarFile, eventSchedule.title);
+      setCalendarExportStatus("idle");
+    } catch (error) {
+      if (isShareCancellation(error)) {
+        setCalendarExportStatus("idle");
+        return;
+      }
+
+      console.error("Failed to share calendar file", error);
+      downloadCalendarFile(calendarFile);
+      setCalendarExportStatus("fallback");
+    }
   };
 
   const downloadSelectedSessionsImage = async () => {
@@ -258,15 +289,22 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                       variant="brandSolid"
                       size="small"
                       type="button"
-                      disabled={selectedSessions.length === 0}
+                      disabled={
+                        selectedSessions.length === 0 ||
+                        calendarExportStatus === "sharing"
+                      }
                       title={
                         selectedSessions.length === 0
                           ? t("calendar.noSessions")
                           : undefined
                       }
-                      onClick={downloadSelectedSessions}
+                      onClick={() => void exportSelectedSessionsCalendar()}
                     >
-                      {t("calendar.download")}
+                      {calendarExportStatus === "sharing"
+                        ? t("calendar.sharing")
+                        : canShareCalendarFile
+                          ? t("calendar.share")
+                          : t("calendar.download")}
                     </ActionButton>
                     <ActionButton
                       variant="brandOutline"
@@ -291,6 +329,11 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                   {imageExportStatus === "error" && (
                     <p className="schedule-export__error" role="alert">
                       {t("calendar.imageError")}
+                    </p>
+                  )}
+                  {calendarExportStatus === "fallback" && (
+                    <p className="schedule-export__notice" role="status">
+                      {t("calendar.shareFallback")}
                     </p>
                   )}
                 </div>
