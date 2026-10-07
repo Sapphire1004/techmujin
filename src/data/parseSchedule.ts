@@ -121,12 +121,19 @@ export function parseSchedule(value: unknown): ScheduleData {
 
   return {
     eventSchedule: {
+      id: timetable.event.id,
+      title: timetable.event.title,
       dateLabel: timetable.event.date,
       startTime: readTime(firstSession.startsAt),
       endTime: readTime(lastSession.endsAt),
+      timezone: timetable.event.timezone,
+      venue: timetable.event.venue,
+      url: timetable.event.url,
     },
     sessions: timetable.sessions.map((session) => ({
       id: session.id,
+      startsAt: session.startsAt,
+      endsAt: session.endsAt,
       startTime: readTime(session.startsAt),
       endTime: readTime(session.endsAt),
       title: session.title,

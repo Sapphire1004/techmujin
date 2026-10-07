@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
+import { createCalendarFile, downloadCalendarFile } from "./calendar/ics";
+import {
+  createScheduleImageFile,
+  downloadScheduleImageFile,
+} from "./calendar/image";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
 import {
@@ -30,6 +35,9 @@ function sessionsOverlap(first: Session, second: Session) {
 function Timetable({ schedule }: { schedule: ScheduleData }) {
   const { t, i18n } = useTranslation();
   const [showSavedOnly, setShowSavedOnly] = useState(false);
+  const [imageExportStatus, setImageExportStatus] = useState<
+    "idle" | "creating" | "error"
+  >("idle");
   const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
@@ -118,6 +126,49 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
     void i18n.changeLanguage(language);
   };
 
+  const downloadSelectedSessions = () => {
+    if (selectedSessions.length === 0) return;
+
+    downloadCalendarFile(
+      createCalendarFile({
+        event: eventSchedule,
+        sessions: selectedSessions,
+      }),
+    );
+  };
+
+  const downloadSelectedSessionsImage = async () => {
+    if (selectedSessions.length === 0 || imageExportStatus === "creating") {
+      return;
+    }
+
+    setImageExportStatus("creating");
+
+    try {
+      const imageFile = await createScheduleImageFile({
+        event: eventSchedule,
+        sessions: selectedSessions,
+        labels: {
+          scheduleTitle: t("schedule.mySchedule"),
+          sessionCount: t("calendar.imageSessionCount", {
+            count: selectedSessions.length,
+          }),
+          speaker: t("calendar.imageSpeaker"),
+          trackA: t("calendar.trackA"),
+          trackB: t("calendar.trackB"),
+          allTracks: t("calendar.allTracks"),
+          morning: t("calendar.morning"),
+          afternoon: t("calendar.afternoon"),
+        },
+      });
+      downloadScheduleImageFile(imageFile);
+      setImageExportStatus("idle");
+    } catch (error) {
+      console.error("Failed to create schedule image", error);
+      setImageExportStatus("error");
+    }
+  };
+
   return (
     <div className="app-shell">
       <header className="masthead">
@@ -175,11 +226,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
           {t("filters.mySchedule", { count: selectedSessions.length })}
         </ActionButton>
 
-        <details className="schedule-guide">
-          <summary>{t("guide.title")}</summary>
-          <p>{t("guide.body")}</p>
-        </details>
-
         {storageStatus === "unavailable" && (
           <p className="storage-warning" role="status">
             {t("storage.unavailable")}
@@ -193,17 +239,63 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                 {t("schedule.title")}
               </Text>
             </div>
-            <Text
-              as="p"
-              aria-live="polite"
-              color="fg.neutralMuted"
-              textStyle="t3Regular"
-            >
-              {t("schedule.stats", {
-                visible: visibleSessionCount,
-                saved: selectedSessions.length,
-              })}
-            </Text>
+            <div className="schedule-heading__summary">
+              <Text
+                as="p"
+                aria-live="polite"
+                color="fg.neutralMuted"
+                textStyle="t3Regular"
+              >
+                {t("schedule.stats", {
+                  visible: visibleSessionCount,
+                  saved: selectedSessions.length,
+                })}
+              </Text>
+              {showSavedOnly && (
+                <div className="schedule-export">
+                  <div className="schedule-export__actions">
+                    <ActionButton
+                      variant="brandSolid"
+                      size="small"
+                      type="button"
+                      disabled={selectedSessions.length === 0}
+                      title={
+                        selectedSessions.length === 0
+                          ? t("calendar.noSessions")
+                          : undefined
+                      }
+                      onClick={downloadSelectedSessions}
+                    >
+                      {t("calendar.download")}
+                    </ActionButton>
+                    <ActionButton
+                      variant="brandOutline"
+                      size="small"
+                      type="button"
+                      disabled={
+                        selectedSessions.length === 0 ||
+                        imageExportStatus === "creating"
+                      }
+                      title={
+                        selectedSessions.length === 0
+                          ? t("calendar.noSessions")
+                          : undefined
+                      }
+                      onClick={() => void downloadSelectedSessionsImage()}
+                    >
+                      {imageExportStatus === "creating"
+                        ? t("calendar.imageCreating")
+                        : t("calendar.imageDownload")}
+                    </ActionButton>
+                  </div>
+                  {imageExportStatus === "error" && (
+                    <p className="schedule-export__error" role="alert">
+                      {t("calendar.imageError")}
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
 
           {visibleSessions.length > 0 ? (
@@ -431,9 +523,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
         </section>
       </main>
 
-      <footer className="footer-line">
-        <p>{t("footer")}</p>
-      </footer>
     </div>
   );
 }
