@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import {
   createCalendarFile,
   downloadCalendarFile,
-  isAppleMobileDevice,
+  isAppleMobileSafari,
   isShareCancellation,
   openCalendarFileForImport,
   shareCalendarFile,
@@ -50,7 +50,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
     "idle" | "sharing" | "fallback"
   >("idle");
   const [canShareCalendarFile] = useState(supportsCalendarFileShare);
-  const [canOpenAppleCalendar] = useState(isAppleMobileDevice);
+  const [canOpenAppleCalendar] = useState(isAppleMobileSafari);
   const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
