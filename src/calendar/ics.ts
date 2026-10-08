@@ -9,6 +9,11 @@ export type CalendarFile = {
   mimeType: typeof CALENDAR_MIME_TYPE;
 };
 
+type AppleDeviceInfo = Pick<
+  Navigator,
+  "maxTouchPoints" | "platform" | "userAgent"
+>;
+
 type CreateCalendarFileOptions = {
   event: EventSchedule;
   sessions: Session[];
@@ -163,6 +168,35 @@ export function downloadCalendarFile(calendarFile: CalendarFile) {
   link.remove();
 
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 1_000);
+}
+
+export function isAppleMobileDevice(deviceInfo?: AppleDeviceInfo) {
+  const device =
+    deviceInfo ?? (typeof navigator === "undefined" ? null : navigator);
+
+  if (!device) return false;
+
+  const isClassicAppleMobile = /iPad|iPhone|iPod/.test(device.userAgent);
+  const isIPadWithDesktopUserAgent =
+    device.platform === "MacIntel" && device.maxTouchPoints > 1;
+
+  return isClassicAppleMobile || isIPadWithDesktopUserAgent;
+}
+
+export function openCalendarFileForImport(calendarFile: CalendarFile) {
+  const file = createCalendarShareFile(calendarFile);
+  const objectUrl = URL.createObjectURL(file);
+  const link = document.createElement("a");
+
+  link.href = objectUrl;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.hidden = true;
+  document.body.append(link);
+  link.click();
+  link.remove();
+
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 60_000);
 }
 
 export function createCalendarShareFile(calendarFile: CalendarFile) {
