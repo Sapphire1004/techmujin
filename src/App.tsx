@@ -4,7 +4,9 @@ import { useTranslation } from "react-i18next";
 import {
   createCalendarFile,
   downloadCalendarFile,
+  isAppleMobileDevice,
   isShareCancellation,
+  openCalendarFileForImport,
   shareCalendarFile,
   supportsCalendarFileShare,
 } from "./calendar/ics";
@@ -48,6 +50,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
     "idle" | "sharing" | "fallback"
   >("idle");
   const [canShareCalendarFile] = useState(supportsCalendarFileShare);
+  const [canOpenAppleCalendar] = useState(isAppleMobileDevice);
   const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
@@ -168,6 +171,17 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
     }
   };
 
+  const openSelectedSessionsInAppleCalendar = () => {
+    if (selectedSessions.length === 0) return;
+
+    openCalendarFileForImport(
+      createCalendarFile({
+        event: eventSchedule,
+        sessions: selectedSessions,
+      }),
+    );
+  };
+
   const downloadSelectedSessionsImage = async () => {
     if (selectedSessions.length === 0 || imageExportStatus === "creating") {
       return;
@@ -285,8 +299,26 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
               {showSavedOnly && (
                 <div className="schedule-export">
                   <div className="schedule-export__actions">
+                    {canOpenAppleCalendar && (
+                      <ActionButton
+                        variant="brandSolid"
+                        size="small"
+                        type="button"
+                        disabled={selectedSessions.length === 0}
+                        title={
+                          selectedSessions.length === 0
+                            ? t("calendar.noSessions")
+                            : undefined
+                        }
+                        onClick={openSelectedSessionsInAppleCalendar}
+                      >
+                        {t("calendar.openApple")}
+                      </ActionButton>
+                    )}
                     <ActionButton
-                      variant="brandSolid"
+                      variant={
+                        canOpenAppleCalendar ? "brandOutline" : "brandSolid"
+                      }
                       size="small"
                       type="button"
                       disabled={

@@ -71,6 +71,7 @@ const resources = {
       },
       calendar: {
         download: "ICSをダウンロード",
+        openApple: "Appleカレンダーに追加",
         share: "ICSを共有",
         sharing: "共有画面を開いています…",
         shareFallback:
@@ -142,6 +143,7 @@ const resources = {
       },
       calendar: {
         download: "Download ICS",
+        openApple: "Add to Apple Calendar",
         share: "Share ICS",
         sharing: "Opening share menu…",
         shareFallback: "Sharing failed, so the ICS file was downloaded.",
@@ -212,6 +214,7 @@ const resources = {
       },
       calendar: {
         download: "ICS 다운로드",
+        openApple: "Apple 캘린더에 추가",
         share: "ICS 공유",
         sharing: "공유 메뉴 여는 중…",
         shareFallback: "공유하지 못해 ICS 파일을 다운로드했습니다.",
