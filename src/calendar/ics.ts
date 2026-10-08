@@ -183,6 +183,20 @@ export function isAppleMobileDevice(deviceInfo?: AppleDeviceInfo) {
   return isClassicAppleMobile || isIPadWithDesktopUserAgent;
 }
 
+export function isAppleMobileSafari(deviceInfo?: AppleDeviceInfo) {
+  const device =
+    deviceInfo ?? (typeof navigator === "undefined" ? null : navigator);
+
+  if (!device || !isAppleMobileDevice(device)) return false;
+
+  const userAgent = device.userAgent;
+  const isSafari = /Version\/[\d.]+.*Safari\//.test(userAgent);
+  const isOtherIosBrowser =
+    /CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo|Ddg\/|GSA\//.test(userAgent);
+
+  return isSafari && !isOtherIosBrowser;
+}
+
 export function openCalendarFileForImport(calendarFile: CalendarFile) {
   const file = createCalendarShareFile(calendarFile);
   const objectUrl = URL.createObjectURL(file);
