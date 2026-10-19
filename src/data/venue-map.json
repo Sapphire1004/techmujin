@@ -1,0 +1,91 @@
+{
+  "venue": {
+    "name": "山梨大学 甲府キャンパス 共創環境棟 治ホール",
+    "address": "〒400-8510 山梨県甲府市武田4-4-37",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E6%A2%A8%E5%A4%A7%E5%AD%A6%20%E7%94%B2%E5%BA%9C%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%91%E3%82%B9%20%E5%85%B1%E5%89%B5%E7%92%B0%E5%A2%83%E6%A3%9F"
+  },
+  "openHours": "9:30–16:30",
+  "layoutStatus": "zone-overview",
+  "zones": [
+    {
+      "id": "stage",
+      "name": "ステージエリア",
+      "location": "ホール前方",
+      "description": "コミュニティ紹介・LT・テック無尽ラジオなど、発表コンテンツが進行します。",
+      "tone": "stage",
+      "x": 8,
+      "y": 7,
+      "width": 84,
+      "height": 34
+    },
+    {
+      "id": "booth",
+      "name": "ブースエリア",
+      "location": "ホール内後方",
+      "description": "コミュニティ・協賛企業の展示ブースが並びます。終日開設しています。",
+      "tone": "booth",
+      "x": 8,
+      "y": 47,
+      "width": 84,
+      "height": 32
+    },
+    {
+      "id": "communication",
+      "name": "コミュニケーションスペース",
+      "location": "ホール外",
+      "description": "座って話せる、終日開放のスペースです。発表の途中でも利用できます。",
+      "tone": "communication",
+      "x": 8,
+      "y": 85,
+      "width": 84,
+      "height": 11
+    }
+  ],
+  "booths": [
+    {
+      "id": "shingen-py",
+      "number": null,
+      "name": "Shingen.py",
+      "exhibitor": "Shingen.py",
+      "description": "Pythonの入門から実務利用までを扱うコミュニティです。",
+      "zoneId": "booth",
+      "url": "https://shingenpy.connpass.com/"
+    },
+    {
+      "id": "kintone-cafe-yamanashi",
+      "number": null,
+      "name": "kintone Café 山梨",
+      "exhibitor": "kintone Café 山梨",
+      "description": "kintoneを使った業務改善の事例やノウハウを共有するコミュニティです。",
+      "zoneId": "booth",
+      "url": "https://kintonecafe-yamanashi.qloba.com/"
+    },
+    {
+      "id": "soracom-ug-yamanashi",
+      "number": null,
+      "name": "SORACOM UG 山梨",
+      "exhibitor": "SORACOM UG 山梨",
+      "description": "IoTプラットフォームSORACOMのユーザーグループです。",
+      "zoneId": "booth",
+      "url": "https://soracom.jp/"
+    },
+    {
+      "id": "scratch-day-yamanashi",
+      "number": null,
+      "name": "スクラッチディ in 山梨",
+      "exhibitor": "スクラッチディ in 山梨",
+      "description": "子ども向けのScratchプログラミングイベントです。",
+      "zoneId": "booth",
+      "url": "https://scratch.itolab.com/"
+    },
+    {
+      "id": "kainokuni-mokumokukai",
+      "number": null,
+      "name": "甲斐国もくもく会",
+      "exhibitor": "甲斐国もくもく会",
+      "description": "各自が作業や学習を持ち寄るもくもく会です。",
+      "zoneId": "booth",
+      "url": "https://kainokuni.org/"
+    }
+  ]
+}

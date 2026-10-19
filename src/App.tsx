@@ -14,6 +14,7 @@ import {
   createScheduleImageFile,
   downloadScheduleImageFile,
 } from "./calendar/image";
+import { VenueGuide } from "./components/VenueGuide";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
 import {
@@ -42,6 +43,7 @@ function sessionsOverlap(first: Session, second: Session) {
 
 function Timetable({ schedule }: { schedule: ScheduleData }) {
   const { t, i18n } = useTranslation();
+  const [activeView, setActiveView] = useState<"program" | "venue">("program");
   const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
@@ -128,11 +130,16 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
-    document.title = t("meta.title");
+    document.title = t(
+      activeView === "venue" ? "venue.metaTitle" : "meta.title",
+    );
     document
       .querySelector('meta[name="description"]')
-      ?.setAttribute("content", t("meta.description"));
-  }, [currentLanguage, t]);
+      ?.setAttribute(
+        "content",
+        t(activeView === "venue" ? "venue.metaDescription" : "meta.description"),
+      );
+  }, [activeView, currentLanguage, t]);
 
   const changeLanguage = (language: SupportedLanguage) => {
     saveLanguage(language);
@@ -246,7 +253,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
           </div>
         </div>
         <Text as="h1" textStyle="screenTitle">
-          {t("hero.title")}
+          {t(activeView === "venue" ? "venue.heroTitle" : "hero.title")}
         </Text>
         <Text
           as="p"
@@ -254,30 +261,56 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
           color="fg.neutralMuted"
           textStyle="t4Regular"
         >
-          {t("hero.note")}
+          {t(activeView === "venue" ? "venue.heroNote" : "hero.note")}
         </Text>
         <div className="masthead__rule" aria-hidden="true" />
       </header>
 
       <main>
-        <ActionButton
-          className="saved-filter"
-          variant={showSavedOnly ? "brandSolid" : "brandOutline"}
-          size="small"
-          type="button"
-          aria-pressed={showSavedOnly}
-          onClick={() => setShowSavedOnly((current) => !current)}
+        <nav className="app-navigation" aria-label={t("navigation.label")}>
+          <button
+            className="app-navigation__button"
+            data-active={activeView === "program"}
+            type="button"
+            aria-pressed={activeView === "program"}
+            onClick={() => setActiveView("program")}
+          >
+            {t("navigation.program")}
+          </button>
+          <button
+            className="app-navigation__button"
+            data-active={activeView === "venue"}
+            type="button"
+            aria-pressed={activeView === "venue"}
+            onClick={() => setActiveView("venue")}
+          >
+            {t("navigation.venue")}
+          </button>
+        </nav>
+
+        <div
+          id="program-panel"
+          className="app-panel"
+          hidden={activeView !== "program"}
         >
-          {t("filters.mySchedule", { count: selectedSessions.length })}
-        </ActionButton>
+          <ActionButton
+            className="saved-filter"
+            variant={showSavedOnly ? "brandSolid" : "brandOutline"}
+            size="small"
+            type="button"
+            aria-pressed={showSavedOnly}
+            onClick={() => setShowSavedOnly((current) => !current)}
+          >
+            {t("filters.mySchedule", { count: selectedSessions.length })}
+          </ActionButton>
 
-        {storageStatus === "unavailable" && (
-          <p className="storage-warning" role="status">
-            {t("storage.unavailable")}
-          </p>
-        )}
+          {storageStatus === "unavailable" && (
+            <p className="storage-warning" role="status">
+              {t("storage.unavailable")}
+            </p>
+          )}
 
-        <section className="schedule" aria-labelledby="schedule-heading">
+          <section className="schedule" aria-labelledby="schedule-heading">
           <div className="schedule-heading">
             <div>
               <Text as="h2" id="schedule-heading" textStyle="t8Bold">
@@ -626,7 +659,16 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
               </ActionButton>
             </div>
           )}
-        </section>
+          </section>
+        </div>
+
+        <div
+          id="venue-panel"
+          className="app-panel"
+          hidden={activeView !== "venue"}
+        >
+          <VenueGuide />
+        </div>
       </main>
 
     </div>
