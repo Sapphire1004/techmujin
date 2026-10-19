@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type CSSProperties } from "react";
-import { ActionButton, Badge, Text } from "@seed-design/react";
+import { ActionButton, Badge, PageBanner, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import {
   createCalendarFile,
@@ -285,24 +285,25 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
               </Text>
             </div>
             <div className="schedule-heading__summary">
-              <Text
-                as="p"
+              <Badge
                 aria-live="polite"
-                color="fg.neutralMuted"
-                textStyle="t3Regular"
+                size="large"
+                tone="neutral"
+                variant="weak"
               >
                 {t("schedule.stats", {
                   visible: visibleSessionCount,
                   saved: selectedSessions.length,
                 })}
-              </Text>
+              </Badge>
               {showSavedOnly && (
                 <div className="schedule-export">
                   <div className="schedule-export__actions">
                     {canOpenAppleCalendar && (
                       <ActionButton
+                        className="schedule-export__button"
                         variant="brandSolid"
-                        size="small"
+                        size="medium"
                         type="button"
                         disabled={selectedSessions.length === 0}
                         title={
@@ -316,11 +317,13 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                       </ActionButton>
                     )}
                     <ActionButton
+                      className="schedule-export__button"
                       variant={
                         canOpenAppleCalendar ? "brandOutline" : "brandSolid"
                       }
-                      size="small"
+                      size="medium"
                       type="button"
+                      loading={calendarExportStatus === "sharing"}
                       disabled={
                         selectedSessions.length === 0 ||
                         calendarExportStatus === "sharing"
@@ -339,9 +342,11 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                           : t("calendar.download")}
                     </ActionButton>
                     <ActionButton
+                      className="schedule-export__button"
                       variant="brandOutline"
-                      size="small"
+                      size="medium"
                       type="button"
+                      loading={imageExportStatus === "creating"}
                       disabled={
                         selectedSessions.length === 0 ||
                         imageExportStatus === "creating"
@@ -359,14 +364,36 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                     </ActionButton>
                   </div>
                   {imageExportStatus === "error" && (
-                    <p className="schedule-export__error" role="alert">
-                      {t("calendar.imageError")}
-                    </p>
+                    <PageBanner.Root
+                      className="schedule-export__feedback"
+                      role="alert"
+                      tone="critical"
+                      variant="weak"
+                    >
+                      <PageBanner.Content>
+                        <PageBanner.Body>
+                          <PageBanner.Description>
+                            {t("calendar.imageError")}
+                          </PageBanner.Description>
+                        </PageBanner.Body>
+                      </PageBanner.Content>
+                    </PageBanner.Root>
                   )}
                   {calendarExportStatus === "fallback" && (
-                    <p className="schedule-export__notice" role="status">
-                      {t("calendar.shareFallback")}
-                    </p>
+                    <PageBanner.Root
+                      className="schedule-export__feedback"
+                      role="status"
+                      tone="informative"
+                      variant="weak"
+                    >
+                      <PageBanner.Content>
+                        <PageBanner.Body>
+                          <PageBanner.Description>
+                            {t("calendar.shareFallback")}
+                          </PageBanner.Description>
+                        </PageBanner.Body>
+                      </PageBanner.Content>
+                    </PageBanner.Root>
                   )}
                 </div>
               )}

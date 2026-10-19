@@ -1,26 +1,42 @@
 /*
- * 현재는 SEED Design의 당근 기본 컬러 토큰을 그대로 사용합니다.
- * 브랜드 색상이 확정되면 `TODO(TECHMUJIN-COLOR)` 항목만 교체하면 됩니다.
+ * TechMujin 공식 사이트의 보라·파랑 계열을 앱용 브랜드 토큰으로 연결합니다.
+ * 브랜드 색상 변경은 이 파일의 토큰만 수정합니다.
  */
 :root,
 :root[data-seed-color-mode="light-only"] {
-  /* TODO(TECHMUJIN-COLOR): 행사 배경과 카드 표면 색상 */
-  --tm-color-background: var(--seed-color-bg-layer-default);
-  --tm-color-surface: var(--seed-color-bg-layer-floating);
-  --tm-color-surface-muted: var(--seed-color-bg-neutral-weak);
-
-  /* TODO(TECHMUJIN-COLOR): 본문·보조 문구·경계선 색상 */
-  --tm-color-text: var(--seed-color-fg-neutral);
-  --tm-color-text-strong: var(--seed-color-fg-neutral);
-  --tm-color-text-muted: var(--seed-color-fg-neutral-muted);
-  --tm-color-border: var(--seed-color-stroke-neutral-weak);
-
-  /* TODO(TECHMUJIN-COLOR): 테크무진 브랜드가 정해지면 가장 먼저 교체할 색상 */
-  --tm-color-brand: var(--seed-color-bg-brand-solid);
-  --tm-color-brand-pressed: var(--seed-color-bg-brand-solid-pressed);
-  --tm-color-brand-weak: var(--seed-color-bg-brand-weak);
-
-  /* TODO(TECHMUJIN-COLOR): 접근성 포커스와 오류 상태 색상 */
-  --tm-color-focus: var(--seed-color-stroke-focus-ring);
+  --tm-color-background: #ffffff;
+  --tm-color-surface: #ffffff;
+  --tm-color-surface-muted: #f7f6fb;
+  --tm-color-surface-secondary: #f4f8fd;
+  --tm-color-text: #211d33;
+  --tm-color-text-strong: #211d33;
+  --tm-color-text-muted: #75708a;
+  --tm-color-border: rgba(33, 29, 51, 0.1);
+  --tm-color-brand: #6b3fb5;
+  --tm-color-brand-pressed: #583397;
+  --tm-color-brand-weak: #f0eafa;
+  --tm-color-brand-secondary: #2f7ecd;
+  --tm-color-brand-secondary-strong: #2b73bd;
+  --tm-color-on-brand: #ffffff;
+  --tm-color-brand-gradient: linear-gradient(
+    95deg,
+    #6b3fb5 0%,
+    var(--tm-color-brand-secondary-strong) 100%
+  );
+  --tm-color-brand-shadow: rgba(107, 63, 181, 0.8);
+  --tm-color-focus: #6b3fb5;
   --tm-color-critical: var(--seed-color-fg-critical);
+
+  --seed-color-bg-layer-basement: #f7f6fb;
+  --seed-color-bg-layer-default: #ffffff;
+  --seed-color-bg-layer-floating: #ffffff;
+  --seed-color-bg-neutral-weak: #f7f6fb;
+  --seed-color-bg-brand-solid: #6b3fb5;
+  --seed-color-bg-brand-solid-pressed: #583397;
+  --seed-color-bg-brand-weak: #f0eafa;
+  --seed-color-bg-brand-weak-pressed: #e6dcf6;
+  --seed-color-fg-brand: #6b3fb5;
+  --seed-color-fg-brand-contrast: #583397;
+  --seed-color-stroke-brand-weak: #bda9dd;
+  --seed-color-stroke-focus-ring: #6b3fb5;
 }

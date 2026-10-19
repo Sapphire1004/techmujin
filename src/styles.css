@@ -280,9 +280,6 @@ main {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
-}
-
-.schedule-heading__summary p {
   font-variant-numeric: tabular-nums;
 }
 
@@ -292,21 +289,17 @@ main {
 }
 
 .schedule-export__actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
   gap: var(--space-xs);
 }
 
-.schedule-export__error {
-  color: var(--color-error);
-  font-size: var(--text-sm);
-  font-weight: 700;
+.schedule-export__button {
+  width: 100%;
+  white-space: nowrap;
 }
 
-.schedule-export__notice {
-  margin: 0;
-  color: var(--color-muted);
-  font-size: var(--text-sm);
+.schedule-export__feedback {
+  max-width: 32rem;
 }
 
 .timetable-scroll {
@@ -644,11 +637,13 @@ button[data-state="error"] {
   }
 
   .schedule-export__actions {
+    display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
   }
 
-  .schedule-heading__summary > p {
-    text-align: end;
+  .schedule-export__button {
+    width: auto;
   }
 
 }
@@ -676,4 +671,52 @@ button[data-state="error"] {
     scroll-behavior: auto !important;
     transition-duration: var(--dur-micro) !important;
   }
+}
+
+.saved-filter:not(:disabled) {
+  border-color: transparent;
+  background: var(--tm-color-brand-gradient);
+  color: var(--tm-color-on-brand);
+}
+
+.saved-filter {
+  box-shadow: 0 12px 28px -14px var(--tm-color-brand-shadow);
+}
+
+.seed-action-button--variant_brandOutline {
+  --track-color: color-mix(
+    in srgb,
+    var(--tm-color-brand) 30%,
+    transparent
+  );
+  --range-color: var(--tm-color-brand);
+}
+
+.time-range {
+  border-inline-end-color: var(--tm-color-brand);
+  color: var(--tm-color-brand-pressed);
+}
+
+.time-corner,
+.track-heading {
+  border-bottom-color: var(--tm-color-brand-pressed);
+  background: var(--tm-color-brand);
+  color: var(--tm-color-on-brand);
+}
+
+.track-heading {
+  border-inline-start-color: color-mix(
+    in srgb,
+    var(--tm-color-on-brand) 24%,
+    transparent
+  );
+}
+
+.track-heading strong,
+.track-heading span {
+  color: inherit;
+}
+
+.track-heading > span {
+  opacity: 0.76;
 }
