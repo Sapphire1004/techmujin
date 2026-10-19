@@ -579,6 +579,10 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                                   className="session-block__avatar"
                                   src={session.speakerImage}
                                   alt=""
+                                  width={24}
+                                  height={24}
+                                  loading="lazy"
+                                  decoding="async"
                                 />
                               ) : (
                                 <span
@@ -636,10 +640,16 @@ function App() {
   if (timetable.status === "loading") {
     return (
       <div className="app-shell app-shell--status">
-        <div className="load-state" role="status">
+        <div className="load-state" role="status" aria-live="polite">
           <Text as="p" color="fg.neutralMuted" textStyle="t4Regular">
             {t("api.loading")}
           </Text>
+          <div className="load-state__skeleton" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+            <span />
+          </div>
         </div>
       </div>
     );
