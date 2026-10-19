@@ -6,16 +6,6 @@ import App from "./App";
 import "./theme.css";
 import "./styles.css";
 
-const previewTheme = new URLSearchParams(window.location.search).get("theme");
-
-if (
-  previewTheme === "neutral" ||
-  previewTheme === "violet" ||
-  previewTheme === "gradient"
-) {
-  document.documentElement.dataset.previewTheme = previewTheme;
-}
-
 const root = document.getElementById("root");
 
 if (!root) {
