@@ -1,36 +1,67 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
-import { venueGuideResult, type VenueZone } from "../data/venue";
+import {
+  venueGuideResult,
+  type VenueFeature,
+  type VenuePlan,
+} from "../data/venue";
 
 const ZOOM_LEVELS = [1, 1.25, 1.5] as const;
 
-function zoneStyle(zone: VenueZone) {
+function rectangleStyle(
+  rectangle: Pick<VenueFeature, "x" | "y" | "width" | "height">,
+) {
   return {
-    "--zone-x": `${zone.x}%`,
-    "--zone-y": `${zone.y}%`,
-    "--zone-width": `${zone.width}%`,
-    "--zone-height": `${zone.height}%`,
+    "--map-x": `${rectangle.x}%`,
+    "--map-y": `${rectangle.y}%`,
+    "--map-width": `${rectangle.width}%`,
+    "--map-height": `${rectangle.height}%`,
   } as CSSProperties;
+}
+
+function getOrientationEntries(plan: VenuePlan) {
+  return Object.entries(plan.orientation).filter(
+    (entry): entry is [keyof VenuePlan["orientation"], string] =>
+      entry[1] !== null,
+  );
 }
 
 export function VenueGuide() {
   const { t } = useTranslation();
   const venueGuide = venueGuideResult.success ? venueGuideResult.data : null;
-  const [selectedZoneId, setSelectedZoneId] = useState(
-    venueGuide?.zones[0]?.id ?? "",
+  const [activePlanId, setActivePlanId] = useState(
+    venueGuide?.plans[0]?.id ?? "",
   );
+  const [selectedFeatureId, setSelectedFeatureId] = useState<string | null>(null);
   const [zoomIndex, setZoomIndex] = useState(0);
   const zoom = ZOOM_LEVELS[zoomIndex];
 
-  const selectedZone = useMemo(
+  const activePlan = useMemo(
     () =>
-      venueGuide?.zones.find(({ id }) => id === selectedZoneId) ??
-      venueGuide?.zones[0],
-    [selectedZoneId, venueGuide],
+      venueGuide?.plans.find(({ id }) => id === activePlanId) ??
+      venueGuide?.plans[0],
+    [activePlanId, venueGuide],
   );
 
-  if (!venueGuide) {
+  const selectedFeature = useMemo(
+    () =>
+      activePlan?.features.find(({ id }) => id === selectedFeatureId) ?? null,
+    [activePlan, selectedFeatureId],
+  );
+
+  const selectedBooth = useMemo(
+    () =>
+      selectedFeature?.boothNumber
+        ? venueGuide?.booths.find(
+            ({ number, planId }) =>
+              number === selectedFeature.boothNumber && planId === activePlan?.id,
+          )
+        : null,
+    [activePlan?.id, selectedFeature?.boothNumber, venueGuide],
+  );
+
+  if (!venueGuide || !activePlan) {
     return (
       <section className="venue-state" role="alert">
         <Text as="h2" textStyle="t7Bold">
@@ -49,6 +80,15 @@ export function VenueGuide() {
     );
   }
 
+  const landmarks = activePlan.features.filter(({ kind }) => kind !== "booth");
+  const boothSlots = activePlan.features.filter(({ kind }) => kind === "booth");
+
+  const selectPlan = (planId: string) => {
+    setActivePlanId(planId);
+    setSelectedFeatureId(null);
+    setZoomIndex(0);
+  };
+
   return (
     <section className="venue-guide" aria-labelledby="venue-guide-heading">
       <header className="venue-guide__heading">
@@ -66,7 +106,7 @@ export function VenueGuide() {
           </Text>
         </div>
         <Badge size="large" tone="neutral" variant="weak">
-          {t("venue.zoneOverview")}
+          {t("venue.layoutReady")}
         </Badge>
       </header>
 
@@ -95,15 +135,34 @@ export function VenueGuide() {
         {t("venue.layoutNotice")}
       </p>
 
+      <div className="venue-plan-switcher">
+        <span>{t("venue.planSelector")}</span>
+        <div className="venue-plan-switch" role="group" aria-label={t("venue.planSelector")}>
+          {venueGuide.plans.map((plan) => (
+            <button
+              type="button"
+              key={plan.id}
+              aria-pressed={activePlan.id === plan.id}
+              data-active={activePlan.id === plan.id}
+              onClick={() => selectPlan(plan.id)}
+            >
+              {plan.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="venue-layout">
         <div className="venue-map-card">
           <div className="venue-map-card__heading">
             <div>
               <Text as="h3" textStyle="t6Bold">
-                {t("venue.mapTitle")}
+                {t("venue.mapTitle", { name: activePlan.name })}
               </Text>
               <Text as="p" color="fg.neutralMuted" textStyle="t3Regular">
-                {t("venue.mapHelp")}
+                {boothSlots.length > 0
+                  ? t("venue.mapHelp")
+                  : activePlan.summary}
               </Text>
             </div>
             <div
@@ -146,66 +205,121 @@ export function VenueGuide() {
           <div
             className="venue-map-scroll"
             role="region"
-            aria-label={t("venue.mapRegion")}
+            aria-label={t("venue.mapRegion", { name: activePlan.name })}
             tabIndex={0}
           >
             <div
               className="venue-map"
+              data-plan={activePlan.id}
               style={{
                 width: `${zoom * 100}%`,
-                minWidth: `${36 * zoom}rem`,
+                minWidth: `${40 * zoom}rem`,
+                aspectRatio: activePlan.aspectRatio,
               }}
             >
-              <span className="venue-map__front" aria-hidden="true">
-                {t("venue.front")}
-              </span>
-              {venueGuide.zones.map((zone) => (
-                <button
-                  className="venue-zone"
-                  data-active={selectedZoneId === zone.id}
-                  data-tone={zone.tone}
-                  type="button"
-                  key={zone.id}
-                  aria-pressed={selectedZoneId === zone.id}
-                  style={zoneStyle(zone)}
-                  onClick={() => setSelectedZoneId(zone.id)}
+              <span
+                className="venue-map__boundary"
+                style={rectangleStyle(activePlan.boundary)}
+                aria-hidden="true"
+              />
+
+              {getOrientationEntries(activePlan).map(([position, label]) => (
+                <span
+                  className="venue-map__orientation"
+                  data-position={position}
+                  key={position}
+                  aria-hidden="true"
                 >
-                  <strong>{zone.name}</strong>
-                  <span>{zone.location}</span>
-                </button>
+                  {label}
+                </span>
               ))}
-              <span className="venue-map__entrance" aria-hidden="true">
-                {t("venue.entrance")}
-              </span>
+
+              {activePlan.features.map((feature) => {
+                if (feature.kind === "booth") {
+                  return (
+                    <button
+                      className="venue-feature venue-feature--booth"
+                      type="button"
+                      key={feature.id}
+                      data-feature={feature.id}
+                      data-active={selectedFeatureId === feature.id}
+                      data-tone={feature.tone}
+                      aria-label={t("venue.boothSlotLabel", {
+                        number: feature.boothNumber,
+                      })}
+                      aria-pressed={selectedFeatureId === feature.id}
+                      style={rectangleStyle(feature)}
+                      onClick={() => setSelectedFeatureId(feature.id)}
+                    >
+                      {feature.boothNumber}
+                    </button>
+                  );
+                }
+
+                return (
+                  <span
+                    className="venue-feature"
+                    data-kind={feature.kind}
+                    data-tone={feature.tone}
+                    data-feature={feature.id}
+                    key={feature.id}
+                    style={rectangleStyle(feature)}
+                    aria-hidden="true"
+                  >
+                    <strong>{feature.name}</strong>
+                  </span>
+                );
+              })}
             </div>
           </div>
         </div>
 
-        {selectedZone && (
-          <aside className="venue-zone-detail" aria-live="polite">
-            <span className="venue-zone-detail__label">
-              {t("venue.selectedZone")}
-            </span>
-            <Text as="h3" textStyle="t6Bold">
-              {selectedZone.name}
-            </Text>
-            <p>{selectedZone.description}</p>
+        <aside className="venue-plan-detail" aria-live="polite">
+          <span className="venue-plan-detail__label">
+            {selectedFeature ? t("venue.selectedBooth") : t("venue.currentPlan")}
+          </span>
+          <Text as="h3" textStyle="t6Bold">
+            {selectedFeature?.name ?? activePlan.name}
+          </Text>
+          <p>{selectedFeature?.description ?? activePlan.summary}</p>
+
+          {selectedFeature?.boothNumber && (
             <dl>
               <div>
-                <dt>{t("venue.locationLabel")}</dt>
-                <dd>{selectedZone.location}</dd>
+                <dt>{t("venue.assignmentLabel")}</dt>
+                <dd>
+                  {selectedBooth ? (
+                    <a href={selectedBooth.url} target="_blank" rel="noreferrer">
+                      {selectedBooth.name}
+                    </a>
+                  ) : (
+                    t("venue.assignmentPending")
+                  )}
+                </dd>
               </div>
-              {selectedZone.id === "booth" && (
-                <div>
-                  <dt>{t("venue.boothCountLabel")}</dt>
-                  <dd>
-                    {t("venue.boothCount", { count: venueGuide.booths.length })}
-                  </dd>
-                </div>
-              )}
             </dl>
-          </aside>
-        )}
+          )}
+
+          {boothSlots.length > 0 && !selectedFeature && (
+            <p className="venue-plan-detail__count">
+              {t("venue.boothSlotCount", { count: boothSlots.length })}
+            </p>
+          )}
+
+          <div className="venue-facilities">
+            <Text as="h4" textStyle="t4Bold">
+              {t("venue.facilitiesTitle")}
+            </Text>
+            <ul>
+              {landmarks.map((feature) => (
+                <li key={feature.id}>
+                  <strong>{feature.name}</strong>
+                  <span>{feature.description}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
       </div>
 
       <section className="booth-directory" aria-labelledby="booth-directory-heading">
@@ -228,7 +342,9 @@ export function VenueGuide() {
             {venueGuide.booths.map((booth) => (
               <article className="booth-card" key={booth.id}>
                 <span className="booth-card__number">
-                  {booth.number ?? t("venue.boothNumberPending")}
+                  {booth.number
+                    ? t("venue.boothNumber", { number: booth.number })
+                    : t("venue.boothNumberPending")}
                 </span>
                 <Text as="h4" textStyle="t5Bold">
                   {booth.name}
@@ -251,7 +367,7 @@ export function VenueGuide() {
       </section>
 
       <p className="venue-guide__source">
-        {t("venue.sourcePrefix")}{" "}
+        {t("venue.layoutSource")} · {t("venue.sourcePrefix")} {" "}
         <a href="https://techmujin.jp/2026/" target="_blank" rel="noreferrer">
           {t("venue.sourceLink")}
         </a>

@@ -5,40 +5,349 @@
     "mapUrl": "https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E6%A2%A8%E5%A4%A7%E5%AD%A6%20%E7%94%B2%E5%BA%9C%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%91%E3%82%B9%20%E5%85%B1%E5%89%B5%E7%92%B0%E5%A2%83%E6%A3%9F"
   },
   "openHours": "9:30–16:30",
-  "layoutStatus": "zone-overview",
-  "zones": [
+  "layoutStatus": "reference-layout",
+  "plans": [
     {
-      "id": "stage",
-      "name": "ステージエリア",
-      "location": "ホール前方",
-      "description": "コミュニティ紹介・LT・テック無尽ラジオなど、発表コンテンツが進行します。",
-      "tone": "stage",
-      "x": 8,
-      "y": 7,
-      "width": 84,
-      "height": 34
+      "id": "main-hall",
+      "name": "治ホール",
+      "summary": "ステージ、座席、展示ブースA〜Gがあるメイン会場です。",
+      "aspectRatio": 1.25,
+      "boundary": { "x": 17, "y": 8, "width": 74, "height": 72 },
+      "orientation": {
+        "top": "大学側",
+        "bottom": "道路側",
+        "left": "ローソン側",
+        "right": null
+      },
+      "features": [
+        {
+          "id": "screen",
+          "name": "スクリーン",
+          "description": "ステージ正面のスクリーンです。",
+          "kind": "label",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 34,
+          "y": 4,
+          "width": 28,
+          "height": 5
+        },
+        {
+          "id": "mc",
+          "name": "司会",
+          "description": "司会者の位置です。",
+          "kind": "marker",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 20,
+          "y": 12,
+          "width": 10,
+          "height": 7
+        },
+        {
+          "id": "speaker",
+          "name": "登壇者",
+          "description": "登壇者の位置です。",
+          "kind": "marker",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 41,
+          "y": 12,
+          "width": 12,
+          "height": 7
+        },
+        {
+          "id": "seating",
+          "name": "座席",
+          "description": "セッションを観覧する座席エリアです。",
+          "kind": "area",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 25,
+          "y": 23,
+          "width": 38,
+          "height": 31
+        },
+        {
+          "id": "booth-a",
+          "name": "ブース A",
+          "description": "ホール後方の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "A",
+          "x": 20,
+          "y": 62,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-b",
+          "name": "ブース B",
+          "description": "ホール後方の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "B",
+          "x": 30,
+          "y": 62,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-c",
+          "name": "ブース C",
+          "description": "ホール後方の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "C",
+          "x": 40,
+          "y": 62,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-d",
+          "name": "ブース D",
+          "description": "ホール後方の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "D",
+          "x": 50,
+          "y": 62,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-e",
+          "name": "ブース E",
+          "description": "ホール後方の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "E",
+          "x": 60,
+          "y": 62,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-f",
+          "name": "ブース F",
+          "description": "ホール右側の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "F",
+          "x": 68,
+          "y": 49,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "booth-g",
+          "name": "ブース G",
+          "description": "ホール右側の展示ブースです。",
+          "kind": "booth",
+          "tone": "brand",
+          "boothNumber": "G",
+          "x": 68,
+          "y": 36,
+          "width": 9,
+          "height": 9
+        },
+        {
+          "id": "main-entrance",
+          "name": "入口",
+          "description": "治ホールの入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 68,
+          "y": 70,
+          "width": 12,
+          "height": 7
+        },
+        {
+          "id": "preparation-room",
+          "name": "準備室など",
+          "description": "会場右上の準備室エリアです。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 75,
+          "y": 10,
+          "width": 14,
+          "height": 13
+        },
+        {
+          "id": "main-stairs",
+          "name": "階段",
+          "description": "会場右側の階段です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 76,
+          "y": 37,
+          "width": 10,
+          "height": 15
+        },
+        {
+          "id": "elevator",
+          "name": "エレベーター",
+          "description": "会場右側のエレベーターです。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 86,
+          "y": 27,
+          "width": 5,
+          "height": 38
+        }
+      ]
     },
     {
-      "id": "booth",
-      "name": "ブースエリア",
-      "location": "ホール内後方",
-      "description": "コミュニティ・協賛企業の展示ブースが並びます。終日開設しています。",
-      "tone": "booth",
-      "x": 8,
-      "y": 47,
-      "width": 84,
-      "height": 32
-    },
-    {
-      "id": "communication",
-      "name": "コミュニケーションスペース",
-      "location": "ホール外",
-      "description": "座って話せる、終日開放のスペースです。発表の途中でも利用できます。",
-      "tone": "communication",
-      "x": 8,
-      "y": 85,
-      "width": 84,
-      "height": 11
+      "id": "communication-space",
+      "name": "交流スペース",
+      "summary": "会話や休憩に利用できるホール外のスペースです。",
+      "aspectRatio": 1.25,
+      "boundary": { "x": 17, "y": 8, "width": 74, "height": 67 },
+      "orientation": {
+        "top": "大学側",
+        "bottom": "道路側",
+        "left": "ローソン側",
+        "right": null
+      },
+      "features": [
+        {
+          "id": "communication-area",
+          "name": "交流スペース",
+          "description": "座って話したり休憩したりできる共有スペースです。",
+          "kind": "area",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 33,
+          "y": 34,
+          "width": 41,
+          "height": 17
+        },
+        {
+          "id": "multipurpose-room",
+          "name": "多目的室",
+          "description": "交流スペース上側の多目的室です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 56,
+          "y": 4,
+          "width": 20,
+          "height": 10
+        },
+        {
+          "id": "barrier-free-space",
+          "name": "バリアフリースペース",
+          "description": "会場左上のバリアフリースペースです。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 27,
+          "y": 9,
+          "width": 13,
+          "height": 22
+        },
+        {
+          "id": "womens-restroom",
+          "name": "女子トイレ等",
+          "description": "会場上側の女子トイレなどの設備です。",
+          "kind": "facility",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 41,
+          "y": 8,
+          "width": 14,
+          "height": 22
+        },
+        {
+          "id": "passage",
+          "name": "通路",
+          "description": "多目的室につながる通路です。",
+          "kind": "label",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 57,
+          "y": 17,
+          "width": 18,
+          "height": 12
+        },
+        {
+          "id": "mens-restroom",
+          "name": "男子トイレ",
+          "description": "会場右上の男子トイレです。",
+          "kind": "facility",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 82,
+          "y": 8,
+          "width": 9,
+          "height": 22
+        },
+        {
+          "id": "building-reception",
+          "name": "建物受付",
+          "description": "建物の受付です。イベント受付とは異なります。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 76,
+          "y": 35,
+          "width": 12,
+          "height": 9
+        },
+        {
+          "id": "communication-stairs",
+          "name": "階段",
+          "description": "交流スペース右側の階段です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 74,
+          "y": 50,
+          "width": 12,
+          "height": 14
+        },
+        {
+          "id": "office",
+          "name": "事務室",
+          "description": "交流スペース左下の事務室です。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 17,
+          "y": 56,
+          "width": 20,
+          "height": 19
+        },
+        {
+          "id": "left-entrance",
+          "name": "入口",
+          "description": "ローソン側の入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 8,
+          "y": 29,
+          "width": 12,
+          "height": 8
+        },
+        {
+          "id": "right-entrance",
+          "name": "入口",
+          "description": "交流スペース右側の入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 88,
+          "y": 29,
+          "width": 10,
+          "height": 8
+        }
+      ]
     }
   ],
   "booths": [
@@ -48,7 +357,7 @@
       "name": "Shingen.py",
       "exhibitor": "Shingen.py",
       "description": "Pythonの入門から実務利用までを扱うコミュニティです。",
-      "zoneId": "booth",
+      "planId": "main-hall",
       "url": "https://shingenpy.connpass.com/"
     },
     {
@@ -57,7 +366,7 @@
       "name": "kintone Café 山梨",
       "exhibitor": "kintone Café 山梨",
       "description": "kintoneを使った業務改善の事例やノウハウを共有するコミュニティです。",
-      "zoneId": "booth",
+      "planId": "main-hall",
       "url": "https://kintonecafe-yamanashi.qloba.com/"
     },
     {
@@ -66,7 +375,7 @@
       "name": "SORACOM UG 山梨",
       "exhibitor": "SORACOM UG 山梨",
       "description": "IoTプラットフォームSORACOMのユーザーグループです。",
-      "zoneId": "booth",
+      "planId": "main-hall",
       "url": "https://soracom.jp/"
     },
     {
@@ -75,7 +384,7 @@
       "name": "スクラッチディ in 山梨",
       "exhibitor": "スクラッチディ in 山梨",
       "description": "子ども向けのScratchプログラミングイベントです。",
-      "zoneId": "booth",
+      "planId": "main-hall",
       "url": "https://scratch.itolab.com/"
     },
     {
@@ -84,7 +393,7 @@
       "name": "甲斐国もくもく会",
       "exhibitor": "甲斐国もくもく会",
       "description": "各自が作業や学習を持ち寄るもくもく会です。",
-      "zoneId": "booth",
+      "planId": "main-hall",
       "url": "https://kainokuni.org/"
     }
   ]
