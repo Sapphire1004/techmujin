@@ -4,6 +4,7 @@ import "@seed-design/css/base.css";
 import "./i18n";
 import App from "./App";
 import "./theme.css";
+import "../tokens.css";
 import "./styles.css";
 
 const root = document.getElementById("root");
