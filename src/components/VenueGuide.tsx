@@ -1,13 +1,13 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
-import {
-  venueGuideResult,
-  type VenueFeature,
-  type VenuePlan,
-} from "../data/venue";
+import { venueGuideResult, type VenueFeature } from "../data/venue";
 
-const ZOOM_LEVELS = [1, 1.25, 1.5] as const;
+const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
+
+type VenueGuideProps = {
+  view: "access" | "interior";
+};
 
 function rectangleStyle(
   rectangle: Pick<VenueFeature, "x" | "y" | "width" | "height">,
@@ -20,14 +20,7 @@ function rectangleStyle(
   } as CSSProperties;
 }
 
-function getOrientationEntries(plan: VenuePlan) {
-  return Object.entries(plan.orientation).filter(
-    (entry): entry is [keyof VenuePlan["orientation"], string] =>
-      entry[1] !== null,
-  );
-}
-
-export function VenueGuide() {
+export function VenueGuide({ view }: VenueGuideProps) {
   const { t } = useTranslation();
   const venueGuide = venueGuideResult.success ? venueGuideResult.data : null;
   const [activePlanId, setActivePlanId] = useState(
@@ -90,45 +83,52 @@ export function VenueGuide() {
   };
 
   return (
-    <section className="venue-guide" aria-labelledby="venue-guide-heading">
-      <header className="venue-guide__heading">
-        <div>
-          <Text as="h2" id="venue-guide-heading" textStyle="t8Bold">
-            {t("venue.title")}
-          </Text>
-          <Text
-            as="p"
-            className="venue-guide__lead"
-            color="fg.neutralMuted"
-            textStyle="t4Regular"
+    <section
+      className="venue-guide"
+      aria-label={t(view === "access" ? "venue.accessTab" : "venue.interiorTab")}
+    >
+      <div
+        id="venue-access-panel"
+        className="venue-guide__panel"
+        hidden={view !== "access"}
+      >
+        <div className="venue-summary venue-summary--access">
+          <div className="venue-summary__item">
+            <span>{t("venue.venueLabel")}</span>
+            <strong>{venueGuide.venue.name}</strong>
+            <small>{venueGuide.venue.address}</small>
+          </div>
+          <a
+            className="venue-summary__map-link"
+            href={venueGuide.venue.mapUrl}
+            target="_blank"
+            rel="noreferrer"
           >
-            {t("venue.description")}
-          </Text>
+            {t("venue.openGoogleMaps")}
+          </a>
         </div>
-        <Badge size="large" tone="neutral" variant="weak">
-          {t("venue.layoutReady")}
-        </Badge>
-      </header>
+        <div className="venue-access-map">
+          <iframe
+            src={venueGuide.venue.mapEmbedUrl}
+            title={t("venue.mapEmbedTitle")}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
+        </div>
+      </div>
 
-      <div className="venue-summary">
-        <div className="venue-summary__item">
-          <span>{t("venue.venueLabel")}</span>
-          <strong>{venueGuide.venue.name}</strong>
-          <small>{venueGuide.venue.address}</small>
-        </div>
+      <div
+        id="venue-interior-panel"
+        className="venue-guide__panel"
+        hidden={view !== "interior"}
+      >
+      <div className="venue-summary venue-summary--interior">
         <div className="venue-summary__item">
           <span>{t("venue.openHoursLabel")}</span>
           <strong>{venueGuide.openHours}</strong>
           <small>{t("venue.openHoursNote")}</small>
         </div>
-        <a
-          className="venue-summary__map-link"
-          href={venueGuide.venue.mapUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {t("venue.openGoogleMaps")}
-        </a>
       </div>
 
       <p className="venue-guide__notice" role="note">
@@ -204,6 +204,7 @@ export function VenueGuide() {
 
           <div
             className="venue-map-scroll"
+            data-zoomed={zoom > 1}
             role="region"
             aria-label={t("venue.mapRegion", { name: activePlan.name })}
             tabIndex={0}
@@ -211,65 +212,40 @@ export function VenueGuide() {
             <div
               className="venue-map"
               data-plan={activePlan.id}
+              data-drawing={activePlan.drawing.code}
               style={{
                 width: `${zoom * 100}%`,
-                minWidth: `${40 * zoom}rem`,
-                aspectRatio: activePlan.aspectRatio,
+                aspectRatio: activePlan.drawing.width / activePlan.drawing.height,
               }}
             >
-              <span
-                className="venue-map__boundary"
-                style={rectangleStyle(activePlan.boundary)}
-                aria-hidden="true"
+              <img
+                className="venue-map__image"
+                src={activePlan.drawing.src}
+                alt={t("venue.mapTitle", { name: activePlan.name })}
+                width={activePlan.drawing.width}
+                height={activePlan.drawing.height}
+                decoding="async"
+                draggable={false}
               />
 
-              {getOrientationEntries(activePlan).map(([position, label]) => (
-                <span
-                  className="venue-map__orientation"
-                  data-position={position}
-                  key={position}
-                  aria-hidden="true"
+              {boothSlots.map((feature) => (
+                <button
+                  className="venue-feature venue-feature--booth"
+                  type="button"
+                  key={feature.id}
+                  data-feature={feature.id}
+                  data-active={selectedFeatureId === feature.id}
+                  data-tone={feature.tone}
+                  aria-label={t("venue.boothSlotLabel", {
+                    number: feature.boothNumber,
+                  })}
+                  aria-pressed={selectedFeatureId === feature.id}
+                  style={rectangleStyle(feature)}
+                  onClick={() => setSelectedFeatureId(feature.id)}
                 >
-                  {label}
-                </span>
+                  {feature.boothNumber}
+                </button>
               ))}
-
-              {activePlan.features.map((feature) => {
-                if (feature.kind === "booth") {
-                  return (
-                    <button
-                      className="venue-feature venue-feature--booth"
-                      type="button"
-                      key={feature.id}
-                      data-feature={feature.id}
-                      data-active={selectedFeatureId === feature.id}
-                      data-tone={feature.tone}
-                      aria-label={t("venue.boothSlotLabel", {
-                        number: feature.boothNumber,
-                      })}
-                      aria-pressed={selectedFeatureId === feature.id}
-                      style={rectangleStyle(feature)}
-                      onClick={() => setSelectedFeatureId(feature.id)}
-                    >
-                      {feature.boothNumber}
-                    </button>
-                  );
-                }
-
-                return (
-                  <span
-                    className="venue-feature"
-                    data-kind={feature.kind}
-                    data-tone={feature.tone}
-                    data-feature={feature.id}
-                    key={feature.id}
-                    style={rectangleStyle(feature)}
-                    aria-hidden="true"
-                  >
-                    <strong>{feature.name}</strong>
-                  </span>
-                );
-              })}
             </div>
           </div>
         </div>
@@ -372,6 +348,7 @@ export function VenueGuide() {
           {t("venue.sourceLink")}
         </a>
       </p>
+      </div>
     </section>
   );
 }

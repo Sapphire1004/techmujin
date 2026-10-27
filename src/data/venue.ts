@@ -23,13 +23,11 @@ const venuePlanSchema = z.object({
   id: z.string().min(1),
   name: z.string().min(1),
   summary: z.string().min(1),
-  aspectRatio: z.number().positive(),
-  boundary: rectangleSchema,
-  orientation: z.object({
-    top: z.string().min(1).nullable(),
-    bottom: z.string().min(1).nullable(),
-    left: z.string().min(1).nullable(),
-    right: z.string().min(1).nullable(),
+  drawing: z.object({
+    code: z.enum(["B-1", "B-2"]),
+    src: z.string().regex(/^\/venue\/[\w-]+\.svg$/),
+    width: z.number().int().positive(),
+    height: z.number().int().positive(),
   }),
   features: z.array(venueFeatureSchema),
 });
@@ -50,6 +48,7 @@ const venueGuideSchema = z
       name: z.string().min(1),
       address: z.string().min(1),
       mapUrl: z.url(),
+      mapEmbedUrl: z.url(),
     }),
     openHours: z.string().min(1),
     layoutStatus: z.literal("reference-layout"),
@@ -69,17 +68,6 @@ const venueGuideSchema = z
         });
       }
       planIds.add(plan.id);
-
-      if (
-        plan.boundary.x + plan.boundary.width > 100 ||
-        plan.boundary.y + plan.boundary.height > 100
-      ) {
-        context.addIssue({
-          code: "custom",
-          message: `Plan boundary exceeds map bounds: ${plan.id}`,
-          path: ["plans", planIndex, "boundary"],
-        });
-      }
 
       const featureIds = new Set<string>();
       const boothSlots = new Set<string>();
