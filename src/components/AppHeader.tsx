@@ -5,8 +5,9 @@ import {
   languageOptions,
   type SupportedLanguage,
 } from "../i18n";
+import type { AppView } from "../navigation";
 
-export type AppView = "program" | "access" | "venue";
+export type { AppView } from "../navigation";
 
 type AppHeaderProps = {
   activeView: AppView;
@@ -61,6 +62,7 @@ export function AppHeader({
   const programMenuButtonRef = useRef<HTMLButtonElement>(null);
   const accessMenuButtonRef = useRef<HTMLButtonElement>(null);
   const venueMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const rallyMenuButtonRef = useRef<HTMLButtonElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const closeMenu = () => {
@@ -78,6 +80,7 @@ export function AppHeader({
         program: programMenuButtonRef.current,
         access: accessMenuButtonRef.current,
         venue: venueMenuButtonRef.current,
+        "stamp-rally": rallyMenuButtonRef.current,
       }[activeView];
       target?.focus({ preventScroll: true });
     });
@@ -140,6 +143,15 @@ export function AppHeader({
               onClick={() => onViewChange("venue")}
             >
               {t("navigation.venue")}
+            </button>
+            <button
+              type="button"
+              data-active={activeView === "stamp-rally"}
+              aria-current={activeView === "stamp-rally" ? "page" : undefined}
+              aria-controls="stamp-rally-panel"
+              onClick={() => onViewChange("stamp-rally")}
+            >
+              {t("navigation.stampRally")}
             </button>
           </nav>
           <LanguageSwitch
@@ -218,6 +230,16 @@ export function AppHeader({
               onClick={() => changeView("venue")}
             >
               {t("navigation.venue")}
+            </button>
+            <button
+              ref={rallyMenuButtonRef}
+              type="button"
+              data-active={activeView === "stamp-rally"}
+              aria-current={activeView === "stamp-rally" ? "page" : undefined}
+              aria-controls="stamp-rally-panel"
+              onClick={() => changeView("stamp-rally")}
+            >
+              {t("navigation.stampRally")}
             </button>
           </nav>
 

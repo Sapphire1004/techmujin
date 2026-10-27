@@ -14,14 +14,11 @@ import {
   createScheduleImageFile,
   downloadScheduleImageFile,
 } from "./calendar/image";
-import { AppHeader, type AppView } from "./components/AppHeader";
 import { VenueGuide } from "./components/VenueGuide";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
-import {
-  saveLanguage,
-  type SupportedLanguage,
-} from "./i18n";
+import type { SupportedLanguage } from "./i18n";
+import type { TimetableView } from "./navigation";
 import type { ScheduleData, Session } from "./types";
 import { StampRallyApp } from "./stamp-rally/StampRallyApp";
 
@@ -41,9 +38,14 @@ function sessionsOverlap(first: Session, second: Session) {
   );
 }
 
-function Timetable({ schedule }: { schedule: ScheduleData }) {
+function Timetable({
+  schedule,
+  activeView,
+}: {
+  schedule: ScheduleData;
+  activeView: TimetableView;
+}) {
   const { t, i18n } = useTranslation();
-  const [activeView, setActiveView] = useState<AppView>("program");
   const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
@@ -148,11 +150,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
       );
   }, [activeView, currentLanguage, t]);
 
-  const changeLanguage = (language: SupportedLanguage) => {
-    saveLanguage(language);
-    void i18n.changeLanguage(language);
-  };
-
   const exportSelectedSessionsCalendar = async () => {
     if (selectedSessions.length === 0 || calendarExportStatus === "sharing") {
       return;
@@ -229,14 +226,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
   };
 
   return (
-    <div className="app-frame">
-      <AppHeader
-        activeView={activeView}
-        currentLanguage={currentLanguage}
-        onLanguageChange={changeLanguage}
-        onViewChange={setActiveView}
-      />
-
       <div className="app-shell">
         <header className="masthead">
           <Text as="h1" textStyle="screenTitle">
@@ -656,11 +645,10 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
         </div>
         </main>
       </div>
-    </div>
   );
 }
 
-function TimetableRoute() {
+function TimetableRoute({ activeView }: { activeView: TimetableView }) {
   const { t } = useTranslation();
   const timetable = useTimetable();
 
@@ -702,11 +690,15 @@ function TimetableRoute() {
     );
   }
 
-  return <Timetable schedule={timetable.data} />;
+  return <Timetable schedule={timetable.data} activeView={activeView} />;
 }
 
 function App() {
-  return <StampRallyApp timetable={<TimetableRoute />} />;
+  return (
+    <StampRallyApp
+      renderTimetable={(activeView) => <TimetableRoute activeView={activeView} />}
+    />
+  );
 }
 
 export default App;

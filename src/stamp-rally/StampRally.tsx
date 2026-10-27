@@ -6,7 +6,6 @@ import {
 } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
-import { LanguageSwitch } from "../LanguageSwitch";
 import type { SupportedLanguage } from "../i18n";
 import { STAMP_SPOTS } from "./rally";
 import { useStampCard, type StampStorageWarning } from "./useStampCard";
@@ -54,11 +53,10 @@ export function StampRally() {
   }, [currentLanguage, t]);
 
   return (
-    <div className="app-shell rally-shell">
+    <div className="app-shell rally-shell" id="stamp-rally-panel">
       <header className="masthead rally-masthead">
         <div className="masthead__issue">
           <span>TECHMUJIN STAMP RALLY</span>
-          <LanguageSwitch />
         </div>
         <Text as="h1" textStyle="screenTitle">
           {t("rally.title")}
@@ -76,8 +74,8 @@ export function StampRally() {
 
       <main className="rally-main">
         <p className="rally-prototype-notice" role="note">
-          <strong>{t("navigation.prototype")}</strong>
-          {t("navigation.description")}
+          <strong>{t("rally.prototype")}</strong>
+          {t("rally.prototypeDescription")}
         </p>
         <section className="rally-steps" aria-label={t("rally.steps.label")}>
           {(["join", "scan", "complete"] as const).map((step, index) => (

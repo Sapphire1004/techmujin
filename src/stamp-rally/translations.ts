@@ -1,7 +1,8 @@
 export const rallyTranslations = {
   ja: {
-    navigation: {"label":"コンテンツ","timetable":"プログラム","stampRally":"スタンプラリー","prototype":"試作版","description":"チェックポイント名・配置は仮の設定です。"},
       rally: {
+        prototype: "試作版",
+        prototypeDescription: "チェックポイント名・配置は仮の設定です。",
         loading: "スタンプラリーを読み込んでいます。",
         metaTitle: "テック無尽 スタンプラリー",
         metaDescription: "会場のQRコードを読み取り、スタンプを集めるテック無尽のスタンプラリーです。",
@@ -81,8 +82,9 @@ export const rallyTranslations = {
       },
   },
   en: {
-    navigation: {"label":"Contents","timetable":"Program","stampRally":"Stamp rally","prototype":"Prototype","description":"Checkpoint names and locations are placeholders."},
       rally: {
+        prototype: "Prototype",
+        prototypeDescription: "Checkpoint names and locations are placeholders.",
         loading: "Loading stamp rally…",
         metaTitle: "TechMujin Stamp Rally",
         metaDescription: "Collect stamps by scanning QR codes around the TechMujin venue.",
@@ -162,8 +164,9 @@ export const rallyTranslations = {
       },
   },
   ko: {
-    navigation: {"label":"콘텐츠","timetable":"프로그램","stampRally":"스탬프 랠리","prototype":"임시 버전","description":"체크포인트 이름·위치는 임시 설정입니다."},
       rally: {
+        prototype: "임시 버전",
+        prototypeDescription: "체크포인트 이름·위치는 임시 설정입니다.",
         loading: "스탬프 랠리를 불러오는 중입니다.",
         metaTitle: "테크무진 스탬프 랠리",
         metaDescription: "행사장의 QR 코드를 스캔하고 스탬프를 모으는 테크무진 스탬프 랠리입니다.",

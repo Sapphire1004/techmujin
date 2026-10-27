@@ -12,6 +12,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test:stamp-rally": "node --test tests/stamp-rally.test.mjs",
+    "test:navigation": "node --test tests/navigation.test.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
