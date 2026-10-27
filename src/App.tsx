@@ -14,11 +14,11 @@ import {
   createScheduleImageFile,
   downloadScheduleImageFile,
 } from "./calendar/image";
+import { AppHeader, type AppView } from "./components/AppHeader";
+import { VenueGuide } from "./components/VenueGuide";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
 import {
-  isI18nEnabled,
-  languageOptions,
   saveLanguage,
   type SupportedLanguage,
 } from "./i18n";
@@ -43,6 +43,7 @@ function sessionsOverlap(first: Session, second: Session) {
 
 function Timetable({ schedule }: { schedule: ScheduleData }) {
   const { t, i18n } = useTranslation();
+  const [activeView, setActiveView] = useState<AppView>("program");
   const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
@@ -112,9 +113,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
         .sort((first, second) => first.startTime.localeCompare(second.startTime)),
     [selectedSet, sessions, showSavedOnly],
   );
-  const visibleSessionCount = visibleSessions.filter(
-    (session) => session.format !== "break",
-  ).length;
   const savedColumnCount = conflictIds.size > 0 ? 2 : 1;
   const gridTrackCount = showSavedOnly ? savedColumnCount : 1;
 
@@ -129,11 +127,26 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
-    document.title = t("meta.title");
+    const metaTitleKey =
+      activeView === "program"
+        ? "meta.title"
+        : activeView === "access"
+          ? "access.metaTitle"
+          : "venue.metaTitle";
+    const metaDescriptionKey =
+      activeView === "program"
+        ? "meta.description"
+        : activeView === "access"
+          ? "access.metaDescription"
+          : "venue.metaDescription";
+    document.title = t(metaTitleKey);
     document
       .querySelector('meta[name="description"]')
-      ?.setAttribute("content", t("meta.description"));
-  }, [currentLanguage, t]);
+      ?.setAttribute(
+        "content",
+        t(metaDescriptionKey),
+      );
+  }, [activeView, currentLanguage, t]);
 
   const changeLanguage = (language: SupportedLanguage) => {
     saveLanguage(language);
@@ -216,89 +229,62 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
   };
 
   return (
-    <div className="app-shell">
-      <header className="masthead">
-        <div className="masthead__issue">
-          <span>TECHMUJIN EVENT</span>
-          <div className="masthead__controls">
-            <span>
-              {eventSchedule.startTime}–{eventSchedule.endTime} · {t("hero.oneDay")}
-            </span>
-            {isI18nEnabled && (
-              <div
-                className="language-switch"
-                role="group"
-                aria-label={t("language.selector")}
-              >
-                {languageOptions.map(({ code, label }) => (
-                  <button
-                    className="language-switch__button"
-                    data-active={currentLanguage === code}
-                    type="button"
-                    key={code}
-                    aria-pressed={currentLanguage === code}
-                    onClick={() => changeLanguage(code)}
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
+    <div className="app-frame">
+      <AppHeader
+        activeView={activeView}
+        currentLanguage={currentLanguage}
+        onLanguageChange={changeLanguage}
+        onViewChange={setActiveView}
+      />
+
+      <div className="app-shell">
+        <header className="masthead">
+          <Text as="h1" textStyle="screenTitle">
+            {t(
+              activeView === "program"
+                ? "hero.title"
+                : activeView === "access"
+                  ? "access.heroTitle"
+                  : "venue.heroTitle",
             )}
-          </div>
-        </div>
-        <Text as="h1" textStyle="screenTitle">
-          {t("hero.title")}
-        </Text>
-        <Text
-          as="p"
-          className="masthead__note"
-          color="fg.neutralMuted"
-          textStyle="t4Regular"
-        >
-          {t("hero.note")}
-        </Text>
-        <div className="masthead__rule" aria-hidden="true" />
-      </header>
+          </Text>
+          <div className="masthead__utility-row">
+            <Text
+              as="p"
+              className="masthead__note"
+              color="fg.neutralMuted"
+              textStyle="t4Regular"
+            >
+              {activeView === "program"
+                ? t("hero.note", {
+                    start: eventSchedule.startTime,
+                    end: eventSchedule.endTime,
+                  })
+                : t(
+                    activeView === "access"
+                      ? "access.heroNote"
+                      : "venue.heroNote",
+                  )}
+            </Text>
 
-      <main>
-        <ActionButton
-          className="saved-filter"
-          variant={showSavedOnly ? "brandSolid" : "brandOutline"}
-          size="small"
-          type="button"
-          aria-pressed={showSavedOnly}
-          onClick={() => setShowSavedOnly((current) => !current)}
-        >
-          {t("filters.mySchedule", { count: selectedSessions.length })}
-        </ActionButton>
-
-        {storageStatus === "unavailable" && (
-          <p className="storage-warning" role="status">
-            {t("storage.unavailable")}
-          </p>
-        )}
-
-        <section className="schedule" aria-labelledby="schedule-heading">
-          <div className="schedule-heading">
-            <div>
-              <Text as="h2" id="schedule-heading" textStyle="t8Bold">
-                {t("schedule.title")}
-              </Text>
-            </div>
-            <div className="schedule-heading__summary">
-              <Badge
-                aria-live="polite"
-                size="large"
-                tone="neutral"
-                variant="weak"
+            {activeView === "program" && (
+              <div
+                className="schedule-export"
+                data-visible={showSavedOnly}
+                aria-hidden={!showSavedOnly}
               >
-                {t("schedule.stats", {
-                  visible: visibleSessionCount,
-                  saved: selectedSessions.length,
-                })}
-              </Badge>
-              {showSavedOnly && (
-                <div className="schedule-export">
+                <div className="schedule-export__toolbar">
+                  <Text
+                    as="p"
+                    className="schedule-export__count"
+                    color="fg.neutralMuted"
+                    textStyle="t3Regular"
+                    aria-live="polite"
+                  >
+                    {t("schedule.selectedCount", {
+                      count: selectedSessions.length,
+                    })}
+                  </Text>
                   <div className="schedule-export__actions">
                     {canOpenAppleCalendar && (
                       <ActionButton
@@ -306,7 +292,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                         variant="brandSolid"
                         size="medium"
                         type="button"
-                        disabled={selectedSessions.length === 0}
+                        disabled={!showSavedOnly || selectedSessions.length === 0}
                         title={
                           selectedSessions.length === 0
                             ? t("calendar.noSessions")
@@ -326,6 +312,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                       type="button"
                       loading={calendarExportStatus === "sharing"}
                       disabled={
+                        !showSavedOnly ||
                         selectedSessions.length === 0 ||
                         calendarExportStatus === "sharing"
                       }
@@ -349,6 +336,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                       type="button"
                       loading={imageExportStatus === "creating"}
                       disabled={
+                        !showSavedOnly ||
                         selectedSessions.length === 0 ||
                         imageExportStatus === "creating"
                       }
@@ -364,43 +352,69 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                         : t("calendar.imageDownload")}
                     </ActionButton>
                   </div>
-                  {imageExportStatus === "error" && (
-                    <PageBanner.Root
-                      className="schedule-export__feedback"
-                      role="alert"
-                      tone="critical"
-                      variant="weak"
-                    >
-                      <PageBanner.Content>
-                        <PageBanner.Body>
-                          <PageBanner.Description>
-                            {t("calendar.imageError")}
-                          </PageBanner.Description>
-                        </PageBanner.Body>
-                      </PageBanner.Content>
-                    </PageBanner.Root>
-                  )}
-                  {calendarExportStatus === "fallback" && (
-                    <PageBanner.Root
-                      className="schedule-export__feedback"
-                      role="status"
-                      tone="informative"
-                      variant="weak"
-                    >
-                      <PageBanner.Content>
-                        <PageBanner.Body>
-                          <PageBanner.Description>
-                            {t("calendar.shareFallback")}
-                          </PageBanner.Description>
-                        </PageBanner.Body>
-                      </PageBanner.Content>
-                    </PageBanner.Root>
-                  )}
                 </div>
-              )}
-            </div>
+                {imageExportStatus === "error" && (
+                  <PageBanner.Root
+                    className="schedule-export__feedback"
+                    role="alert"
+                    tone="critical"
+                    variant="weak"
+                  >
+                    <PageBanner.Content>
+                      <PageBanner.Body>
+                        <PageBanner.Description>
+                          {t("calendar.imageError")}
+                        </PageBanner.Description>
+                      </PageBanner.Body>
+                    </PageBanner.Content>
+                  </PageBanner.Root>
+                )}
+                {calendarExportStatus === "fallback" && (
+                  <PageBanner.Root
+                    className="schedule-export__feedback"
+                    role="status"
+                    tone="informative"
+                    variant="weak"
+                  >
+                    <PageBanner.Content>
+                      <PageBanner.Body>
+                        <PageBanner.Description>
+                          {t("calendar.shareFallback")}
+                        </PageBanner.Description>
+                      </PageBanner.Body>
+                    </PageBanner.Content>
+                  </PageBanner.Root>
+                )}
+              </div>
+            )}
           </div>
+        </header>
 
+        <main>
+
+        <div
+          id="program-panel"
+          className="app-panel"
+          hidden={activeView !== "program"}
+        >
+          <ActionButton
+            className="saved-filter"
+            variant={showSavedOnly ? "brandSolid" : "brandOutline"}
+            size="small"
+            type="button"
+            aria-pressed={showSavedOnly}
+            onClick={() => setShowSavedOnly((current) => !current)}
+          >
+            {t("filters.mySchedule", { count: selectedSessions.length })}
+          </ActionButton>
+
+          {storageStatus === "unavailable" && (
+            <p className="storage-warning" role="status">
+              {t("storage.unavailable")}
+            </p>
+          )}
+
+          <section className="schedule" aria-label={t("schedule.regionLabel")}>
           {visibleSessions.length > 0 ? (
             <div
               className="timetable-scroll"
@@ -424,11 +438,6 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
                   >
                     <Text as="strong" textStyle="t5Bold">
                       {t("schedule.mySchedule")}
-                    </Text>
-                    <Text color="fg.neutralMuted" textStyle="t2Regular">
-                      {t("schedule.selectedCount", {
-                        count: selectedSessions.length,
-                      })}
                     </Text>
                   </div>
                 ) : (
@@ -616,7 +625,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
               <p>{t("empty.body")}</p>
               <ActionButton
                 className="reset-button"
-                variant="neutralWeak"
+                variant="brandSolid"
                 size="small"
                 type="button"
                 onClick={() => {
@@ -627,9 +636,26 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
               </ActionButton>
             </div>
           )}
-        </section>
-      </main>
+          </section>
+        </div>
 
+        <div
+          id="access-panel"
+          className="app-panel"
+          hidden={activeView !== "access"}
+        >
+          <VenueGuide view="access" />
+        </div>
+
+        <div
+          id="venue-panel"
+          className="app-panel"
+          hidden={activeView !== "venue"}
+        >
+          <VenueGuide view="interior" />
+        </div>
+        </main>
+      </div>
     </div>
   );
 }
