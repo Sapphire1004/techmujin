@@ -243,7 +243,7 @@ function getInitialLanguage(): SupportedLanguage {
       return savedLanguage;
     }
   } catch {
-    // localStorage를 사용할 수 없는 환경에서는 기본 언어를 사용합니다.
+    // localStorage を利用できない環境では、標準の表示言語を使用します。
   }
 
   return "ja";
@@ -263,7 +263,7 @@ export function saveLanguage(language: SupportedLanguage) {
   try {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
   } catch {
-    // 언어 전환은 유지하고, 저장만 생략합니다.
+    // 言語の切り替えは維持し、設定の保存のみを省略します。
   }
 }
 

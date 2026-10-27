@@ -10,7 +10,7 @@ import "./styles.css";
 const root = document.getElementById("root");
 
 if (!root) {
-  throw new Error("앱을 표시할 #root 요소를 찾지 못했습니다.");
+  throw new Error("アプリを表示する #root 要素が見つかりません。");
 }
 
 createRoot(root).render(
