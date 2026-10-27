@@ -23,6 +23,7 @@ import {
   type SupportedLanguage,
 } from "./i18n";
 import type { ScheduleData, Session } from "./types";
+import { StampRallyApp } from "./stamp-rally/StampRallyApp";
 
 function toMinutes(time: string) {
   const [hour, minute] = time.split(":").map(Number);
@@ -633,7 +634,7 @@ function Timetable({ schedule }: { schedule: ScheduleData }) {
   );
 }
 
-function App() {
+function TimetableRoute() {
   const { t } = useTranslation();
   const timetable = useTimetable();
 
@@ -676,6 +677,10 @@ function App() {
   }
 
   return <Timetable schedule={timetable.data} />;
+}
+
+function App() {
+  return <StampRallyApp timetable={<TimetableRoute />} />;
 }
 
 export default App;

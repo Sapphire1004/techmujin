@@ -1,5 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { rallyTranslations } from "./stamp-rally/translations";
 
 export type SupportedLanguage = "ja" | "en" | "ko";
 
@@ -20,6 +21,7 @@ export const languageOptions: ReadonlyArray<{
 const resources = {
   ja: {
     translation: {
+      ...rallyTranslations.ja,
       meta: {
         title: "テックムジン タイムテーブル",
         description:
@@ -92,6 +94,7 @@ const resources = {
   },
   en: {
     translation: {
+      ...rallyTranslations.en,
       meta: {
         title: "TechMujin Timetable",
         description:
@@ -163,6 +166,7 @@ const resources = {
   },
   ko: {
     translation: {
+      ...rallyTranslations.ko,
       meta: {
         title: "테크무진 타임테이블",
         description:
