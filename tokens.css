@@ -1,4 +1,4 @@
-/* TechMujin timetable design tokens. Brand values are defined in src/theme.css. */
+/* テック無尽のタイムテーブルで使用するデザイントークン。ブランドカラーは src/theme.css で定義します。 */
 :root {
   --color-paper: var(--tm-color-background);
   --color-paper-2: var(--tm-color-surface);
