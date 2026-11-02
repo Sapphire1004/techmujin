@@ -48,6 +48,10 @@ pnpm preview
 
 Cloudflare WorkersのStatic Assetsで、Viteが生成した`dist/`を配信します。SSR用のサーバーやWorkerスクリプトは追加しません。タイムテーブルAPIは既存の配信先を引き続き利用し、Vercel側の設定も変更しません。
 
+公開URL: [techmujin-timetable.zhzkal2.workers.dev](https://techmujin-timetable.zhzkal2.workers.dev)
+
+主な画面: [タイムテーブル](https://techmujin-timetable.zhzkal2.workers.dev/#timetable) / [アクセス](https://techmujin-timetable.zhzkal2.workers.dev/#access) / [会場内マップ](https://techmujin-timetable.zhzkal2.workers.dev/#venue) / [スタンプラリー](https://techmujin-timetable.zhzkal2.workers.dev/#stamp-rally)
+
 Cloudflare用の配信コマンドにはNode.js 22以降が必要です。この手順はNode.js 24・pnpm 11.17.0で検証しています。`compatibility_date`は、固定したWranglerのローカルランタイムでも動作する日付に設定しています。
 
 設定は [wrangler.jsonc](./wrangler.jsonc) で管理します。
