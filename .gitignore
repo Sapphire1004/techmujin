@@ -1,6 +1,9 @@
 node_modules
 dist
 .vercel
+.wrangler
+.dev.vars
+.dev.vars.*
 .pnpm-store
 *.local
 .DS_Store
