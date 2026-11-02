@@ -1,0 +1,325 @@
+{
+  "venue": {
+    "name": "山梨大学 甲府キャンパス 共創環境棟 治ホール",
+    "address": "〒400-8510 山梨県甲府市武田4-4-37",
+    "mapUrl": "https://www.google.com/maps/search/?api=1&query=%E5%B1%B1%E6%A2%A8%E5%A4%A7%E5%AD%A6%20%E7%94%B2%E5%BA%9C%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%91%E3%82%B9",
+    "mapEmbedUrl": "https://www.google.com/maps?q=%E5%B1%B1%E6%A2%A8%E5%A4%A7%E5%AD%A6%20%E7%94%B2%E5%BA%9C%E3%82%AD%E3%83%A3%E3%83%B3%E3%83%91%E3%82%B9&output=embed"
+  },
+  "openHours": "9:30–16:30",
+  "layoutStatus": "reference-layout",
+  "plans": [
+    {
+      "id": "main-hall",
+      "name": "治ホール",
+      "summary": "司会・登壇位置、座席、長机、階段などを確認できるメイン会場です。",
+      "features": [
+        {
+          "id": "mc",
+          "name": "司会",
+          "description": "ホール右上の司会位置です。",
+          "kind": "marker",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 81.31,
+          "y": 23.42,
+          "width": 5.69,
+          "height": 4.55
+        },
+        {
+          "id": "speaker",
+          "name": "登壇",
+          "description": "ホール右側の登壇位置です。",
+          "kind": "marker",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 81.31,
+          "y": 43.72,
+          "width": 5.69,
+          "height": 4.55
+        },
+        {
+          "id": "seating",
+          "name": "座席",
+          "description": "セッションを観覧する座席エリアです。",
+          "kind": "area",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 55.08,
+          "y": 27.69,
+          "width": 24.88,
+          "height": 33.54
+        },
+        {
+          "id": "spare-chairs",
+          "name": "余った椅子を置くスペース",
+          "description": "ホール左側の予備の椅子を置くスペースです。",
+          "kind": "area",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 32.69,
+          "y": 22.4,
+          "width": 7.25,
+          "height": 40.31
+        },
+        {
+          "id": "main-entrance",
+          "name": "入口",
+          "description": "ホール下側の入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 84.93,
+          "y": 67.2,
+          "width": 3.55,
+          "height": 5.12
+        },
+        {
+          "id": "preparation-room",
+          "name": "準備室",
+          "description": "廊下の右下にある準備室です。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 77.04,
+          "y": 81.47,
+          "width": 14.14,
+          "height": 7.16
+        },
+        {
+          "id": "main-stairs",
+          "name": "階段",
+          "description": "ホール下側の廊下にある階段です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 45.34,
+          "y": 72.48,
+          "width": 15.99,
+          "height": 8.58
+        },
+        {
+          "id": "elevator",
+          "name": "エレベーター",
+          "description": "廊下の右側にあるエレベーターです。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 78.32,
+          "y": 73.79,
+          "width": 5.05,
+          "height": 3.7
+        },
+        {
+          "id": "photo-spot",
+          "name": "フォトスポット",
+          "description": "階段左側のフォトスポットです。",
+          "kind": "facility",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 31.49,
+          "y": 73.79,
+          "width": 2.77,
+          "height": 7.28
+        }
+      ],
+      "drawing": {
+        "code": "B-1",
+        "src": "/venue/B-1.svg",
+        "width": 888,
+        "height": 1110
+      }
+    },
+    {
+      "id": "communication-space",
+      "name": "交流スペース",
+      "summary": "交流スペース、受付、階段、トイレなどの位置を確認できます。",
+      "features": [
+        {
+          "id": "communication-area",
+          "name": "交流スペース",
+          "description": "参加者同士で交流できる共有スペースです。",
+          "kind": "area",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 30.73,
+          "y": 37.13,
+          "width": 28.42,
+          "height": 28.42
+        },
+        {
+          "id": "multipurpose-room",
+          "name": "多目的室",
+          "description": "交流スペース右側の多目的室です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 66.54,
+          "y": 55.78,
+          "width": 14.21,
+          "height": 6.82
+        },
+        {
+          "id": "back-space",
+          "name": "バックスペース",
+          "description": "交流スペース右上のバックスペースです。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 60.28,
+          "y": 27.58,
+          "width": 21.31,
+          "height": 11.37
+        },
+        {
+          "id": "womens-restroom",
+          "name": "女子トイレ等",
+          "description": "交流スペース右側の女子トイレなどの設備です。",
+          "kind": "facility",
+          "tone": "accent",
+          "boothNumber": null,
+          "x": 60.28,
+          "y": 38.95,
+          "width": 21.31,
+          "height": 12.5
+        },
+        {
+          "id": "passage",
+          "name": "通路",
+          "description": "多目的室につながる通路です。",
+          "kind": "label",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 60.28,
+          "y": 55.78,
+          "width": 5.68,
+          "height": 6.82
+        },
+        {
+          "id": "mens-restroom",
+          "name": "男子トイレ",
+          "description": "交流スペース右下の男子トイレです。",
+          "kind": "facility",
+          "tone": "secondary",
+          "boothNumber": null,
+          "x": 60,
+          "y": 76.24,
+          "width": 21.88,
+          "height": 10.46
+        },
+        {
+          "id": "building-reception",
+          "name": "建物受付",
+          "description": "建物の受付です。イベント受付とは異なります。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 48.63,
+          "y": 70.1,
+          "width": 7.39,
+          "height": 7.73
+        },
+        {
+          "id": "communication-stairs",
+          "name": "階段",
+          "description": "交流スペース左下の階段です。",
+          "kind": "facility",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 31.87,
+          "y": 69.87,
+          "width": 16.2,
+          "height": 9.55
+        },
+        {
+          "id": "office",
+          "name": "事務室",
+          "description": "交流スペース左上の事務室です。",
+          "kind": "facility",
+          "tone": "muted",
+          "boothNumber": null,
+          "x": 20.78,
+          "y": 18.49,
+          "width": 16.48,
+          "height": 18.64
+        },
+        {
+          "id": "lawson-entrance",
+          "name": "入口（ローソン側）",
+          "description": "ローソン側の上側の入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 51.47,
+          "y": 15.76,
+          "width": 3.98,
+          "height": 2.73
+        },
+        {
+          "id": "opposite-entrance",
+          "name": "入口",
+          "description": "交流スペース下側の入口です。",
+          "kind": "entrance",
+          "tone": "neutral",
+          "boothNumber": null,
+          "x": 48.92,
+          "y": 86.01,
+          "width": 8.24,
+          "height": 0.91
+        }
+      ],
+      "drawing": {
+        "code": "B-2",
+        "src": "/venue/B-2.svg",
+        "width": 888,
+        "height": 1110
+      }
+    }
+  ],
+  "booths": [
+    {
+      "id": "shingen-py",
+      "number": null,
+      "name": "Shingen.py",
+      "exhibitor": "Shingen.py",
+      "description": "Pythonの入門から実務利用までを扱うコミュニティです。",
+      "planId": "main-hall",
+      "url": "https://shingenpy.connpass.com/"
+    },
+    {
+      "id": "kintone-cafe-yamanashi",
+      "number": null,
+      "name": "kintone Café 山梨",
+      "exhibitor": "kintone Café 山梨",
+      "description": "kintoneを使った業務改善の事例やノウハウを共有するコミュニティです。",
+      "planId": "main-hall",
+      "url": "https://kintonecafe-yamanashi.qloba.com/"
+    },
+    {
+      "id": "soracom-ug-yamanashi",
+      "number": null,
+      "name": "SORACOM UG 山梨",
+      "exhibitor": "SORACOM UG 山梨",
+      "description": "IoTプラットフォームSORACOMのユーザーグループです。",
+      "planId": "main-hall",
+      "url": "https://soracom.jp/"
+    },
+    {
+      "id": "scratch-day-yamanashi",
+      "number": null,
+      "name": "スクラッチディ in 山梨",
+      "exhibitor": "スクラッチディ in 山梨",
+      "description": "子ども向けのScratchプログラミングイベントです。",
+      "planId": "main-hall",
+      "url": "https://scratch.itolab.com/"
+    },
+    {
+      "id": "kainokuni-mokumokukai",
+      "number": null,
+      "name": "甲斐国もくもく会",
+      "exhibitor": "甲斐国もくもく会",
+      "description": "各自が作業や学習を持ち寄るもくもく会です。",
+      "planId": "main-hall",
+      "url": "https://kainokuni.org/"
+    }
+  ]
+}
