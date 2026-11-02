@@ -1,5 +1,6 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
+import { rallyTranslations } from "./stamp-rally/translations";
 
 export type SupportedLanguage = "ja" | "en" | "ko";
 
@@ -20,6 +21,7 @@ export const languageOptions: ReadonlyArray<{
 const resources = {
   ja: {
     translation: {
+      ...rallyTranslations.ja,
       meta: {
         title: "テックムジン タイムテーブル",
         description:
@@ -32,6 +34,7 @@ const resources = {
         program: "プログラム",
         access: "アクセス",
         venue: "会場内マップ",
+        stampRally: "スタンプラリー",
         menuTitle: "メニュー",
         openMenu: "メニューを開く",
         closeMenu: "メニューを閉じる",
@@ -155,6 +158,7 @@ const resources = {
   },
   en: {
     translation: {
+      ...rallyTranslations.en,
       meta: {
         title: "TechMujin Timetable",
         description:
@@ -167,6 +171,7 @@ const resources = {
         program: "Program",
         access: "Access",
         venue: "Interior map",
+        stampRally: "Stamp rally",
         menuTitle: "Menu",
         openMenu: "Open menu",
         closeMenu: "Close menu",
@@ -289,6 +294,7 @@ const resources = {
   },
   ko: {
     translation: {
+      ...rallyTranslations.ko,
       meta: {
         title: "테크무진 타임테이블",
         description:
@@ -301,6 +307,7 @@ const resources = {
         program: "프로그램",
         access: "오시는 길",
         venue: "내부 지도",
+        stampRally: "스탬프 랠리",
         menuTitle: "메뉴",
         openMenu: "메뉴 열기",
         closeMenu: "메뉴 닫기",
