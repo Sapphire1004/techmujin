@@ -36,6 +36,8 @@ pnpm --config.verify-deps-before-run=false run dev --host 127.0.0.1 --port 5176 
 
 ## テスト用QR
 
+画像の発行コマンド・印刷・配布方法は [QR作成・配布ガイド](./stamp-rally-qr.md) を参照してください。
+
 QRコードには、デプロイ先のURLとチェックポイントIDを入れます。下記のURLはローカル確認用です。会場に置くQRは、配布先を決めてから同じホストのHTTPS URLに置き換えて作成してください。
 
 ```text
@@ -57,6 +59,7 @@ NFCタグでも同じURLを開けば同じ処理が動きます。Web NFCによ�
 ```bash
 pnpm test:stamp-rally
 pnpm test:stamp-rally-ui
+pnpm test:stamp-qr
 pnpm test:navigation
 pnpm typecheck
 pnpm build

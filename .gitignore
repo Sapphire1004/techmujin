@@ -4,3 +4,4 @@ dist
 .pnpm-store
 *.local
 .DS_Store
+/artifacts/stamp-rally-qr*/
