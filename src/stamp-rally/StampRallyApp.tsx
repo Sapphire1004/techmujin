@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "../components/AppHeader";
 import { saveLanguage, type SupportedLanguage } from "../i18n";
@@ -8,6 +8,8 @@ import {
   type AppView,
   type TimetableView,
 } from "../navigation";
+import { STAMP_LINK_PARAMETER } from "./rally";
+import { useStampCard, type StampLinkResult } from "./useStampCard";
 import "./stamp-rally.css";
 
 const StampRally = lazy(() =>
@@ -22,8 +24,11 @@ export function StampRallyApp({
   renderTimetable: (view: TimetableView) => ReactNode;
 }) {
   const { t, i18n } = useTranslation();
+  const stampCard = useStampCard();
+  const { visitLink } = stampCard;
+  const [linkResult, setLinkResult] = useState<StampLinkResult | null>(null);
   const [activeView, setActiveView] = useState<AppView>(() =>
-    getAppView(window.location.hash),
+    getAppView(window.location.hash, window.location.search),
   );
   const currentLanguage = (i18n.resolvedLanguage ?? "ja").split(
     "-",
@@ -46,18 +51,41 @@ export function StampRallyApp({
       );
   }, [activeView, currentLanguage, t]);
 
+  const changeRoute = useCallback(() => {
+    const url = new URL(window.location.href);
+    const view = getAppView(url.hash, url.search);
+    setActiveView(view);
+    const result = visitLink(url);
+    if (result) setLinkResult(result);
+    else if (view !== "stamp-rally") setLinkResult(null);
+    if (result && (result.kind === "invalid" || result.persisted)) {
+      // 保存に成功してからURLを整え、再読み込みでの再取得を防ぎます。
+      url.searchParams.delete(STAMP_LINK_PARAMETER);
+      url.hash = getAppHash("stamp-rally");
+      window.history.replaceState(window.history.state, "", url);
+    }
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [visitLink]);
+
   useEffect(() => {
-    const changeRoute = () => {
-      setActiveView(getAppView(window.location.hash));
-      window.scrollTo({ top: 0, behavior: "instant" });
-    };
+    changeRoute();
     window.addEventListener("hashchange", changeRoute);
-    return () => window.removeEventListener("hashchange", changeRoute);
-  }, []);
+    window.addEventListener("popstate", changeRoute);
+    return () => {
+      window.removeEventListener("hashchange", changeRoute);
+      window.removeEventListener("popstate", changeRoute);
+    };
+  }, [changeRoute]);
 
   const changeView = (view: AppView) => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete(STAMP_LINK_PARAMETER);
+    url.hash = getAppHash(view);
+    if (url.href !== window.location.href) {
+      window.history.pushState(window.history.state, "", url);
+    }
+    setLinkResult(null);
     setActiveView(view);
-    window.location.hash = getAppHash(view);
     window.scrollTo({ top: 0, behavior: "instant" });
   };
 
@@ -82,7 +110,11 @@ export function StampRallyApp({
             </div>
           }
         >
-          <StampRally />
+          <StampRally
+            stampCard={stampCard}
+            linkResult={linkResult}
+            onRetryStamp={changeRoute}
+          />
         </Suspense>
       ) : (
         renderTimetable(activeView)
