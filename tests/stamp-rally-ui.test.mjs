@@ -1,5 +1,8 @@
 import assert from "node:assert/strict";
 import { after, afterEach, beforeEach, test } from "node:test";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { act, createElement, StrictMode } from "react";
 import { Window } from "happy-dom";
 import { createServer } from "vite";
@@ -16,7 +19,10 @@ globalThis.requestAnimationFrame = dom.requestAnimationFrame.bind(dom);
 globalThis.cancelAnimationFrame = dom.cancelAnimationFrame.bind(dom);
 globalThis.IS_REACT_ACT_ENVIRONMENT = true;
 const { createRoot } = await import("react-dom/client");
+// 開発サーバーの最適化済みモジュールをテストで上書きしないよう分離します。
+const cacheDir = await mkdtemp(join(tmpdir(), "techmujin-rally-ui-vite-"));
 const vite = await createServer({
+  cacheDir,
   server: { middlewareMode: true, hmr: false, watch: null, ws: false },
   ssr: { noExternal: [/^@seed-design\//] },
   optimizeDeps: { noDiscovery: true, include: [] },
@@ -69,6 +75,7 @@ afterEach(async () => {
 after(async () => {
   await vite.close();
   await dom.happyDOM.abort();
+  await rm(cacheDir, { recursive: true, force: true });
 });
 
 test("初回URLで自動参加・保存し、StrictModeでも成功表示と取得数を保つ", async () => {
@@ -150,4 +157,21 @@ test("共通ヘッダーの画面切り替えと履歴移動が取得後も動�
   assert.equal(collectedCount(), 2);
   await navigate(`${appUrl}#timetable`, "hashchange");
   assert.equal(container.querySelector("[data-view]").getAttribute("data-view"), "program");
+});
+
+test("QR読み取りボタンでスキャン画面を開き、閉じて再度開ける", async () => {
+  await render(`${appUrl}?stamp=spot-1`);
+  const scanButton = container.querySelector(".rally-primary-action");
+  assert.match(scanButton.textContent, /この画面でQRを読む/);
+  await act(async () => scanButton.click());
+  for (let i = 0; i < 100 && !container.querySelector(".rally-dialog[open]"); i++) {
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
+  }
+  const dialog = container.querySelector(".rally-dialog[open]");
+  assert.ok(dialog);
+  assert.match(dialog.querySelector(".rally-dialog__action").textContent, /カメラをオン/);
+  await act(async () => dialog.querySelector(".rally-dialog__close").click());
+  assert.equal(container.querySelector(".rally-dialog"), null);
+  await act(async () => scanButton.click());
+  assert.ok(container.querySelector(".rally-dialog[open]"));
 });
