@@ -110,9 +110,13 @@ export function AppHeader({
           aria-label={t("navigation.brand")}
           onClick={() => changeView("program")}
         >
-          <span className="site-header__brand-mark" aria-hidden="true">
-            TM
-          </span>
+          <img
+            className="site-header__brand-logo"
+            src="/images/techmujin/logo-2026.svg"
+            alt="テック無尽 2026"
+            width={867}
+            height={330}
+          />
         </button>
 
         <div className="site-header__desktop">
