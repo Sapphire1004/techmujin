@@ -10,7 +10,8 @@ const VIEW_HASHES: Record<AppView, string> = {
   "stamp-rally": "#stamp-rally",
 };
 
-export function getAppView(hash: string): AppView {
+export function getAppView(hash: string, search = ""): AppView {
+  if (new URLSearchParams(search).has("stamp")) return "stamp-rally";
   return APP_VIEWS.find((view) => VIEW_HASHES[view] === hash) ?? "program";
 }
 

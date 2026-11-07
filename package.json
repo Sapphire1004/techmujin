@@ -12,7 +12,10 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "test:stamp-rally": "node --test tests/stamp-rally.test.mjs",
+    "test:stamp-rally-ui": "node --test tests/stamp-rally-ui.test.mjs",
+    "test:stamp-qr": "node --test tests/stamp-qr.test.mjs",
     "test:navigation": "node --test tests/navigation.test.mjs",
+    "generate:stamp-qr": "node scripts/generate-stamp-qr.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,6 +34,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "6.1.1",
+    "happy-dom": "21.0.4",
     "techmujin-api": "github:techmujin/techmujin-api",
     "typescript": "7.0.2",
     "vite": "8.2.2"

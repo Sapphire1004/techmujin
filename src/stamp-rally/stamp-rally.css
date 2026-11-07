@@ -23,6 +23,19 @@
   gap: var(--space-xl);
 }
 
+.rally-link-feedback {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-sm);
+  margin: 0;
+}
+
+.rally-link-feedback p {
+  flex: 1 1 15rem;
+  margin: 0;
+}
+
 .rally-steps {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -188,11 +201,6 @@
 
 .rally-section-heading h2 {
   margin: var(--space-2xs) 0 0;
-}
-
-.rally-section-heading > span {
-  color: var(--color-muted);
-  font-size: var(--text-xs);
 }
 
 .rally-eyebrow {
@@ -555,10 +563,6 @@
 
   .rally-steps > div:first-child {
     border-block-start: 0;
-  }
-
-  .rally-section-heading > span {
-    display: none;
   }
 
   .rally-stamp-card {

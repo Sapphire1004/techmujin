@@ -31,6 +31,14 @@ test("空または未対応のハッシュはプログラムへ戻す", () => {
   }
 });
 
+test("QR URLはハッシュに関係なくスタンプラリーを開く", () => {
+  for (const hash of ["", "#timetable", "#access", "#stamp-rally"]) {
+    assert.equal(getAppView(hash, "?stamp=spot-1"), "stamp-rally");
+  }
+  assert.equal(getAppView("#access", "?other=spot-1"), "access");
+  assert.equal(getAppView("", "?stamp=unknown"), "stamp-rally");
+});
+
 for (const language of ["ja", "en", "ko"]) {
   test(`${language}のラリー翻訳が共通ナビゲーションを上書きしない`, () => {
     const resource = rallyTranslations[language];
@@ -38,5 +46,10 @@ for (const language of ["ja", "en", "ko"]) {
     assert.ok(resource.rally.title);
     assert.ok(resource.rally.prototype);
     assert.ok(resource.rally.prototypeDescription);
+    assert.ok(resource.rally.openWithCamera);
+    assert.ok(resource.rally.scanInBrowser);
+    for (const key of ["added", "duplicate", "invalid", "saveFailed", "retry"]) {
+      assert.ok(resource.rally.link[key]);
+    }
   });
 }
