@@ -51,6 +51,27 @@ function LanguageSwitch({
   );
 }
 
+function HeaderBrand({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation();
+
+  return (
+    <button
+      className="site-header__brand"
+      type="button"
+      aria-label={t("navigation.brand")}
+      onClick={onClick}
+    >
+      <img
+        className="site-header__brand-logo"
+        src="/images/techmujin/logo-2026.svg"
+        alt="テック無尽 2026"
+        width={867}
+        height={330}
+      />
+    </button>
+  );
+}
+
 export function AppHeader({
   activeView,
   currentLanguage,
@@ -59,14 +80,17 @@ export function AppHeader({
 }: AppHeaderProps) {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
   const programMenuButtonRef = useRef<HTMLButtonElement>(null);
   const accessMenuButtonRef = useRef<HTMLButtonElement>(null);
   const venueMenuButtonRef = useRef<HTMLButtonElement>(null);
   const rallyMenuButtonRef = useRef<HTMLButtonElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(() => window.scrollY > 40);
 
   const closeMenu = () => {
     if (dialogRef.current?.open) dialogRef.current.close();
+    setIsMenuOpen(false);
   };
 
   const openMenu = () => {
@@ -92,7 +116,7 @@ export function AppHeader({
   };
 
   useEffect(() => {
-    const desktopQuery = window.matchMedia("(min-width: 48rem)");
+    const desktopQuery = window.matchMedia("(min-width: 901px)");
     const closeOnDesktop = () => {
       if (desktopQuery.matches) closeMenu();
     };
@@ -101,23 +125,25 @@ export function AppHeader({
     return () => desktopQuery.removeEventListener("change", closeOnDesktop);
   }, []);
 
+  useEffect(() => {
+    const update = () => setIsScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", update, { passive: true });
+    return () => window.removeEventListener("scroll", update);
+  }, []);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMenuOpen]);
+
   return (
-    <header className="site-header">
+    <header className="site-header" data-scrolled={isScrolled}>
       <div className="site-header__inner">
-        <button
-          className="site-header__brand"
-          type="button"
-          aria-label={t("navigation.brand")}
-          onClick={() => changeView("program")}
-        >
-          <img
-            className="site-header__brand-logo"
-            src="/images/techmujin/logo-2026.svg"
-            alt="テック無尽 2026"
-            width={867}
-            height={330}
-          />
-        </button>
+        <HeaderBrand onClick={() => changeView("program")} />
 
         <div className="site-header__desktop">
           <nav className="site-header__nav" aria-label={t("navigation.label")}>
@@ -165,6 +191,7 @@ export function AppHeader({
         </div>
 
         <button
+          ref={menuButtonRef}
           className="site-header__menu-button"
           type="button"
           aria-label={t("navigation.openMenu")}
@@ -173,7 +200,7 @@ export function AppHeader({
           onClick={openMenu}
         >
           <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 6h16M4 12h16M4 18h16" />
+            <path d="M4 8h16M4 15h16" />
           </svg>
         </button>
       </div>
@@ -182,16 +209,22 @@ export function AppHeader({
         className="site-menu"
         id="mobile-navigation"
         ref={dialogRef}
-        aria-labelledby="mobile-navigation-title"
-        onCancel={() => setIsMenuOpen(false)}
-        onClose={() => setIsMenuOpen(false)}
+        aria-label={t("navigation.menuTitle")}
+        onCancel={(event) => {
+          event.preventDefault();
+          closeMenu();
+        }}
+        onClose={() => {
+          setIsMenuOpen(false);
+          menuButtonRef.current?.focus({ preventScroll: true });
+        }}
         onClick={(event) => {
           if (event.target === event.currentTarget) closeMenu();
         }}
       >
         <div className="site-menu__surface">
           <div className="site-menu__heading">
-            <strong id="mobile-navigation-title">{t("navigation.menuTitle")}</strong>
+            <HeaderBrand onClick={() => changeView("program")} />
             <button
               className="site-menu__close"
               type="button"
@@ -249,10 +282,10 @@ export function AppHeader({
 
           {isI18nEnabled && (
             <div className="site-menu__meta">
-            <LanguageSwitch
-              currentLanguage={currentLanguage}
-              onLanguageChange={onLanguageChange}
-            />
+              <LanguageSwitch
+                currentLanguage={currentLanguage}
+                onLanguageChange={onLanguageChange}
+              />
             </div>
           )}
         </div>
