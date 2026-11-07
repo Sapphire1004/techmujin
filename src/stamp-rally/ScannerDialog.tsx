@@ -3,19 +3,15 @@ import {
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
 } from "react";
 import { ActionButton, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import {
-  decodeQrImage,
   getCameraErrorCode,
-  QrReaderError,
   startQrCamera,
 } from "./qr";
 import type { StampScanResult } from "./rally";
 
-type InputMethod = "camera" | "image";
 type CameraState = "off" | "starting" | "on";
 
 export function ScannerDialog({
@@ -29,12 +25,9 @@ export function ScannerDialog({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const controllerRef = useRef<AbortController | undefined>(undefined);
-  const generationRef = useRef(0);
   const handledRef = useRef(false);
   const hintTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const [method, setMethod] = useState<InputMethod>("camera");
   const [cameraState, setCameraState] = useState<CameraState>("off");
-  const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<{
     message: string;
     success: boolean;
@@ -43,7 +36,6 @@ export function ScannerDialog({
   const stopCamera = useCallback(() => {
     controllerRef.current?.abort();
     controllerRef.current = undefined;
-    generationRef.current += 1;
     clearTimeout(hintTimerRef.current);
   }, []);
 
@@ -62,7 +54,6 @@ export function ScannerDialog({
       if (document.visibilityState === "hidden") {
         stopCamera();
         setCameraState("off");
-        setBusy(false);
       }
     };
     const stopWhenLeaving = () => stopCamera();
@@ -86,7 +77,6 @@ export function ScannerDialog({
       handledRef.current = true;
       stopCamera();
       setCameraState("off");
-      setBusy(false);
 
       const result = onScan(payload);
       const spot = result.spot?.title ?? "";
@@ -141,38 +131,6 @@ export function ScannerDialog({
     }
   };
 
-  const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-
-    stopCamera();
-    const requestGeneration = generationRef.current;
-    handledRef.current = false;
-    setBusy(true);
-    setFeedback(null);
-
-    try {
-      const payload = await decodeQrImage(file);
-      if (requestGeneration === generationRef.current) acceptPayload(payload);
-    } catch (error) {
-      if (requestGeneration !== generationRef.current) return;
-      const code =
-        error instanceof QrReaderError ? error.code : "imageNoQr";
-      setFeedback({ message: t(`rally.scanner.${code}`), success: false });
-    } finally {
-      if (requestGeneration === generationRef.current) setBusy(false);
-    }
-  };
-
-  const changeMethod = (nextMethod: InputMethod) => {
-    stopCamera();
-    setCameraState("off");
-    setBusy(false);
-    setFeedback(null);
-    setMethod(nextMethod);
-  };
-
   return (
     <dialog
       ref={dialogRef}
@@ -201,94 +159,52 @@ export function ScannerDialog({
       </div>
       <p className="rally-dialog__intro">{t("rally.scanner.description")}</p>
 
-      <div className="rally-tabs" role="group" aria-label={t("rally.scanner.method")}>
-        <button
-          type="button"
-          aria-pressed={method === "camera"}
-          onClick={() => changeMethod("camera")}
-        >
-          {t("rally.scanner.cameraTab")}
-        </button>
-        <button
-          type="button"
-          aria-pressed={method === "image"}
-          onClick={() => changeMethod("image")}
-        >
-          {t("rally.scanner.imageTab")}
-        </button>
-      </div>
-
-      {method === "camera" ? (
-        <>
-          <div className="rally-viewfinder">
-            <video
-              ref={videoRef}
-              muted
-              playsInline
-              aria-label={t("rally.scanner.cameraPreview")}
-              data-hidden={cameraState === "off"}
-            />
-            <div className="rally-viewfinder__frame" aria-hidden="true" />
-            {cameraState === "off" ? (
-              <div className="rally-viewfinder__placeholder">
-                <span aria-hidden="true">⌗</span>
-                <p>{t("rally.scanner.cameraFrame")}</p>
-              </div>
-            ) : (
-              <span className="rally-viewfinder__status">
-                {t(
-                  cameraState === "starting"
-                    ? "rally.scanner.connecting"
-                    : "rally.scanner.searching",
-                )}
-              </span>
-            )}
+      <div className="rally-viewfinder">
+        <video
+          ref={videoRef}
+          muted
+          playsInline
+          aria-label={t("rally.scanner.cameraPreview")}
+          data-hidden={cameraState === "off"}
+        />
+        <div className="rally-viewfinder__frame" aria-hidden="true" />
+        {cameraState === "off" ? (
+          <div className="rally-viewfinder__placeholder">
+            <span aria-hidden="true">⌗</span>
+            <p>{t("rally.scanner.cameraFrame")}</p>
           </div>
-          <ActionButton
-            className="rally-dialog__action"
-            variant="brandSolid"
-            size="large"
-            type="button"
-            onClick={() => {
-              if (cameraState === "off") void enableCamera();
-              else {
-                stopCamera();
-                setCameraState("off");
-              }
-            }}
-          >
+        ) : (
+          <span className="rally-viewfinder__status">
             {t(
-              cameraState === "off"
-                ? "rally.scanner.cameraOn"
-                : "rally.scanner.cameraOff",
+              cameraState === "starting"
+                ? "rally.scanner.connecting"
+                : "rally.scanner.searching",
             )}
-          </ActionButton>
-          <p className="rally-dialog__fineprint">
-            {t("rally.scanner.permission")}
-          </p>
-        </>
-      ) : (
-        <div className="rally-upload">
-          <span className="rally-upload__icon" aria-hidden="true">↑</span>
-          <Text as="h3" textStyle="t5Bold">
-            {t("rally.scanner.uploadTitle")}
-          </Text>
-          <p>{t("rally.scanner.uploadDescription")}</p>
-          <label className="rally-file-button">
-            {t(busy ? "rally.scanner.reading" : "rally.scanner.chooseImage")}
-            <input
-              type="file"
-              accept="image/*"
-              aria-label={t("rally.scanner.chooseImage")}
-              disabled={busy}
-              onChange={(event) => void uploadImage(event)}
-            />
-          </label>
-          <span className="rally-dialog__fineprint">
-            {t("rally.scanner.formats")}
           </span>
-        </div>
-      )}
+        )}
+      </div>
+      <ActionButton
+        className="rally-dialog__action"
+        variant="brandSolid"
+        size="large"
+        type="button"
+        onClick={() => {
+          if (cameraState === "off") void enableCamera();
+          else {
+            stopCamera();
+            setCameraState("off");
+          }
+        }}
+      >
+        {t(
+          cameraState === "off"
+            ? "rally.scanner.cameraOn"
+            : "rally.scanner.cameraOff",
+        )}
+      </ActionButton>
+      <p className="rally-dialog__fineprint">
+        {t("rally.scanner.permission")}
+      </p>
 
       {feedback && (
         <div

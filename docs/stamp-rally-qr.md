@@ -50,7 +50,7 @@ https://techmujin-timetable.zhzkal2.workers.dev/?stamp=spot-1#stamp-rally
 pnpm generate:stamp-qr --base-url http://localhost:5176/ --output artifacts/stamp-rally-qr-local
 ```
 
-これはPCのブラウザー内の補助スキャナーで読み取る場合などに使います。スマートフォンでQRを読むと、`localhost` はスマートフォン自身を指すため、PCのアプリには接続できません。実機確認には、URL自動取得に対応したバージョンを公開したHTTPSの配布先URLを使ってください。
+PCのカメラでQRを読み取る場合などのローカル確認用です。スマートフォンでQRを読むと、`localhost` はスマートフォン自身を指すため、PCのアプリには接続できません。実機確認には、URL自動取得に対応したバージョンを公開したHTTPSの配布先URLを使ってください。
 
 ## 設置前の確認
 
