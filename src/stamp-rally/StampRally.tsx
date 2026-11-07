@@ -187,7 +187,10 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
               variant="brandSolid"
               size="large"
               type="button"
-              onClick={join}
+              onClick={() => {
+                join();
+                setScannerOpen(true);
+              }}
             >
               {t("rally.join")}
             </ActionButton>}

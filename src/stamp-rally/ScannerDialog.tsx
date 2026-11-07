@@ -52,6 +52,12 @@ export function ScannerDialog({
     const previousFocus = document.activeElement;
     dialog?.showModal();
 
+    // 開いた直後に起動します。StrictModeの再実行で権限要求を重複させません。
+    let active = true;
+    queueMicrotask(() => {
+      if (active && document.visibilityState !== "hidden") void enableCamera();
+    });
+
     const stopWhenHidden = () => {
       if (document.visibilityState === "hidden") {
         stopCamera();
@@ -65,6 +71,7 @@ export function ScannerDialog({
     window.addEventListener("pagehide", stopWhenLeaving);
 
     return () => {
+      active = false;
       stopCamera();
       document.removeEventListener("visibilitychange", stopWhenHidden);
       window.removeEventListener("pagehide", stopWhenLeaving);

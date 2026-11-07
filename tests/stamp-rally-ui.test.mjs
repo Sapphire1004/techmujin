@@ -175,3 +175,45 @@ test("QR読み取りボタンでスキャン画面を開き、閉じて再度開
   await act(async () => scanButton.click());
   assert.ok(container.querySelector(".rally-dialog[open]"));
 });
+
+test("参加ボタン1回でカード作成とカメラ要求へ進み、再度開く場合も自動起動する", async (t) => {
+  const secureContext = Object.getOwnPropertyDescriptor(dom, "isSecureContext");
+  const mediaDevices = Object.getOwnPropertyDescriptor(dom.navigator, "mediaDevices");
+  let requests = 0;
+  Object.defineProperty(dom, "isSecureContext", { configurable: true, value: true });
+  Object.defineProperty(dom.navigator, "mediaDevices", {
+    configurable: true,
+    value: { getUserMedia: async () => {
+      requests++;
+      throw Object.assign(new Error("permission denied"), { name: "NotAllowedError" });
+    } },
+  });
+  t.after(() => {
+    if (secureContext) Object.defineProperty(dom, "isSecureContext", secureContext);
+    else delete dom.isSecureContext;
+    if (mediaDevices) Object.defineProperty(dom.navigator, "mediaDevices", mediaDevices);
+    else delete dom.navigator.mediaDevices;
+  });
+
+  await render(`${appUrl}#stamp-rally`);
+  const joinButton = container.querySelector(".rally-primary-action");
+  assert.equal(joinButton.textContent, "参加する");
+  assert.equal(requests, 0);
+  await act(async () => joinButton.click());
+  for (let i = 0; i < 100 && requests === 0; i++) {
+    await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
+  }
+  assert.ok(savedCard().joinedAt);
+  assert.deepEqual(savedCard().visits, {});
+  assert.equal(requests, 1);
+  const dialog = container.querySelector(".rally-dialog[open]");
+  assert.ok(dialog);
+  assert.match(dialog.querySelector('[role="alert"]').textContent, /カメラへのアクセスが許可されていません/);
+
+  await act(async () => dialog.querySelector(".rally-dialog__close").click());
+  const scanButton = container.querySelector(".rally-primary-action");
+  assert.match(scanButton.textContent, /この画面でQRを読む/);
+  await act(async () => scanButton.click());
+  assert.equal(requests, 2);
+  assert.ok(container.querySelector(".rally-dialog[open]"));
+});
