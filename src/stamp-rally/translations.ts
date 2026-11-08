@@ -1,8 +1,6 @@
 export const rallyTranslations = {
   ja: {
       rally: {
-        prototype: "試作版",
-        prototypeDescription: "ブース情報・会場配置は今後変更される場合があります。",
         loading: "スタンプラリーを読み込んでいます。",
         metaTitle: "テック無尽 スタンプラリー",
         metaDescription: "会場のQRコードを読み取り、スタンプを集めるテック無尽のスタンプラリーです。",
@@ -90,8 +88,6 @@ export const rallyTranslations = {
   },
   en: {
       rally: {
-        prototype: "Prototype",
-        prototypeDescription: "Booth information and venue layout may change.",
         loading: "Loading stamp rally…",
         metaTitle: "TechMujin Stamp Rally",
         metaDescription: "Collect stamps by scanning QR codes around the TechMujin venue.",
@@ -179,8 +175,6 @@ export const rallyTranslations = {
   },
   ko: {
       rally: {
-        prototype: "임시 버전",
-        prototypeDescription: "부스 정보·행사장 배치는 추후 변경될 수 있습니다.",
         loading: "스탬프 랠리를 불러오는 중입니다.",
         metaTitle: "테크무진 스탬프 랠리",
         metaDescription: "행사장의 QR 코드를 스캔하고 스탬프를 모으는 테크무진 스탬프 랠리입니다.",

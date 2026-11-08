@@ -95,10 +95,6 @@ export function StampRally({ spots, stampCard, linkResult, onRetryStamp }: {
       </header>
 
       <main className="rally-main">
-        <p className="rally-prototype-notice" role="note">
-          <strong>{t("rally.prototype")}</strong>
-          {t("rally.prototypeDescription")}
-        </p>
         {storageWarningKey && (
           <p className="storage-warning" role="alert">
             {t(storageWarningKey)}
