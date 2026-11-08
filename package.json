@@ -13,9 +13,7 @@
     "typecheck": "tsc --noEmit",
     "test:stamp-rally": "node --test tests/stamp-rally.test.mjs",
     "test:stamp-rally-ui": "node --test tests/stamp-rally-ui.test.mjs",
-    "test:stamp-qr": "node --test tests/stamp-qr.test.mjs",
     "test:navigation": "node --test tests/navigation.test.mjs",
-    "generate:stamp-qr": "node scripts/generate-stamp-qr.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
