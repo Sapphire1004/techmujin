@@ -24,7 +24,7 @@ pnpm install --frozen-lockfile
 pnpm dev --host 127.0.0.1 --port 5176 --strictPort
 ```
 
-`http://localhost:5176/?stamp=spot-1#stamp-rally` を開くと、チェックポイント1のスタンプが記録されます。`stamp` の値を変更すると他のチェックポイントも確認できます。`#timetable` でタイムテーブルへ戻れます。
+`http://localhost:5176/#stamp-rally` でスタンプラリー画面を開きます。スタンプ取得の確認には、別途用意したテスト用QRを使用してください。`#timetable` でタイムテーブルへ戻れます。
 
 既存プロジェクトの `node_modules` を共有しているローカル作業フォルダーでは、依存関係の自動再インストールを避けるため、次の起動コマンドを使用します。
 
@@ -34,19 +34,9 @@ pnpm --config.verify-deps-before-run=false run dev --host 127.0.0.1 --port 5176 
 
 カメラを使用するにはlocalhostまたはHTTPSの安全なコンテキストが必要です。スマートフォンで別の端末の開発サーバーを開く場合は、HTTPのLANアドレスではなくHTTPSのプレビュー環境などを使用してください。
 
-## テスト用QR
+## スタンプ取得の確認
 
-画像の発行コマンド・印刷・配布方法は [QR作成・配布ガイド](./stamp-rally-qr.md) を参照してください。
-
-QRコードには、デプロイ先のURLとチェックポイントIDを入れます。下記のURLはローカル確認用です。会場に置くQRは、配布先を決めてから同じホストのHTTPS URLに置き換えて作成してください。
-
-```text
-http://localhost:5176/?stamp=spot-1#stamp-rally
-http://localhost:5176/?stamp=spot-2#stamp-rally
-http://localhost:5176/?stamp=spot-3#stamp-rally
-http://localhost:5176/?stamp=spot-4#stamp-rally
-http://localhost:5176/?stamp=spot-5#stamp-rally
-```
+別途用意したテスト用QRをスマートフォンの標準カメラで読み取り、リンクを開いて取得を確認します。QRの発行・印刷方法は、この試作の対応範囲に含めていません。
 
 `#stamp-rally` がなくても取得でき、スタンプラリー画面へ移動します。存在しないID、空のID、複数の `stamp` パラメーターは無効です。無効なURLを開いても参加や取得は行いません。
 
@@ -59,7 +49,6 @@ NFCタグでも同じURLを開けば同じ処理が動きます。Web NFCによ�
 ```bash
 pnpm test:stamp-rally
 pnpm test:stamp-rally-ui
-pnpm test:stamp-qr
 pnpm test:navigation
 pnpm typecheck
 pnpm build
