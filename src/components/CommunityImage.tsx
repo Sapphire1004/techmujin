@@ -1,4 +1,4 @@
-const DEFAULT_COMMUNITY_ICON = "/images/techmujin/icon-192.png";
+const DEFAULT_COMMUNITY_ICON = "/images/techmujin/icon-512.png";
 
 export function CommunityImage({ src, size = 40, className }: {
   src: string | null;

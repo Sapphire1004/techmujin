@@ -238,9 +238,9 @@
 .rally-stamp-card__seal {
   position: relative;
   display: grid;
-  width: 5rem;
-  height: 5rem;
-  margin: var(--space-md) auto;
+  width: min(7rem, calc(100% - 1rem));
+  aspect-ratio: 1;
+  margin: var(--space-sm) auto;
   place-items: center;
   border: var(--rule-strong) dashed var(--color-rule);
   border-radius: 50%;
@@ -573,11 +573,6 @@
 
   .rally-stamp-card__top {
     font-size: 0.5625rem;
-  }
-
-  .rally-stamp-card__seal {
-    width: 4.5rem;
-    height: 4.5rem;
   }
 
   .rally-dialog {

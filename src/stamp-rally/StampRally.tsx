@@ -258,7 +258,7 @@ export function StampRally({ spots, stampCard, linkResult, onRetryStamp }: {
                       <span>{t(recentSpotId === spot.id ? "rally.scanner.justCollected" : visitedAt ? "rally.visited" : "rally.unvisited")}</span>
                     </div>
                     <div className="rally-stamp-card__seal" aria-hidden="true">
-                      <CommunityImage src={spot.iconUrl} size={56} className="rally-stamp-card__image" />
+                      <CommunityImage src={spot.iconUrl} size={80} className="rally-stamp-card__image" />
                       {visitedAt && <span className="rally-stamp-card__check">✓</span>}
                     </div>
                     <Text as="h3" textStyle="t5Bold">
