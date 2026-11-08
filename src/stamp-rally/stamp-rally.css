@@ -527,7 +527,7 @@
   }
 
   .rally-passport {
-    position: static;
+    position: relative;
   }
 
   .rally-stamp-grid {

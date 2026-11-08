@@ -274,52 +274,5 @@
         "height": 1110
       }
     }
-  ],
-  "booths": [
-    {
-      "id": "shingen-py",
-      "number": null,
-      "name": "Shingen.py",
-      "exhibitor": "Shingen.py",
-      "description": "Pythonの入門から実務利用までを扱うコミュニティです。",
-      "planId": "main-hall",
-      "url": "https://shingenpy.connpass.com/"
-    },
-    {
-      "id": "kintone-cafe-yamanashi",
-      "number": null,
-      "name": "kintone Café 山梨",
-      "exhibitor": "kintone Café 山梨",
-      "description": "kintoneを使った業務改善の事例やノウハウを共有するコミュニティです。",
-      "planId": "main-hall",
-      "url": "https://kintonecafe-yamanashi.qloba.com/"
-    },
-    {
-      "id": "soracom-ug-yamanashi",
-      "number": null,
-      "name": "SORACOM UG 山梨",
-      "exhibitor": "SORACOM UG 山梨",
-      "description": "IoTプラットフォームSORACOMのユーザーグループです。",
-      "planId": "main-hall",
-      "url": "https://soracom.jp/"
-    },
-    {
-      "id": "scratch-day-yamanashi",
-      "number": null,
-      "name": "スクラッチディ in 山梨",
-      "exhibitor": "スクラッチディ in 山梨",
-      "description": "子ども向けのScratchプログラミングイベントです。",
-      "planId": "main-hall",
-      "url": "https://scratch.itolab.com/"
-    },
-    {
-      "id": "kainokuni-mokumokukai",
-      "number": null,
-      "name": "甲斐国もくもく会",
-      "exhibitor": "甲斐国もくもく会",
-      "description": "各自が作業や学習を持ち寄るもくもく会です。",
-      "planId": "main-hall",
-      "url": "https://kainokuni.org/"
-    }
   ]
 }

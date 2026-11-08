@@ -8,6 +8,7 @@ import {
   STAMP_RALLY_STORAGE_KEY,
   type StampCard,
   type StampScanResult,
+  type StampSpot,
 } from "./rally";
 
 export type StampSaveResult = StampScanResult & { persisted: boolean };
@@ -36,7 +37,7 @@ function loadStampCard(): {
   }
 }
 
-export function useStampCard() {
+export function useStampCard(spots: readonly StampSpot[]) {
   const [initial] = useState(loadStampCard);
   const [card, setCard] = useState(initial.card);
   const [warning, setWarning] = useState<StampStorageWarning>(initial.warning);
@@ -87,20 +88,21 @@ export function useStampCard() {
         latestCard(),
         payload,
         new Date().toISOString(),
+        spots,
         window.location.href,
       );
       const valid = result.kind === "added" || result.kind === "duplicate";
       return { ...result, persisted: valid && save(result.card) };
     },
-    [latestCard, save],
+    [latestCard, save, spots],
   );
 
   const visitLink = useCallback((url: URL): StampLinkResult | null => {
-    const result = claimStampLink(latestCard(), url, new Date().toISOString());
+    const result = claimStampLink(latestCard(), url, new Date().toISOString(), spots);
     if (!result) return null;
     const valid = result.kind === "added" || result.kind === "duplicate";
     return { ...result, persisted: valid && save(result.card) };
-  }, [latestCard, save]);
+  }, [latestCard, save, spots]);
 
   return { card, warning, join, scan, visitLink };
 }

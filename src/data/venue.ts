@@ -32,16 +32,6 @@ const venuePlanSchema = z.object({
   features: z.array(venueFeatureSchema),
 });
 
-const boothSchema = z.object({
-  id: z.string().min(1),
-  number: z.string().min(1).nullable(),
-  name: z.string().min(1),
-  exhibitor: z.string().min(1),
-  description: z.string().min(1),
-  planId: z.string().min(1),
-  url: z.url(),
-});
-
 const venueGuideSchema = z
   .object({
     venue: z.object({
@@ -53,11 +43,9 @@ const venueGuideSchema = z
     openHours: z.string().min(1),
     layoutStatus: z.literal("reference-layout"),
     plans: z.array(venuePlanSchema).min(1),
-    booths: z.array(boothSchema),
   })
-  .superRefine(({ plans, booths }, context) => {
+  .superRefine(({ plans }, context) => {
     const planIds = new Set<string>();
-    const boothSlotsByPlan = new Map<string, Set<string>>();
 
     plans.forEach((plan, planIndex) => {
       if (planIds.has(plan.id)) {
@@ -117,35 +105,11 @@ const venueGuideSchema = z
           boothSlots.add(feature.boothNumber);
         }
       });
-
-      boothSlotsByPlan.set(plan.id, boothSlots);
-    });
-
-    booths.forEach((booth, boothIndex) => {
-      if (!planIds.has(booth.planId)) {
-        context.addIssue({
-          code: "custom",
-          message: `Unknown planId: ${booth.planId}`,
-          path: ["booths", boothIndex, "planId"],
-        });
-      }
-
-      if (
-        booth.number &&
-        !boothSlotsByPlan.get(booth.planId)?.has(booth.number)
-      ) {
-        context.addIssue({
-          code: "custom",
-          message: `Unknown booth number in plan: ${booth.number}`,
-          path: ["booths", boothIndex, "number"],
-        });
-      }
     });
   });
 
 export type VenueGuideData = z.infer<typeof venueGuideSchema>;
 export type VenuePlan = VenueGuideData["plans"][number];
 export type VenueFeature = VenuePlan["features"][number];
-export type VenueBooth = VenueGuideData["booths"][number];
 
 export const venueGuideResult = venueGuideSchema.safeParse(venueMapJson);

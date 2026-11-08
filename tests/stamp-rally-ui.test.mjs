@@ -8,6 +8,7 @@ import { Window } from "happy-dom";
 import { createServer } from "vite";
 import { BrowserQRCodeReader } from "@zxing/browser";
 import { STAMP_RALLY_STORAGE_KEY } from "../src/stamp-rally/rally.ts";
+import { makeBoothList } from "./fixtures/booths.mjs";
 
 // 実端末のカメラではなく、URLを開いた後のReact・保存・画面遷移を検証します。
 const appUrl = "http://localhost:5176/";
@@ -30,6 +31,8 @@ const vite = await createServer({
   appType: "custom",
 });
 const { StampRallyApp } = await vite.ssrLoadModule("/src/stamp-rally/StampRallyApp.tsx");
+const { VenueGuide } = await vite.ssrLoadModule("/src/components/VenueGuide.tsx");
+const originalFetch = globalThis.fetch;
 let root;
 let container;
 const originalSetItem = dom.localStorage.setItem;
@@ -79,17 +82,18 @@ async function openScanner() {
   return container.querySelector(".rally-dialog[open]");
 }
 
-async function render(url) {
+async function render(url, { waitForCard = true } = {}) {
   dom.history.replaceState(null, "", url);
   await act(async () => {
     root.render(createElement(StrictMode, null,
       createElement(StampRallyApp, {
-        renderTimetable: (view) => createElement("main", { "data-view": view }, view),
+        renderTimetable: (view, booths) => createElement("main", { "data-view": view },
+          view === "venue" ? createElement(VenueGuide, { view: "interior", booths }) : view),
       }),
     ));
   });
   // 初回の遅延読み込みが完了するまで、上限を設けて待ちます。
-  for (let i = 0; i < 100 && !container.querySelector("#stamp-rally-panel"); i++) {
+  for (let i = 0; waitForCard && i < 100 && !container.querySelector("#stamp-rally-panel"); i++) {
     await act(async () => { await new Promise((resolve) => setTimeout(resolve, 10)); });
   }
 }
@@ -102,6 +106,7 @@ async function navigate(url, event = "popstate") {
 }
 
 beforeEach(() => {
+  globalThis.fetch = async () => new Response(JSON.stringify(makeBoothList()));
   dom.localStorage.clear();
   dom.document.body.style.overflow = "";
   dom.document.body.innerHTML = '<div id="test-root"></div>';
@@ -110,6 +115,7 @@ beforeEach(() => {
 });
 
 afterEach(async () => {
+  globalThis.fetch = originalFetch;
   setStorageWriter(originalSetItem);
   await act(async () => root.unmount());
 });
@@ -313,6 +319,7 @@ test("読み取り成功はカメラを停止し、時間が経っても結果�
   await act(async () => t.mock.timers.tick(30_000));
   assert.equal(dialog.open, true);
   assert.ok(dialog.querySelector('[data-kind="added"]'));
+  assert.match(dialog.querySelector('.rally-scan-result__progress').textContent, /1\s*\/\s*4/);
   await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
   assert.equal(container.querySelector('.rally-dialog'), null);
   assert.equal(dom.document.activeElement, container.querySelector('.rally-collection'));
@@ -361,4 +368,89 @@ test("スキャン後の保存失敗は完了表示にせず、再撮影なし�
   await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
   assert.equal(container.querySelector('.rally-dialog'), null);
   assert.equal(collectedCount(), 2);
+});
+
+test("APIの8ブースを表示し、過去の対象外スタンプを完了条件に含めない", async () => {
+  const data = makeBoothList(["1", "2", "3", "4", "5", "6", "7", "A-1"]);
+  globalThis.fetch = async () => new Response(JSON.stringify(data));
+  const existing = {
+    version: 1, joinedAt: "2026-11-01T01:00:00Z",
+    visits: Object.fromEntries(["1", "2", "3", "4", "5", "6", "7", "removed"].map(number => [`spot-${number}`, "2026-11-01T01:01:00Z"])),
+  };
+  dom.localStorage.setItem(STAMP_RALLY_STORAGE_KEY, JSON.stringify(existing));
+  await render(`${appUrl}#stamp-rally`);
+  assert.equal(container.querySelectorAll(".rally-stamp-card").length, 8);
+  assert.equal(collectedCount(), 7);
+  assert.equal(container.querySelector('[role="progressbar"]').getAttribute("aria-valuemax"), "8");
+  assert.match(container.querySelector('.rally-progress__numbers').textContent, /7\s*\/\s*8/);
+  assert.match(container.querySelector('.masthead__note').textContent, /8か所/);
+  assert.ok(container.querySelector(".rally-primary-action"));
+  await navigate(`${appUrl}?stamp=spot-A-1`);
+  assert.equal(collectedCount(), 8);
+  assert.match(container.querySelector('.rally-progress__numbers').textContent, /8\s*\/\s*8/);
+  assert.equal(container.querySelector(".rally-primary-action"), null);
+  assert.ok(savedCard().visits["spot-removed"]);
+});
+
+test("API取得中はURLを保ち、取得成功後に初回スタンプを処理する", async () => {
+  const pending = [];
+  globalThis.fetch = () => new Promise(resolve => pending.push(resolve));
+  await render(`${appUrl}?stamp=spot-2`, { waitForCard: false });
+  assert.equal(dom.location.search, "?stamp=spot-2");
+  assert.equal(savedCard(), null);
+  assert.equal(container.querySelector(".rally-primary-action"), null);
+  assert.match(container.querySelector('[role="status"]').textContent, /ブース情報を読み込んでいます/);
+  await act(async () => {
+    for (const resolve of pending) resolve(new Response(JSON.stringify(makeBoothList())));
+  });
+  assert.equal(collectedCount(), 1);
+  assert.ok(savedCard().visits["spot-2"]);
+  assert.equal(dom.location.search, "");
+});
+
+test("API失敗時は保存済みカードとURLを保ち、再試行後に取得する", async () => {
+  globalThis.fetch = async () => new Response("unavailable", { status: 503 });
+  const existing = { version: 1, joinedAt: "2026-11-01T01:00:00Z", visits: { "spot-1": "2026-11-01T01:01:00Z" } };
+  dom.localStorage.setItem(STAMP_RALLY_STORAGE_KEY, JSON.stringify(existing));
+  await render(`${appUrl}?stamp=spot-3`, { waitForCard: false });
+  assert.deepEqual(savedCard(), existing);
+  assert.equal(dom.location.search, "?stamp=spot-3");
+  const error = container.querySelector('.venue-state[role="alert"]');
+  assert.match(error.textContent, /取得できませんでした/);
+  assert.equal(container.querySelector('.rally-primary-action'), null);
+  globalThis.fetch = async () => new Response(JSON.stringify(makeBoothList()));
+  await act(async () => error.querySelector("button").click());
+  assert.equal(collectedCount(), 2);
+  assert.ok(savedCard().visits["spot-3"]);
+  assert.equal(dom.location.search, "");
+});
+
+test("ブースが0件なら参加・読み取りや誤った完了状態を表示しない", async () => {
+  globalThis.fetch = async () => new Response(JSON.stringify(makeBoothList([])));
+  await render(`${appUrl}#stamp-rally`, { waitForCard: false });
+  assert.match(container.querySelector('.venue-state[role="status"]').textContent, /準備しています/);
+  assert.equal(container.querySelector('.rally-primary-action'), null);
+  assert.equal(container.querySelector('[role="progressbar"]'), null);
+  assert.equal(savedCard(), null);
+});
+
+test("会場のブース一覧とスタンプカードが同じAPIの番号・名称を使う", async () => {
+  const data = makeBoothList(["A-1", "0", "3"]);
+  data.booths[0].title = "共同展示";
+  data.booths[0].communities.push({ ...data.booths[0].communities[0], id: "another", name: "別の出展者", url: null });
+  data.booths[1].title = "運営受付";
+  data.booths[1].communities = [];
+  data.booths[2].communities[0].url = null;
+  globalThis.fetch = async () => new Response(JSON.stringify(data));
+  await render(`${appUrl}#stamp-rally`);
+  const titles = [...container.querySelectorAll('.rally-stamp-card h3')].map(node => node.textContent);
+  assert.deepEqual(titles, ["共同展示", "運営受付", "kintone Café 山梨"]);
+  await navigate(`${appUrl}#venue`);
+  const booths = [...container.querySelectorAll('.booth-card')];
+  assert.equal(booths.length, 3);
+  assert.deepEqual(booths.map(booth => booth.querySelector('h4').textContent), titles);
+  assert.match(booths[0].textContent, /別の出展者/);
+  assert.match(booths[0].querySelector('.booth-card__number').textContent, /A-1/);
+  assert.equal(booths[1].querySelector('a'), null);
+  assert.equal(booths[2].querySelector('a'), null);
 });

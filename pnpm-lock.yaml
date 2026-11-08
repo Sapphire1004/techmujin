@@ -52,8 +52,8 @@ importers:
         specifier: 21.0.4
         version: 21.0.4
       techmujin-api:
-        specifier: github:techmujin/techmujin-api
-        version: https://codeload.github.com/techmujin/techmujin-api/tar.gz/1791b31a2c274cd29cde24bbd1ac2aecf9b9ffe8
+        specifier: github:techmujin/techmujin-api#876f3d18be599fc3edd6a62aab017898cece954e
+        version: https://codeload.github.com/techmujin/techmujin-api/tar.gz/876f3d18be599fc3edd6a62aab017898cece954e
       typescript:
         specifier: 7.0.2
         version: 7.0.2
@@ -1387,8 +1387,8 @@ packages:
   tabbable@6.5.0:
     resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
 
-  techmujin-api@https://codeload.github.com/techmujin/techmujin-api/tar.gz/1791b31a2c274cd29cde24bbd1ac2aecf9b9ffe8:
-    resolution: {gitHosted: true, integrity: sha512-HvX9ddVjbgK57/y29XstAk0QcRvOz3Ara3N39wrFXVceB0HGlp0jUX9cALLlJWOhMWFkisOJimDiTTNZa8zZdA==, tarball: https://codeload.github.com/techmujin/techmujin-api/tar.gz/1791b31a2c274cd29cde24bbd1ac2aecf9b9ffe8}
+  techmujin-api@https://codeload.github.com/techmujin/techmujin-api/tar.gz/876f3d18be599fc3edd6a62aab017898cece954e:
+    resolution: {gitHosted: true, integrity: sha512-d1Lk8wT/PRDR+U51Xzw/rvyi6DuFgwbkXq/OwjVMTX2aYi+97yyjCS4n9Gbd+X5LV/6H6Umo/gT8UYdXc7aSKw==, tarball: https://codeload.github.com/techmujin/techmujin-api/tar.gz/876f3d18be599fc3edd6a62aab017898cece954e}
     version: 0.1.0
     engines: {node: '>=22'}
 
@@ -2818,7 +2818,7 @@ snapshots:
 
   tabbable@6.5.0: {}
 
-  techmujin-api@https://codeload.github.com/techmujin/techmujin-api/tar.gz/1791b31a2c274cd29cde24bbd1ac2aecf9b9ffe8:
+  techmujin-api@https://codeload.github.com/techmujin/techmujin-api/tar.gz/876f3d18be599fc3edd6a62aab017898cece954e:
     dependencies:
       zod: 4.5.4
 

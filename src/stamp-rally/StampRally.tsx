@@ -8,7 +8,7 @@ import {
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
-import { STAMP_SPOTS } from "./rally";
+import { countCollectedStamps, type StampSpot } from "./rally";
 import type { useStampCard, StampLinkResult, StampStorageWarning } from "./useStampCard";
 import "./stamp-rally.css";
 
@@ -33,7 +33,8 @@ function warningKey(warning: StampStorageWarning) {
   return warning ? `rally.storage.${warning}` : null;
 }
 
-export function StampRally({ stampCard, linkResult, onRetryStamp }: {
+export function StampRally({ spots, stampCard, linkResult, onRetryStamp }: {
+  spots: readonly StampSpot[];
   stampCard: ReturnType<typeof useStampCard>;
   linkResult: StampLinkResult | null;
   onRetryStamp: () => void;
@@ -44,14 +45,14 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
   const [recentSpotId, setRecentSpotId] = useState<string | null>(null);
   const collectionRef = useRef<HTMLElement>(null);
   const returnToCardRef = useRef(false);
-  const count = Object.keys(card.visits).length;
-  const complete = count === STAMP_SPOTS.length;
+  const count = countCollectedStamps(card, spots);
+  const complete = spots.length > 0 && count === spots.length;
   const joined = card.joinedAt !== null;
   const currentLanguage = (i18n.resolvedLanguage ?? "ja").split(
     "-",
   )[0] as SupportedLanguage;
   const storageWarningKey = warningKey(warning);
-  const recentSpot = STAMP_SPOTS.find((spot) => spot.id === recentSpotId);
+  const recentSpot = spots.find((spot) => spot.id === recentSpotId);
   const openScanner = () => {
     setRecentSpotId(null);
     setScannerOpen(true);
@@ -87,7 +88,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
           color="fg.neutralMuted"
           textStyle="t4Regular"
         >
-          {t("rally.note")}
+          {t("rally.note", { count: spots.length })}
         </Text>
         <div className="masthead__rule" aria-hidden="true" />
       </header>
@@ -133,7 +134,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <strong>{t(`rally.steps.${step}.title`)}</strong>
-                <p>{t(`rally.steps.${step}.description`)}</p>
+                <p>{t(`rally.steps.${step}.description`, { count: spots.length })}</p>
               </div>
             </div>
           ))}
@@ -173,12 +174,13 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
                   : joined
                     ? "rally.progress.joinedDescription"
                     : "rally.progress.readyDescription",
+                { count: spots.length },
               )}
             </p>
             <div className="rally-progress__numbers" aria-live="polite">
               <span>{t("rally.progress.title")}</span>
               <strong>
-                {count}<span> / {STAMP_SPOTS.length}</span>
+                {count}<span> / {spots.length}</span>
               </strong>
             </div>
             <div
@@ -186,16 +188,16 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
               role="progressbar"
               aria-label={t("rally.progress.label")}
               aria-valuemin={0}
-              aria-valuemax={STAMP_SPOTS.length}
+              aria-valuemax={spots.length}
               aria-valuenow={count}
             >
-              <span style={{ width: `${(count / STAMP_SPOTS.length) * 100}%` }} />
+              <span style={{ width: `${spots.length ? (count / spots.length) * 100 : 0}%` }} />
             </div>
             <p className="rally-progress__caption">
               {complete
                 ? t("rally.progress.allCollected")
                 : t("rally.progress.remaining", {
-                    count: STAMP_SPOTS.length - count,
+                    count: spots.length - count,
                   })}
             </p>
             {!joined && <ActionButton
@@ -239,7 +241,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
               </div>
             </div>
             <div className="rally-stamp-grid">
-              {STAMP_SPOTS.map((spot) => {
+              {spots.map((spot) => {
                 const visitedAt = card.visits[spot.id];
                 return (
                   <article
@@ -264,7 +266,6 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
                     <Text as="h3" textStyle="t5Bold">
                       {spot.title}
                     </Text>
-                    <p>{spot.description}</p>
                     <div className="rally-stamp-card__time">
                       {visitedAt
                         ? formatVisitTime(visitedAt, currentLanguage)
@@ -281,6 +282,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
       {scannerOpen && (
         <Suspense fallback={null}>
           <ScannerDialog
+            spots={spots}
             onScan={scan}
             onClose={() => setScannerOpen(false)}
             onViewCard={(spotId) => {

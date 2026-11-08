@@ -1447,6 +1447,22 @@ button[data-state="error"] {
   overflow-wrap: anywhere;
 }
 
+.booth-card__community {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-xs);
+}
+
+.booth-card__community img {
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+}
+
+.booth-card__description {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
 .booth-card p {
   color: var(--color-muted);
   font-size: var(--text-sm);
