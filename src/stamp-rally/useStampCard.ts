@@ -10,7 +10,8 @@ import {
   type StampScanResult,
 } from "./rally";
 
-export type StampLinkResult = StampScanResult & { persisted: boolean };
+export type StampSaveResult = StampScanResult & { persisted: boolean };
+export type StampLinkResult = StampSaveResult;
 
 export type StampStorageWarning =
   | "corrupt"
@@ -88,8 +89,8 @@ export function useStampCard() {
         new Date().toISOString(),
         window.location.href,
       );
-      if (result.kind === "added") save(result.card);
-      return result;
+      const valid = result.kind === "added" || result.kind === "duplicate";
+      return { ...result, persisted: valid && save(result.card) };
     },
     [latestCard, save],
   );

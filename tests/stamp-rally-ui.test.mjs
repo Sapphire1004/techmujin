@@ -6,6 +6,7 @@ import { join } from "node:path";
 import { act, createElement, StrictMode } from "react";
 import { Window } from "happy-dom";
 import { createServer } from "vite";
+import { BrowserQRCodeReader } from "@zxing/browser";
 import { STAMP_RALLY_STORAGE_KEY } from "../src/stamp-rally/rally.ts";
 
 // 実端末のカメラではなく、URLを開いた後のReact・保存・画面遷移を検証します。
@@ -37,6 +38,46 @@ function setStorageWriter(value) {
 }
 const savedCard = () => JSON.parse(dom.localStorage.getItem(STAMP_RALLY_STORAGE_KEY));
 const collectedCount = () => container.querySelectorAll('[data-collected="true"]').length;
+
+function mockQrCamera(t) {
+  const secureContext = Object.getOwnPropertyDescriptor(dom, "isSecureContext");
+  const mediaDevices = Object.getOwnPropertyDescriptor(dom.navigator, "mediaDevices");
+  let decode;
+  let stopped = 0;
+  const stream = new dom.MediaStream();
+  Object.defineProperty(stream, "getTracks", { value: () => [{ stop: () => stopped++ }] });
+  Object.defineProperty(dom, "isSecureContext", { configurable: true, value: true });
+  Object.defineProperty(dom.navigator, "mediaDevices", {
+    configurable: true,
+    value: { getUserMedia: async () => stream },
+  });
+  t.mock.method(dom.HTMLMediaElement.prototype, "play", async () => {});
+  t.mock.method(BrowserQRCodeReader.prototype, "decodeFromStream", async (_stream, _video, callback) => {
+    decode = callback;
+    return { stop: () => stopped++ };
+  });
+  t.after(() => {
+    if (secureContext) Object.defineProperty(dom, "isSecureContext", secureContext);
+    else delete dom.isSecureContext;
+    if (mediaDevices) Object.defineProperty(dom.navigator, "mediaDevices", mediaDevices);
+    else delete dom.navigator.mediaDevices;
+  });
+  return {
+    async read(payload) {
+      assert.equal(typeof decode, "function", "カメラ読み取りが開始されている");
+      await act(async () => decode({ getText: () => payload }));
+    },
+    get stopped() { return stopped; },
+  };
+}
+
+async function openScanner() {
+  await act(async () => container.querySelector(".rally-primary-action").click());
+  for (let i = 0; i < 100 && !container.querySelector('.rally-viewfinder__status')?.textContent.includes("探しています"); i++) {
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 10)); });
+  }
+  return container.querySelector(".rally-dialog[open]");
+}
 
 async function render(url) {
   dom.history.replaceState(null, "", url);
@@ -257,4 +298,67 @@ test("モバイルメニューを開いたままPC幅へ戻っても閉じてス
   assert.equal(container.querySelector("#mobile-navigation").open, false);
   assert.equal(open.getAttribute("aria-expanded"), "false");
   assert.equal(dom.document.body.style.overflow, "");
+});
+
+test("読み取り成功はカメラを停止し、時間が経っても結果を保持してボタンでカードへ戻る", async (t) => {
+  const camera = mockQrCamera(t);
+  await render(`${appUrl}#stamp-rally`);
+  const dialog = await openScanner();
+  await camera.read(`${appUrl}?stamp=spot-1#stamp-rally`);
+  assert.ok(camera.stopped > 0);
+  assert.equal(dialog.querySelector('.rally-dialog__camera').hidden, true);
+  assert.match(dialog.querySelector('.rally-scan-result[role="status"]').textContent, /スタンプを獲得/);
+  assert.ok(savedCard().visits['spot-1']);
+  t.mock.timers.enable({ apis: ["setTimeout"] });
+  await act(async () => t.mock.timers.tick(30_000));
+  assert.equal(dialog.open, true);
+  assert.ok(dialog.querySelector('[data-kind="added"]'));
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.equal(container.querySelector('.rally-dialog'), null);
+  assert.equal(dom.document.activeElement, container.querySelector('.rally-collection'));
+  assert.equal(collectedCount(), 1);
+  assert.equal(container.querySelectorAll('[data-recent="true"]').length, 1);
+});
+
+test("重複は取得数と最初の時刻を維持し、別のQRでは取得せず再読み取りできる", async (t) => {
+  const camera = mockQrCamera(t);
+  await render(`${appUrl}?stamp=spot-1`);
+  const first = savedCard();
+  let dialog = await openScanner();
+  await camera.read(`${appUrl}?stamp=spot-1#stamp-rally`);
+  assert.ok(dialog.querySelector('[data-kind="duplicate"]'));
+  assert.deepEqual(savedCard(), first);
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.equal(container.querySelectorAll('[data-recent="true"]').length, 0);
+  dialog = await openScanner();
+  await camera.read('https://other.example/?stamp=spot-2');
+  assert.ok(dialog.querySelector('[data-kind="invalid"][role="alert"]'));
+  assert.deepEqual(savedCard(), first);
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.equal(dialog.querySelector('.rally-dialog__camera').hidden, false);
+  assert.equal(dialog.querySelector('.rally-scan-result'), null);
+  await camera.read(`${appUrl}?stamp=spot-2#stamp-rally`);
+  assert.ok(dialog.querySelector('[data-kind="added"]'));
+  assert.equal(collectedCount(), 2);
+});
+
+test("スキャン後の保存失敗は完了表示にせず、再撮影なしで再試行して保存する", async (t) => {
+  const camera = mockQrCamera(t);
+  await render(`${appUrl}?stamp=spot-1`);
+  const dialog = await openScanner();
+  setStorageWriter(() => { throw new Error('storage blocked'); });
+  await camera.read(`${appUrl}?stamp=spot-2#stamp-rally`);
+  assert.ok(dialog.querySelector('[data-kind="save-error"][role="alert"]'));
+  assert.equal(dialog.querySelector('.rally-scan-result__progress'), null);
+  assert.equal(savedCard().visits['spot-2'], undefined);
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.ok(dialog.querySelector('[data-kind="save-error"]'));
+  setStorageWriter(originalSetItem);
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.ok(dialog.querySelector('[data-kind="added"][role="status"]'));
+  assert.ok(savedCard().visits['spot-2']);
+  assert.equal(Object.keys(savedCard().visits).length, 2);
+  await act(async () => dialog.querySelector('.rally-scan-result__actions button').click());
+  assert.equal(container.querySelector('.rally-dialog'), null);
+  assert.equal(collectedCount(), 2);
 });

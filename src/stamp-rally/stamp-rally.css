@@ -298,8 +298,12 @@
 }
 
 .rally-dialog {
+  position: fixed;
+  inset: 50dvh auto auto 50vw;
   width: min(30rem, calc(100vw - 2rem));
   max-height: calc(100dvh - 2rem);
+  margin: 0;
+  transform: translate(-50%, -50%);
   padding: var(--space-lg);
   overflow: auto;
   border: var(--rule-hair) solid var(--color-rule);
@@ -422,6 +426,77 @@
   font-size: var(--text-xs);
   line-height: 1.55;
   text-align: center;
+}
+
+.rally-scan-result {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-block: var(--space-xl) var(--space-md);
+  text-align: center;
+}
+
+.rally-scan-result__icon {
+  display: grid;
+  width: 4rem;
+  height: 4rem;
+  place-items: center;
+  margin-bottom: var(--space-lg);
+  border-radius: var(--radius-round);
+  background: var(--tm-color-brand-weak);
+  color: var(--color-accent);
+}
+
+.rally-scan-result__icon svg { width: 2rem; height: 2rem; }
+.rally-scan-result[data-tone="neutral"] .rally-scan-result__icon {
+  background: var(--color-paper-3);
+  color: var(--color-muted);
+}
+.rally-scan-result[data-tone="critical"] .rally-scan-result__icon {
+  background: var(--seed-color-bg-critical-weak);
+  color: var(--color-error);
+}
+
+.rally-scan-result h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+.rally-scan-result h3:focus-visible,
+.rally-collection:focus-visible {
+  outline: var(--rule-strong) solid var(--color-focus);
+  outline-offset: var(--space-2xs);
+}
+.rally-scan-result__spot { margin: var(--space-sm) 0 0; font-size: var(--text-base); }
+.rally-scan-result__message {
+  max-width: 20rem;
+  margin: var(--space-xs) 0 0;
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+}
+.rally-scan-result__progress { margin-top: var(--space-lg); }
+.rally-scan-result__progress strong {
+  color: var(--color-accent);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.rally-scan-result__progress span { color: var(--color-muted); font-size: var(--text-base); }
+.rally-scan-result__progress p { margin: var(--space-xs) 0 0; color: var(--color-muted); font-size: var(--text-xs); }
+.rally-scan-result__actions {
+  display: grid;
+  gap: var(--space-xs);
+  width: 100%;
+  margin-top: var(--space-xl);
+}
+.rally-scan-result__actions button { width: 100%; }
+.rally-collection { scroll-margin-top: calc(var(--site-header-height) + var(--space-md)); }
+.rally-card-feedback { margin: 0 0 var(--space-md); }
+.rally-stamp-card[data-recent="true"] {
+  border-color: var(--color-accent);
+  background: var(--tm-color-brand-weak);
 }
 
 .rally-feedback {
