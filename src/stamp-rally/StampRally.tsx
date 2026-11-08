@@ -8,6 +8,7 @@ import {
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
+import { CommunityImage } from "../components/CommunityImage";
 import { countCollectedStamps, type StampSpot } from "./rally";
 import type { useStampCard, StampLinkResult, StampStorageWarning } from "./useStampCard";
 import "./stamp-rally.css";
@@ -261,7 +262,8 @@ export function StampRally({ spots, stampCard, linkResult, onRetryStamp }: {
                       <span>{t(recentSpotId === spot.id ? "rally.scanner.justCollected" : visitedAt ? "rally.visited" : "rally.unvisited")}</span>
                     </div>
                     <div className="rally-stamp-card__seal" aria-hidden="true">
-                      <span>{visitedAt ? "✓" : spot.number}</span>
+                      <CommunityImage src={spot.iconUrl} size={56} className="rally-stamp-card__image" />
+                      {visitedAt && <span className="rally-stamp-card__check">✓</span>}
                     </div>
                     <Text as="h3" textStyle="t5Bold">
                       {spot.title}

@@ -6,6 +6,7 @@ export type StampSpot = {
   id: StampSpotId;
   number: string;
   title: string;
+  iconUrl: string | null;
   payload: string;
 };
 

@@ -58,6 +58,8 @@ export function createStampSpots(booths: readonly Booth[]): StampSpot[] {
     id: `spot-${booth.number}`,
     number: booth.number,
     title: getBoothTitle(booth),
+    // 共同出展では、先頭の設定済み画像を使用します。
+    iconUrl: booth.communities.find(({ iconUrl }) => iconUrl !== null)?.iconUrl ?? null,
     payload: `stamprally:v1:spot-${booth.number}`,
   }));
 }
