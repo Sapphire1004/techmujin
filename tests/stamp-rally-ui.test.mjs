@@ -62,6 +62,7 @@ async function navigate(url, event = "popstate") {
 
 beforeEach(() => {
   dom.localStorage.clear();
+  dom.document.body.style.overflow = "";
   dom.document.body.innerHTML = '<div id="test-root"></div>';
   container = dom.document.getElementById("test-root");
   root = createRoot(container);
@@ -216,4 +217,44 @@ test("参加ボタン1回でカード作成とカメラ要求へ進み、再度�
   await act(async () => scanButton.click());
   assert.equal(requests, 2);
   assert.ok(container.querySelector(".rally-dialog[open]"));
+});
+
+test("モバイルメニューの選択・閉じる・Escapeでスクロールとフォーカスを復元する", async () => {
+  await render(`${appUrl}#stamp-rally`);
+  dom.document.body.style.overflow = "auto";
+  const open = container.querySelector(".site-header__menu-button");
+  const menu = container.querySelector("#mobile-navigation");
+
+  await act(async () => open.click());
+  assert.equal(menu.open, true);
+  assert.equal(open.getAttribute("aria-expanded"), "true");
+  assert.equal(dom.document.body.style.overflow, "hidden");
+  await act(async () => menu.querySelector('button[aria-controls="access-panel"]').click());
+  assert.equal(menu.open, false);
+  assert.equal(open.getAttribute("aria-expanded"), "false");
+  assert.equal(dom.location.hash, "#access");
+  assert.equal(dom.document.body.style.overflow, "auto");
+  assert.equal(dom.document.activeElement, open);
+
+  await act(async () => open.click());
+  await act(async () => menu.querySelector(".site-menu__close").click());
+  assert.equal(menu.open, false);
+  assert.equal(dom.document.body.style.overflow, "auto");
+  await act(async () => open.click());
+  await act(async () => menu.dispatchEvent(new dom.Event("cancel", { cancelable: true })));
+  assert.equal(menu.open, false);
+  assert.equal(dom.document.body.style.overflow, "auto");
+  assert.equal(dom.document.activeElement, open);
+});
+
+test("モバイルメニューを開いたままPC幅へ戻っても閉じてスクロールを復元する", async () => {
+  dom.happyDOM.setWindowSize({ width: 390, height: 844 });
+  await render(`${appUrl}#stamp-rally`);
+  const open = container.querySelector(".site-header__menu-button");
+  await act(async () => open.click());
+  assert.equal(dom.document.body.style.overflow, "hidden");
+  await act(async () => dom.happyDOM.setWindowSize({ width: 1024, height: 768 }));
+  assert.equal(container.querySelector("#mobile-navigation").open, false);
+  assert.equal(open.getAttribute("aria-expanded"), "false");
+  assert.equal(dom.document.body.style.overflow, "");
 });
