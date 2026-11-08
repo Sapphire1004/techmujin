@@ -14,7 +14,10 @@
     "test:stamp-rally": "node --test tests/stamp-rally.test.mjs",
     "test:stamp-rally-ui": "node --test tests/stamp-rally-ui.test.mjs",
     "test:navigation": "node --test tests/navigation.test.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "preview:cloudflare": "pnpm run build && wrangler dev --port 8787",
+    "check:cloudflare": "pnpm run build && wrangler deploy --dry-run",
+    "deploy:cloudflare": "pnpm run build && wrangler deploy"
   },
   "dependencies": {
     "@seed-design/css": "^2.7.0",
@@ -35,6 +38,7 @@
     "happy-dom": "21.0.4",
     "techmujin-api": "github:techmujin/techmujin-api",
     "typescript": "7.0.2",
-    "vite": "8.2.2"
+    "vite": "8.2.2",
+    "wrangler": "4.156.0"
   }
 }
