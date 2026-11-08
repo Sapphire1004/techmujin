@@ -6,7 +6,6 @@ import { getBoothTitle } from "../data/booths";
 import { venueGuideResult, type VenueFeature } from "../data/venue";
 import type { BoothsState } from "../hooks/useBooths";
 import { BoothsStatus } from "./BoothsStatus";
-import { CommunityImage } from "./CommunityImage";
 
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 
@@ -22,7 +21,7 @@ function BoothDetails({ booth }: { booth: Booth }) {
       {booth.descriptionMarkdown && <p className="booth-card__description">{booth.descriptionMarkdown}</p>}
       {booth.communities.map((community) => (
         <div className="booth-card__community" key={community.id}>
-          <CommunityImage src={community.iconUrl} />
+          {community.iconUrl && <img src={community.iconUrl} alt="" width={40} height={40} loading="lazy" />}
           {(booth.title || booth.communities.length > 1) && <strong>{community.name}</strong>}
           {community.descriptionMarkdown && <p className="booth-card__description">{community.descriptionMarkdown}</p>}
           {community.url && (
