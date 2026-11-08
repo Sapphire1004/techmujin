@@ -2,6 +2,7 @@ import {
   lazy,
   Suspense,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
@@ -40,6 +41,9 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
   const { t, i18n } = useTranslation();
   const { card, warning, join, scan } = stampCard;
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [recentSpotId, setRecentSpotId] = useState<string | null>(null);
+  const collectionRef = useRef<HTMLElement>(null);
+  const returnToCardRef = useRef(false);
   const count = Object.keys(card.visits).length;
   const complete = count === STAMP_SPOTS.length;
   const joined = card.joinedAt !== null;
@@ -47,6 +51,18 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
     "-",
   )[0] as SupportedLanguage;
   const storageWarningKey = warningKey(warning);
+  const recentSpot = STAMP_SPOTS.find((spot) => spot.id === recentSpotId);
+  const openScanner = () => {
+    setRecentSpotId(null);
+    setScannerOpen(true);
+  };
+
+  useEffect(() => {
+    if (scannerOpen || !returnToCardRef.current) return;
+    returnToCardRef.current = false;
+    collectionRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    collectionRef.current?.focus({ preventScroll: true });
+  }, [scannerOpen]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
@@ -189,7 +205,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
               type="button"
               onClick={() => {
                 join();
-                setScannerOpen(true);
+                openScanner();
               }}
             >
               {t("rally.join")}
@@ -201,14 +217,19 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
                 variant="brandSolid"
                 size="large"
                 type="button"
-                onClick={() => setScannerOpen(true)}
+                onClick={openScanner}
               >
                 {t("rally.scanInBrowser")}
               </ActionButton>
             )}
           </aside>
 
-          <section className="rally-collection" aria-labelledby="stamp-card-title">
+          <section className="rally-collection" ref={collectionRef} tabIndex={-1} aria-labelledby="stamp-card-title">
+            {recentSpot && (
+              <p className="rally-feedback rally-card-feedback" data-success="true" role="status">
+                {t("rally.scanner.added", { spot: recentSpot.title })}
+              </p>
+            )}
             <div className="rally-section-heading">
               <div>
                 <span className="rally-eyebrow">MY STAMP CARD</span>
@@ -224,6 +245,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
                   <article
                     className="rally-stamp-card"
                     data-collected={Boolean(visitedAt)}
+                    data-recent={recentSpotId === spot.id}
                     key={spot.id}
                     aria-label={t("rally.spotLabel", {
                       spot: spot.title,
@@ -234,7 +256,7 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
                   >
                     <div className="rally-stamp-card__top">
                       <span>SPOT {spot.number}</span>
-                      <span>{t(visitedAt ? "rally.visited" : "rally.unvisited")}</span>
+                      <span>{t(recentSpotId === spot.id ? "rally.scanner.justCollected" : visitedAt ? "rally.visited" : "rally.unvisited")}</span>
                     </div>
                     <div className="rally-stamp-card__seal" aria-hidden="true">
                       <span>{visitedAt ? "✓" : spot.number}</span>
@@ -258,7 +280,15 @@ export function StampRally({ stampCard, linkResult, onRetryStamp }: {
 
       {scannerOpen && (
         <Suspense fallback={null}>
-          <ScannerDialog onScan={scan} onClose={() => setScannerOpen(false)} />
+          <ScannerDialog
+            onScan={scan}
+            onClose={() => setScannerOpen(false)}
+            onViewCard={(spotId) => {
+              setRecentSpotId(spotId ?? null);
+              returnToCardRef.current = true;
+              setScannerOpen(false);
+            }}
+          />
         </Suspense>
       )}
 
