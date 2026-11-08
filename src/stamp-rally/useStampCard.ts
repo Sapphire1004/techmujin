@@ -1,11 +1,16 @@
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
+  claimStampLink,
   createEmptyStampCard,
+  mergeStampCards,
   parseStampCard,
   scanStampCard,
   STAMP_RALLY_STORAGE_KEY,
   type StampCard,
+  type StampScanResult,
 } from "./rally";
+
+export type StampLinkResult = StampScanResult & { persisted: boolean };
 
 export type StampStorageWarning =
   | "corrupt"
@@ -46,28 +51,55 @@ export function useStampCard() {
         JSON.stringify(nextCard),
       );
       setWarning(null);
+      return true;
     } catch {
       setWarning("saveFailed");
+      return false;
     }
   }, []);
 
+  const latestCard = useCallback(() => {
+    // QRを別タブで開いた場合も、保存済みのスタンプを上書きしないよう統合します。
+    return mergeStampCards(current.current, loadStampCard().card);
+  }, []);
+
+  useEffect(() => {
+    const sync = (event: StorageEvent) => {
+      if (event.key !== null && event.key !== STAMP_RALLY_STORAGE_KEY) return;
+      const next = loadStampCard();
+      current.current = next.card;
+      setCard(next.card);
+      setWarning(next.warning);
+    };
+    window.addEventListener("storage", sync);
+    return () => window.removeEventListener("storage", sync);
+  }, []);
+
   const join = useCallback(() => {
-    if (current.current.joinedAt) return;
-    save({ ...createEmptyStampCard(), joinedAt: new Date().toISOString() });
-  }, [save]);
+    const latest = latestCard();
+    save({ ...latest, joinedAt: latest.joinedAt ?? new Date().toISOString() });
+  }, [latestCard, save]);
 
   const scan = useCallback(
     (payload: string) => {
       const result = scanStampCard(
-        current.current,
+        latestCard(),
         payload,
         new Date().toISOString(),
+        window.location.href,
       );
       if (result.kind === "added") save(result.card);
       return result;
     },
-    [save],
+    [latestCard, save],
   );
 
-  return { card, warning, join, scan };
+  const visitLink = useCallback((url: URL): StampLinkResult | null => {
+    const result = claimStampLink(latestCard(), url, new Date().toISOString());
+    if (!result) return null;
+    const valid = result.kind === "added" || result.kind === "duplicate";
+    return { ...result, persisted: valid && save(result.card) };
+  }, [latestCard, save]);
+
+  return { card, warning, join, scan, visitLink };
 }

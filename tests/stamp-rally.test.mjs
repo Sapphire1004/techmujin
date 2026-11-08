@@ -6,6 +6,10 @@ import {
   createEmptyStampCard,
   parseStampCard,
   scanStampCard,
+  claimStampLink,
+  createStampLink,
+  getStampLinkSpot,
+  mergeStampCards,
 } from "../src/stamp-rally/rally.ts";
 
 const joinedAt = "2026-10-28T01:00:00.000Z";
@@ -96,4 +100,82 @@ for (const value of [
 
 test("malformed JSON never crashes card loading", () => {
   assert.equal(parseStampCard("{broken"), null);
+});
+
+const appUrl = "https://event.example/";
+
+test("QR用URLは配置先のパスを保ち、古いクエリーを含めない", () => {
+  assert.equal(
+    createStampLink("spot-1", "https://event.example/app/?stamp=spot-2&other=1#access"),
+    "https://event.example/app/?stamp=spot-1#stamp-rally",
+  );
+});
+
+test("未参加でも最初のQR URLから参加と取得が完了する", () => {
+  const card = createEmptyStampCard();
+  const result = claimStampLink(card, new URL(createStampLink("spot-1", appUrl)), visitedAt);
+  assert.equal(result.kind, "added");
+  assert.equal(result.card.joinedAt, visitedAt);
+  assert.deepEqual(result.card.visits, { "spot-1": visitedAt });
+  assert.deepEqual(card, createEmptyStampCard());
+});
+
+test("ハッシュなしのURLでも取得でき、再訪時は最初の時刻を維持する", () => {
+  const url = new URL(`${appUrl}?stamp=spot-2`);
+  const first = claimStampLink(joinedCard(), url, visitedAt);
+  const restored = parseStampCard(JSON.stringify(first.card));
+  const second = claimStampLink(restored, url, later);
+  assert.equal(second.kind, "duplicate");
+  assert.equal(second.card.visits["spot-2"], visitedAt);
+  assert.equal(second.card.joinedAt, joinedAt);
+});
+
+test("通常のページURLは参加・取得操作として扱わない", () => {
+  assert.equal(claimStampLink(createEmptyStampCard(), new URL(appUrl), visitedAt), null);
+});
+
+for (const query of ["stamp=", "stamp=spot-6", "stamp=spot-1&stamp=spot-2", "stamp=spot-1&stamp=spot-1", "stamp=SPOT-1", "stamp=%20spot-1", "stamp=__proto__"]) {
+  test(`不正なURLは参加前でも記録を変更しない: ${query}`, () => {
+    const card = createEmptyStampCard();
+    const url = new URL(`${appUrl}?${query}`);
+    assert.equal(getStampLinkSpot(url), undefined);
+    const result = claimStampLink(card, url, visitedAt);
+    assert.equal(result.kind, "invalid");
+    assert.equal(result.card, card);
+  });
+}
+
+test("全チェックポイントをQR URLで集め、既存の保存形式に復元できる", () => {
+  let card = createEmptyStampCard();
+  for (const spot of STAMP_SPOTS) {
+    card = claimStampLink(card, new URL(createStampLink(spot.id, appUrl)), visitedAt).card;
+  }
+  assert.equal(Object.keys(card.visits).length, 5);
+  assert.deepEqual(parseStampCard(JSON.stringify(card)), card);
+});
+
+test("補助スキャナーは同じサイトのQR URLと従来のQRに対応する", () => {
+  for (const payload of [STAMP_SPOTS[0].payload, createStampLink("spot-1", appUrl)]) {
+    assert.equal(scanStampCard(joinedCard(), payload, visitedAt, appUrl).kind, "added");
+  }
+});
+
+for (const payload of ["https://other.example/?stamp=spot-1", "https://event.example/other/?stamp=spot-1", "https://event.example/?stamp=spot-1&stamp=spot-2", "javascript:alert(1)"]) {
+  test(`補助スキャナーは別サイトや不正なURLを受け付けない: ${payload}`, () => {
+    assert.equal(scanStampCard(joinedCard(), payload, visitedAt, appUrl).kind, "invalid");
+  });
+}
+
+test("別タブのカードを統合しても既存のスタンプと最初の時刻を失わない", () => {
+  const first = { version: 1, joinedAt, visits: { "spot-1": visitedAt, "spot-2": later } };
+  const second = { version: 1, joinedAt: visitedAt, visits: { "spot-2": visitedAt, "spot-3": later } };
+  const merged = mergeStampCards(first, second);
+  assert.deepEqual(merged, {
+    version: 1,
+    joinedAt,
+    visits: { "spot-1": visitedAt, "spot-2": visitedAt, "spot-3": later },
+  });
+  assert.deepEqual(mergeStampCards(second, first), merged);
+  assert.deepEqual(mergeStampCards(createEmptyStampCard(), first), first);
+  assert.equal(first.visits["spot-2"], later);
 });

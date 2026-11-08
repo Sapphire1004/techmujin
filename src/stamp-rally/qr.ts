@@ -4,19 +4,7 @@ export type QrErrorCode =
   | "cameraDenied"
   | "cameraNotFound"
   | "cameraNotReadable"
-  | "cameraFailed"
-  | "imageInvalidType"
-  | "imageTooLarge"
-  | "imageNoQr";
-
-export class QrReaderError extends Error {
-  code: QrErrorCode;
-
-  constructor(code: QrErrorCode) {
-    super(code);
-    this.code = code;
-  }
-}
+  | "cameraFailed";
 
 export function getCameraErrorCode(error: unknown): QrErrorCode {
   if (error instanceof Error || error instanceof DOMException) {
@@ -78,24 +66,5 @@ export async function startQrCamera(
     stop();
     signal.removeEventListener("abort", stop);
     if (!signal.aborted) throw error;
-  }
-}
-
-export async function decodeQrImage(file: File) {
-  if (!file.type.startsWith("image/")) {
-    throw new QrReaderError("imageInvalidType");
-  }
-  if (file.size > 12 * 1024 * 1024) {
-    throw new QrReaderError("imageTooLarge");
-  }
-
-  const url = URL.createObjectURL(file);
-  try {
-    const result = await new BrowserQRCodeReader().decodeFromImageUrl(url);
-    return result.getText();
-  } catch {
-    throw new QrReaderError("imageNoQr");
-  } finally {
-    URL.revokeObjectURL(url);
   }
 }

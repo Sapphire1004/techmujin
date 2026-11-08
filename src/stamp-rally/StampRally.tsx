@@ -8,7 +8,7 @@ import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { STAMP_SPOTS } from "./rally";
-import { useStampCard, type StampStorageWarning } from "./useStampCard";
+import type { useStampCard, StampLinkResult, StampStorageWarning } from "./useStampCard";
 import "./stamp-rally.css";
 
 const ScannerDialog = lazy(() =>
@@ -32,9 +32,13 @@ function warningKey(warning: StampStorageWarning) {
   return warning ? `rally.storage.${warning}` : null;
 }
 
-export function StampRally() {
+export function StampRally({ stampCard, linkResult, onRetryStamp }: {
+  stampCard: ReturnType<typeof useStampCard>;
+  linkResult: StampLinkResult | null;
+  onRetryStamp: () => void;
+}) {
   const { t, i18n } = useTranslation();
-  const { card, warning, join, scan } = useStampCard();
+  const { card, warning, join, scan } = stampCard;
   const [scannerOpen, setScannerOpen] = useState(false);
   const count = Object.keys(card.visits).length;
   const complete = count === STAMP_SPOTS.length;
@@ -77,6 +81,36 @@ export function StampRally() {
           <strong>{t("rally.prototype")}</strong>
           {t("rally.prototypeDescription")}
         </p>
+        {storageWarningKey && (
+          <p className="storage-warning" role="alert">
+            {t(storageWarningKey)}
+          </p>
+        )}
+
+        {linkResult && (
+          <div
+            className="rally-feedback rally-link-feedback"
+            data-success={linkResult.persisted}
+            role={linkResult.persisted ? "status" : "alert"}
+          >
+            <p>{t(
+              linkResult.kind === "invalid"
+                ? "rally.link.invalid"
+                : !linkResult.persisted
+                  ? "rally.link.saveFailed"
+                  : linkResult.kind === "duplicate"
+                    ? "rally.link.duplicate"
+                    : "rally.link.added",
+              { spot: linkResult.spot?.title },
+            )}</p>
+            {linkResult.kind !== "invalid" && !linkResult.persisted && (
+              <ActionButton variant="brandSolid" size="medium" type="button" onClick={onRetryStamp}>
+                {t("rally.link.retry")}
+              </ActionButton>
+            )}
+          </div>
+        )}
+
         <section className="rally-steps" aria-label={t("rally.steps.label")}>
           {(["join", "scan", "complete"] as const).map((step, index) => (
             <div key={step}>
@@ -88,12 +122,6 @@ export function StampRally() {
             </div>
           ))}
         </section>
-
-        {storageWarningKey && (
-          <p className="storage-warning" role="alert">
-            {t(storageWarningKey)}
-          </p>
-        )}
 
         <div className="rally-layout">
           <aside className="rally-passport" aria-label={t("rally.progress.label")}>
@@ -154,18 +182,30 @@ export function StampRally() {
                     count: STAMP_SPOTS.length - count,
                   })}
             </p>
-            <ActionButton
+            {!joined && <ActionButton
               className="rally-primary-action"
               variant="brandSolid"
               size="large"
               type="button"
               onClick={() => {
-                if (joined) setScannerOpen(true);
-                else join();
+                join();
+                setScannerOpen(true);
               }}
             >
-              {t(joined ? "rally.scan" : "rally.join")}
-            </ActionButton>
+              {t("rally.join")}
+            </ActionButton>}
+            <p className="rally-passport__note">{t("rally.openWithCamera")}</p>
+            {joined && !complete && (
+              <ActionButton
+                className="rally-primary-action"
+                variant="brandSolid"
+                size="large"
+                type="button"
+                onClick={() => setScannerOpen(true)}
+              >
+                {t("rally.scanInBrowser")}
+              </ActionButton>
+            )}
           </aside>
 
           <section className="rally-collection" aria-labelledby="stamp-card-title">
@@ -176,7 +216,6 @@ export function StampRally() {
                   {t("rally.cardTitle")}
                 </Text>
               </div>
-              <span>{t("rally.cardCaption")}</span>
             </div>
             <div className="rally-stamp-grid">
               {STAMP_SPOTS.map((spot) => {
