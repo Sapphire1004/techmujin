@@ -8,6 +8,7 @@ import type { BoothsState } from "../hooks/useBooths";
 import { BoothsStatus } from "./BoothsStatus";
 
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
+const DEFAULT_COMMUNITY_ICON = "/images/techmujin/icon-192.png";
 
 type VenueGuideProps = {
   view: "access" | "interior";
@@ -21,7 +22,20 @@ function BoothDetails({ booth }: { booth: Booth }) {
       {booth.descriptionMarkdown && <p className="booth-card__description">{booth.descriptionMarkdown}</p>}
       {booth.communities.map((community) => (
         <div className="booth-card__community" key={community.id}>
-          {community.iconUrl && <img src={community.iconUrl} alt="" width={40} height={40} loading="lazy" />}
+          <img
+            src={community.iconUrl ?? DEFAULT_COMMUNITY_ICON}
+            alt=""
+            width={40}
+            height={40}
+            loading="lazy"
+            decoding="async"
+            onError={({ currentTarget }) => {
+              // 代替画像も読み込めない場合に、再読み込みを繰り返さないようにします。
+              if (currentTarget.getAttribute("src") !== DEFAULT_COMMUNITY_ICON) {
+                currentTarget.src = DEFAULT_COMMUNITY_ICON;
+              }
+            }}
+          />
           {(booth.title || booth.communities.length > 1) && <strong>{community.name}</strong>}
           {community.descriptionMarkdown && <p className="booth-card__description">{community.descriptionMarkdown}</p>}
           {community.url && (
