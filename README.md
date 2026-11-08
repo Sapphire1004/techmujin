@@ -8,6 +8,7 @@
 - セッションを選択して「マイスケジュール」を作成
 - 選択した予定のICSファイル出力と、対応するモバイルブラウザーでの共有
 - 選択した予定のPNG画像出力
+- QRのURLを開いてスタンプを集めるスタンプラリー（試作・[仕様と確認方法](./docs/stamp-rally.md)）
 - 日本語表示を標準とし、環境変数で英語・韓国語の言語切り替えを有効化
 
 ## 技術構成
@@ -54,6 +55,8 @@ Cloudflare WorkersのStatic Assetsで、Viteが生成した`dist/`を配信し�
 
 Cloudflare用の配信コマンドにはNode.js 22以降が必要です。この手順はNode.js 24・pnpm 11.17.0で検証しています。`compatibility_date`は、固定したWranglerのローカルランタイムでも動作する日付に設定しています。
 
+[pnpm-workspace.yaml](./pnpm-workspace.yaml)では、Wranglerで必要な`esbuild@0.28.2`と`workerd@1.20261023.1`のインストール用スクリプトを許可しています。pnpm 11の[allowBuilds設定](https://pnpm.io/settings/build#allowbuilds)を使い、対象のバージョンだけを指定しています。
+
 設定は [wrangler.jsonc](./wrangler.jsonc) で管理します。
 
 - Worker名: `techmujin-timetable`
@@ -79,6 +82,7 @@ pnpm exec wrangler auth create techmujin-deploy --scopes account:read user:read 
 ```bash
 pnpm typecheck
 pnpm test:stamp-rally
+pnpm test:stamp-rally-ui
 pnpm test:navigation
 pnpm run check:cloudflare
 ```

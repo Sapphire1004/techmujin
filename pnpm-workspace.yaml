@@ -1,0 +1,4 @@
+# Wranglerで使用するネイティブ実行ファイルのインストールを許可します。
+allowBuilds:
+  esbuild@0.28.2: true
+  workerd@1.20261023.1: true

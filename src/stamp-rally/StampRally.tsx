@@ -2,13 +2,14 @@ import {
   lazy,
   Suspense,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import type { SupportedLanguage } from "../i18n";
 import { STAMP_SPOTS } from "./rally";
-import { useStampCard, type StampStorageWarning } from "./useStampCard";
+import type { useStampCard, StampLinkResult, StampStorageWarning } from "./useStampCard";
 import "./stamp-rally.css";
 
 const ScannerDialog = lazy(() =>
@@ -32,10 +33,17 @@ function warningKey(warning: StampStorageWarning) {
   return warning ? `rally.storage.${warning}` : null;
 }
 
-export function StampRally() {
+export function StampRally({ stampCard, linkResult, onRetryStamp }: {
+  stampCard: ReturnType<typeof useStampCard>;
+  linkResult: StampLinkResult | null;
+  onRetryStamp: () => void;
+}) {
   const { t, i18n } = useTranslation();
-  const { card, warning, join, scan } = useStampCard();
+  const { card, warning, join, scan } = stampCard;
   const [scannerOpen, setScannerOpen] = useState(false);
+  const [recentSpotId, setRecentSpotId] = useState<string | null>(null);
+  const collectionRef = useRef<HTMLElement>(null);
+  const returnToCardRef = useRef(false);
   const count = Object.keys(card.visits).length;
   const complete = count === STAMP_SPOTS.length;
   const joined = card.joinedAt !== null;
@@ -43,6 +51,18 @@ export function StampRally() {
     "-",
   )[0] as SupportedLanguage;
   const storageWarningKey = warningKey(warning);
+  const recentSpot = STAMP_SPOTS.find((spot) => spot.id === recentSpotId);
+  const openScanner = () => {
+    setRecentSpotId(null);
+    setScannerOpen(true);
+  };
+
+  useEffect(() => {
+    if (scannerOpen || !returnToCardRef.current) return;
+    returnToCardRef.current = false;
+    collectionRef.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    collectionRef.current?.focus({ preventScroll: true });
+  }, [scannerOpen]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
@@ -77,6 +97,36 @@ export function StampRally() {
           <strong>{t("rally.prototype")}</strong>
           {t("rally.prototypeDescription")}
         </p>
+        {storageWarningKey && (
+          <p className="storage-warning" role="alert">
+            {t(storageWarningKey)}
+          </p>
+        )}
+
+        {linkResult && (
+          <div
+            className="rally-feedback rally-link-feedback"
+            data-success={linkResult.persisted}
+            role={linkResult.persisted ? "status" : "alert"}
+          >
+            <p>{t(
+              linkResult.kind === "invalid"
+                ? "rally.link.invalid"
+                : !linkResult.persisted
+                  ? "rally.link.saveFailed"
+                  : linkResult.kind === "duplicate"
+                    ? "rally.link.duplicate"
+                    : "rally.link.added",
+              { spot: linkResult.spot?.title },
+            )}</p>
+            {linkResult.kind !== "invalid" && !linkResult.persisted && (
+              <ActionButton variant="brandSolid" size="medium" type="button" onClick={onRetryStamp}>
+                {t("rally.link.retry")}
+              </ActionButton>
+            )}
+          </div>
+        )}
+
         <section className="rally-steps" aria-label={t("rally.steps.label")}>
           {(["join", "scan", "complete"] as const).map((step, index) => (
             <div key={step}>
@@ -88,12 +138,6 @@ export function StampRally() {
             </div>
           ))}
         </section>
-
-        {storageWarningKey && (
-          <p className="storage-warning" role="alert">
-            {t(storageWarningKey)}
-          </p>
-        )}
 
         <div className="rally-layout">
           <aside className="rally-passport" aria-label={t("rally.progress.label")}>
@@ -154,21 +198,38 @@ export function StampRally() {
                     count: STAMP_SPOTS.length - count,
                   })}
             </p>
-            <ActionButton
+            {!joined && <ActionButton
               className="rally-primary-action"
               variant="brandSolid"
               size="large"
               type="button"
               onClick={() => {
-                if (joined) setScannerOpen(true);
-                else join();
+                join();
+                openScanner();
               }}
             >
-              {t(joined ? "rally.scan" : "rally.join")}
-            </ActionButton>
+              {t("rally.join")}
+            </ActionButton>}
+            <p className="rally-passport__note">{t("rally.openWithCamera")}</p>
+            {joined && !complete && (
+              <ActionButton
+                className="rally-primary-action"
+                variant="brandSolid"
+                size="large"
+                type="button"
+                onClick={openScanner}
+              >
+                {t("rally.scanInBrowser")}
+              </ActionButton>
+            )}
           </aside>
 
-          <section className="rally-collection" aria-labelledby="stamp-card-title">
+          <section className="rally-collection" ref={collectionRef} tabIndex={-1} aria-labelledby="stamp-card-title">
+            {recentSpot && (
+              <p className="rally-feedback rally-card-feedback" data-success="true" role="status">
+                {t("rally.scanner.added", { spot: recentSpot.title })}
+              </p>
+            )}
             <div className="rally-section-heading">
               <div>
                 <span className="rally-eyebrow">MY STAMP CARD</span>
@@ -176,7 +237,6 @@ export function StampRally() {
                   {t("rally.cardTitle")}
                 </Text>
               </div>
-              <span>{t("rally.cardCaption")}</span>
             </div>
             <div className="rally-stamp-grid">
               {STAMP_SPOTS.map((spot) => {
@@ -185,6 +245,7 @@ export function StampRally() {
                   <article
                     className="rally-stamp-card"
                     data-collected={Boolean(visitedAt)}
+                    data-recent={recentSpotId === spot.id}
                     key={spot.id}
                     aria-label={t("rally.spotLabel", {
                       spot: spot.title,
@@ -195,7 +256,7 @@ export function StampRally() {
                   >
                     <div className="rally-stamp-card__top">
                       <span>SPOT {spot.number}</span>
-                      <span>{t(visitedAt ? "rally.visited" : "rally.unvisited")}</span>
+                      <span>{t(recentSpotId === spot.id ? "rally.scanner.justCollected" : visitedAt ? "rally.visited" : "rally.unvisited")}</span>
                     </div>
                     <div className="rally-stamp-card__seal" aria-hidden="true">
                       <span>{visitedAt ? "✓" : spot.number}</span>
@@ -219,7 +280,15 @@ export function StampRally() {
 
       {scannerOpen && (
         <Suspense fallback={null}>
-          <ScannerDialog onScan={scan} onClose={() => setScannerOpen(false)} />
+          <ScannerDialog
+            onScan={scan}
+            onClose={() => setScannerOpen(false)}
+            onViewCard={(spotId) => {
+              setRecentSpotId(spotId ?? null);
+              returnToCardRef.current = true;
+              setScannerOpen(false);
+            }}
+          />
         </Suspense>
       )}
 

@@ -3,47 +3,44 @@ import {
   useEffect,
   useRef,
   useState,
-  type ChangeEvent,
 } from "react";
 import { ActionButton, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import {
-  decodeQrImage,
   getCameraErrorCode,
-  QrReaderError,
   startQrCamera,
 } from "./qr";
-import type { StampScanResult } from "./rally";
+import { STAMP_SPOTS } from "./rally";
+import type { StampSaveResult } from "./useStampCard";
 
-type InputMethod = "camera" | "image";
 type CameraState = "off" | "starting" | "on";
 
 export function ScannerDialog({
   onScan,
   onClose,
+  onViewCard,
 }: {
-  onScan: (payload: string) => StampScanResult;
+  onScan: (payload: string) => StampSaveResult;
   onClose: () => void;
+  onViewCard: (spotId?: string) => void;
 }) {
   const { t } = useTranslation();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const resultTitleRef = useRef<HTMLHeadingElement>(null);
   const controllerRef = useRef<AbortController | undefined>(undefined);
-  const generationRef = useRef(0);
   const handledRef = useRef(false);
   const hintTimerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-  const [method, setMethod] = useState<InputMethod>("camera");
   const [cameraState, setCameraState] = useState<CameraState>("off");
-  const [busy, setBusy] = useState(false);
   const [feedback, setFeedback] = useState<{
     message: string;
     success: boolean;
   } | null>(null);
+  const [scanResult, setScanResult] = useState<(StampSaveResult & { payload: string }) | null>(null);
 
   const stopCamera = useCallback(() => {
     controllerRef.current?.abort();
     controllerRef.current = undefined;
-    generationRef.current += 1;
     clearTimeout(hintTimerRef.current);
   }, []);
 
@@ -52,11 +49,16 @@ export function ScannerDialog({
     const previousFocus = document.activeElement;
     dialog?.showModal();
 
+    // 開いた直後に起動します。StrictModeの再実行で権限要求を重複させません。
+    let active = true;
+    queueMicrotask(() => {
+      if (active && document.visibilityState !== "hidden") void enableCamera();
+    });
+
     const stopWhenHidden = () => {
       if (document.visibilityState === "hidden") {
         stopCamera();
         setCameraState("off");
-        setBusy(false);
       }
     };
     const stopWhenLeaving = () => stopCamera();
@@ -65,6 +67,7 @@ export function ScannerDialog({
     window.addEventListener("pagehide", stopWhenLeaving);
 
     return () => {
+      active = false;
       stopCamera();
       document.removeEventListener("visibilitychange", stopWhenHidden);
       window.removeEventListener("pagehide", stopWhenLeaving);
@@ -73,37 +76,30 @@ export function ScannerDialog({
     };
   }, [stopCamera]);
 
+  useEffect(() => {
+    if (!scanResult) return;
+    if (dialogRef.current) dialogRef.current.scrollTop = 0;
+    resultTitleRef.current?.focus({ preventScroll: true });
+  }, [scanResult]);
+
   const acceptPayload = useCallback(
     (payload: string) => {
       if (handledRef.current) return;
       handledRef.current = true;
       stopCamera();
       setCameraState("off");
-      setBusy(false);
 
-      const result = onScan(payload);
-      const spot = result.spot?.title ?? "";
-      const key =
-        result.kind === "added"
-          ? "rally.scanner.added"
-          : result.kind === "duplicate"
-            ? "rally.scanner.duplicate"
-            : result.kind === "not-joined"
-              ? "rally.scanner.notJoined"
-              : "rally.scanner.invalid";
-
-      setFeedback({
-        message: t(key, { spot }),
-        success: result.kind === "added" || result.kind === "duplicate",
-      });
+      setFeedback(null);
+      setScanResult({ ...onScan(payload), payload });
     },
-    [onScan, stopCamera, t],
+    [onScan, stopCamera],
   );
 
   const enableCamera = async () => {
     stopCamera();
     handledRef.current = false;
     setFeedback(null);
+    setScanResult(null);
 
     if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
       setFeedback({ message: t("rally.scanner.cameraUnavailable"), success: false });
@@ -134,36 +130,30 @@ export function ScannerDialog({
     }
   };
 
-  const uploadImage = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) return;
-
-    stopCamera();
-    const requestGeneration = generationRef.current;
-    handledRef.current = false;
-    setBusy(true);
-    setFeedback(null);
-
-    try {
-      const payload = await decodeQrImage(file);
-      if (requestGeneration === generationRef.current) acceptPayload(payload);
-    } catch (error) {
-      if (requestGeneration !== generationRef.current) return;
-      const code =
-        error instanceof QrReaderError ? error.code : "imageNoQr";
-      setFeedback({ message: t(`rally.scanner.${code}`), success: false });
-    } finally {
-      if (requestGeneration === generationRef.current) setBusy(false);
-    }
-  };
-
-  const changeMethod = (nextMethod: InputMethod) => {
-    stopCamera();
-    setCameraState("off");
-    setBusy(false);
-    setFeedback(null);
-    setMethod(nextMethod);
+  const validResult = scanResult?.kind === "added" || scanResult?.kind === "duplicate";
+  const saveFailed = validResult && !scanResult?.persisted;
+  const resultState = saveFailed ? "save-error" : scanResult?.kind;
+  const resultTitleKey = saveFailed
+    ? "rally.scanner.saveFailedTitle"
+    : scanResult?.kind === "added"
+      ? "rally.scanner.addedTitle"
+      : scanResult?.kind === "duplicate"
+        ? "rally.scanner.duplicateTitle"
+        : scanResult?.kind === "not-joined"
+          ? "rally.scanner.notJoined"
+          : "rally.scanner.invalidTitle";
+  const returnToCard = () => onViewCard(
+    scanResult?.persisted && scanResult.kind === "added" ? scanResult.spot?.id : undefined,
+  );
+  const retrySave = () => {
+    if (!scanResult) return;
+    const retried = onScan(scanResult.payload);
+    setScanResult({
+      ...retried,
+      // 再試行で重複判定になっても、最初の取得結果として表示します。
+      kind: scanResult.kind === "added" && retried.kind === "duplicate" ? "added" : retried.kind,
+      payload: scanResult.payload,
+    });
   };
 
   return (
@@ -180,7 +170,7 @@ export function ScannerDialog({
         <div>
           <span className="rally-eyebrow">TECHMUJIN STAMP RALLY</span>
           <Text as="h2" textStyle="t7Bold">
-            {t("rally.scanner.title")}
+            {t(scanResult ? "rally.scanner.title" : "rally.scanner.scanTitle")}
           </Text>
         </div>
         <button
@@ -192,120 +182,111 @@ export function ScannerDialog({
           ×
         </button>
       </div>
-      <p className="rally-dialog__intro">{t("rally.scanner.description")}</p>
+      <div className="rally-dialog__camera" hidden={Boolean(scanResult)}>
+        <p className="rally-dialog__intro">{t("rally.scanner.description")}</p>
 
-      <div className="rally-tabs" role="group" aria-label={t("rally.scanner.method")}>
-        <button
-          type="button"
-          aria-pressed={method === "camera"}
-          onClick={() => changeMethod("camera")}
-        >
-          {t("rally.scanner.cameraTab")}
-        </button>
-        <button
-          type="button"
-          aria-pressed={method === "image"}
-          onClick={() => changeMethod("image")}
-        >
-          {t("rally.scanner.imageTab")}
-        </button>
-      </div>
-
-      {method === "camera" ? (
-        <>
-          <div className="rally-viewfinder">
-            <video
-              ref={videoRef}
-              muted
-              playsInline
-              aria-label={t("rally.scanner.cameraPreview")}
-              data-hidden={cameraState === "off"}
-            />
-            <div className="rally-viewfinder__frame" aria-hidden="true" />
-            {cameraState === "off" ? (
-              <div className="rally-viewfinder__placeholder">
-                <span aria-hidden="true">⌗</span>
-                <p>{t("rally.scanner.cameraFrame")}</p>
-              </div>
-            ) : (
-              <span className="rally-viewfinder__status">
-                {t(
-                  cameraState === "starting"
-                    ? "rally.scanner.connecting"
-                    : "rally.scanner.searching",
-                )}
-              </span>
-            )}
-          </div>
-          <ActionButton
-            className="rally-dialog__action"
-            variant="brandSolid"
-            size="large"
-            type="button"
-            onClick={() => {
-              if (cameraState === "off") void enableCamera();
-              else {
-                stopCamera();
-                setCameraState("off");
-              }
-            }}
-          >
-            {t(
-              cameraState === "off"
-                ? "rally.scanner.cameraOn"
-                : "rally.scanner.cameraOff",
-            )}
-          </ActionButton>
-          <p className="rally-dialog__fineprint">
-            {t("rally.scanner.permission")}
-          </p>
-        </>
-      ) : (
-        <div className="rally-upload">
-          <span className="rally-upload__icon" aria-hidden="true">↑</span>
-          <Text as="h3" textStyle="t5Bold">
-            {t("rally.scanner.uploadTitle")}
-          </Text>
-          <p>{t("rally.scanner.uploadDescription")}</p>
-          <label className="rally-file-button">
-            {t(busy ? "rally.scanner.reading" : "rally.scanner.chooseImage")}
-            <input
-              type="file"
-              accept="image/*"
-              aria-label={t("rally.scanner.chooseImage")}
-              disabled={busy}
-              onChange={(event) => void uploadImage(event)}
-            />
-          </label>
-          <span className="rally-dialog__fineprint">
-            {t("rally.scanner.formats")}
-          </span>
+        <div className="rally-viewfinder">
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            aria-label={t("rally.scanner.cameraPreview")}
+            data-hidden={cameraState === "off"}
+          />
+          <div className="rally-viewfinder__frame" aria-hidden="true" />
+          {cameraState === "off" ? (
+            <div className="rally-viewfinder__placeholder">
+              <span aria-hidden="true">⌗</span>
+              <p>{t("rally.scanner.cameraFrame")}</p>
+            </div>
+          ) : (
+            <span className="rally-viewfinder__status">
+              {t(
+                cameraState === "starting"
+                  ? "rally.scanner.connecting"
+                  : "rally.scanner.searching",
+              )}
+            </span>
+          )}
         </div>
-      )}
-
-      {feedback && (
-        <div
-          className="rally-feedback"
-          data-success={feedback.success}
-          role={feedback.success ? "status" : "alert"}
-        >
-          {feedback.message}
-        </div>
-      )}
-
-      {feedback?.success && (
         <ActionButton
           className="rally-dialog__action"
-          variant="neutralWeak"
+          variant="brandSolid"
           size="large"
           type="button"
-          onClick={onClose}
+          onClick={() => {
+            if (cameraState === "off") void enableCamera();
+            else {
+              stopCamera();
+              setCameraState("off");
+            }
+          }}
         >
-          {t("rally.scanner.viewCard")}
+          {t(
+            cameraState === "off"
+              ? "rally.scanner.cameraOn"
+              : "rally.scanner.cameraOff",
+          )}
         </ActionButton>
-      )}
+        <p className="rally-dialog__fineprint">
+          {t("rally.scanner.permission")}
+        </p>
 
-      <p className="rally-dialog__privacy">{t("rally.scanner.privacy")}</p>
+        {feedback && (
+          <div
+            className="rally-feedback"
+            data-success={feedback.success}
+            role={feedback.success ? "status" : "alert"}
+          >
+            {feedback.message}
+          </div>
+        )}
+
+        <p className="rally-dialog__privacy">{t("rally.scanner.privacy")}</p>
+      </div>
+
+      {scanResult && (
+        <section
+          className="rally-scan-result"
+          data-kind={resultState}
+          data-tone={saveFailed ? "critical" : scanResult.kind === "added" ? "brand" : "neutral"}
+          role={validResult && !saveFailed ? "status" : "alert"}
+          aria-labelledby="rally-scan-result-title"
+        >
+          <div className="rally-scan-result__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              {validResult && !saveFailed ? <path d="m5 12 4 4L19 6" /> : <><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 7h.01" /></>}
+            </svg>
+          </div>
+          <h3 id="rally-scan-result-title" ref={resultTitleRef} tabIndex={-1}>{t(resultTitleKey)}</h3>
+          {scanResult.spot && <p className="rally-scan-result__spot">{scanResult.spot.title}</p>}
+          {(saveFailed || scanResult.kind === "duplicate" || scanResult.kind === "invalid") && (
+            <p className="rally-scan-result__message">{t(
+              saveFailed ? "rally.scanner.saveFailedDescription"
+                : scanResult.kind === "duplicate" ? "rally.scanner.duplicateDescription"
+                  : "rally.scanner.invalid",
+            )}</p>
+          )}
+          {validResult && !saveFailed && (
+            <div className="rally-scan-result__progress">
+              <div><strong>{Object.keys(scanResult.card.visits).length}</strong><span> / {STAMP_SPOTS.length}</span></div>
+              <p>{t("rally.scanner.collectedCount")}</p>
+            </div>
+          )}
+          <div className="rally-scan-result__actions">
+            <ActionButton variant="brandSolid" size="large" type="button" onClick={
+              saveFailed ? retrySave : validResult ? returnToCard : () => void enableCamera()
+            }>
+              {t(saveFailed ? "rally.link.retry" : validResult ? "rally.scanner.viewCard" : "rally.scanner.retry")}
+            </ActionButton>
+            {(!validResult || saveFailed) && (
+              <ActionButton variant="neutralWeak" size="large" type="button" onClick={returnToCard}>
+                {t("rally.scanner.viewCard")}
+              </ActionButton>
+            )}
+          </div>
+        </section>
+      )}
     </dialog>
   );
 }
