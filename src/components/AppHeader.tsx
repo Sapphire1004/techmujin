@@ -61,13 +61,8 @@ function HeaderBrand({ onClick }: { onClick: () => void }) {
       aria-label={t("navigation.brand")}
       onClick={onClick}
     >
-      <img
-        className="site-header__brand-logo"
-        src="/images/techmujin/logo-2026.svg"
-        alt="テック無尽 2026"
-        width={867}
-        height={330}
-      />
+      <span className="site-header__brand-ja">テック無尽</span>
+      <span className="site-header__brand-en">TECH MUJIN 2026</span>
     </button>
   );
 }

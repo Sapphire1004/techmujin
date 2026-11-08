@@ -11,6 +11,9 @@
   --tm-color-text: #211d33;
   --tm-color-text-strong: #211d33;
   --tm-color-text-muted: #716c84;
+  /* 公式サイトのヘッダーロゴに合わせた文字色。 */
+  --tm-color-wordmark: #990066;
+  --tm-color-wordmark-caption: #5a5a72;
   --tm-color-border: #e9e8ed;
   --tm-color-brand: #6b3fb5;
   --tm-color-brand-pressed: #583397;

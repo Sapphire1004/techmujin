@@ -90,21 +90,39 @@ a:focus-visible,
 }
 
 .site-header__brand {
-  display: grid;
+  display: flex;
   min-width: 2.75rem;
   min-height: 2.75rem;
+  flex-direction: column;
   flex-shrink: 0;
-  place-items: center;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-3xs);
   padding: 0;
   color: var(--color-ink);
   line-height: 1;
   white-space: nowrap;
 }
 
-.site-header__brand-logo {
-  display: block;
-  width: 7rem;
-  height: auto;
+.site-header__brand-ja {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic",
+    "遊ゴシック", Meiryo, sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  color: var(--tm-color-wordmark);
+}
+
+.site-header__brand-en {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "Yu Gothic", "游ゴシック", Meiryo, sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.8;
+  letter-spacing: 0.18em;
+  color: var(--tm-color-wordmark-caption);
 }
 
 .site-header__desktop {
@@ -1464,10 +1482,6 @@ button[data-state="error"] {
     color: var(--color-ink);
   }
 
-  .site-header__brand:hover {
-    color: var(--color-accent);
-  }
-
   .site-header__nav button:hover {
     color: var(--color-ink);
   }
@@ -1527,10 +1541,6 @@ button[data-state="error"] {
   .site-header {
     background: color-mix(in srgb, var(--color-paper) 82%, transparent);
     backdrop-filter: saturate(160%) blur(14px);
-  }
-
-  .site-header__brand-logo {
-    width: 8rem;
   }
 
   .site-header__desktop {
