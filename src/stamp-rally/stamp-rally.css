@@ -259,6 +259,11 @@
   opacity: 0.45;
 }
 
+/* この原本は左右に約19%の透明な余白があるため、ロゴの表示倍率を補正します。 */
+.rally-stamp-card__image[src="https://techmujin.jp/2026/images/communities/kintone-cafe-yamanashi.png"] {
+  transform: scale(1.6);
+}
+
 .rally-stamp-card[data-collected="true"] .rally-stamp-card__image {
   filter: none;
   opacity: 1;
