@@ -260,123 +260,135 @@ function Timetable({
             </Text>
 
             {activeView === "program" && (
-              <div
-                className="schedule-export"
-                data-visible={showSavedOnly}
-                aria-hidden={!showSavedOnly}
-              >
-                <div className="schedule-export__toolbar">
-                  <Text
-                    as="p"
-                    className="schedule-export__count"
-                    color="fg.neutralMuted"
-                    textStyle="t3Regular"
-                    aria-live="polite"
-                  >
-                    {t("schedule.selectedCount", {
-                      count: selectedSessions.length,
-                    })}
-                  </Text>
-                  <div className="schedule-export__actions">
-                    {canOpenAppleCalendar && (
+              <div className="schedule-utility">
+                <Text
+                  as="p"
+                  className="schedule-add-hint"
+                  color="fg.neutralMuted"
+                  textStyle="t3Regular"
+                  data-visible={!showSavedOnly}
+                  aria-hidden={showSavedOnly}
+                >
+                  {t("schedule.addHint")}
+                </Text>
+                <div
+                  className="schedule-export"
+                  data-visible={showSavedOnly}
+                  aria-hidden={!showSavedOnly}
+                >
+                  <div className="schedule-export__toolbar">
+                    <Text
+                      as="p"
+                      className="schedule-export__count"
+                      color="fg.neutralMuted"
+                      textStyle="t3Regular"
+                      aria-live="polite"
+                    >
+                      {t("schedule.selectedCount", {
+                        count: selectedSessions.length,
+                      })}
+                    </Text>
+                    <div className="schedule-export__actions">
+                      {canOpenAppleCalendar && (
+                        <ActionButton
+                          className="schedule-export__button"
+                          variant="brandSolid"
+                          size="medium"
+                          type="button"
+                          disabled={!showSavedOnly || selectedSessions.length === 0}
+                          title={
+                            selectedSessions.length === 0
+                              ? t("calendar.noSessions")
+                              : undefined
+                          }
+                          onClick={openSelectedSessionsInAppleCalendar}
+                        >
+                          {t("calendar.openApple")}
+                        </ActionButton>
+                      )}
                       <ActionButton
                         className="schedule-export__button"
-                        variant="brandSolid"
+                        variant={
+                          canOpenAppleCalendar ? "brandOutline" : "brandSolid"
+                        }
                         size="medium"
                         type="button"
-                        disabled={!showSavedOnly || selectedSessions.length === 0}
+                        loading={calendarExportStatus === "sharing"}
+                        disabled={
+                          !showSavedOnly ||
+                          selectedSessions.length === 0 ||
+                          calendarExportStatus === "sharing"
+                        }
                         title={
                           selectedSessions.length === 0
                             ? t("calendar.noSessions")
                             : undefined
                         }
-                        onClick={openSelectedSessionsInAppleCalendar}
+                        onClick={() => void exportSelectedSessionsCalendar()}
                       >
-                        {t("calendar.openApple")}
+                        {calendarExportStatus === "sharing"
+                          ? t("calendar.sharing")
+                          : canShareCalendarFile
+                            ? t("calendar.share")
+                            : t("calendar.download")}
                       </ActionButton>
-                    )}
-                    <ActionButton
-                      className="schedule-export__button"
-                      variant={
-                        canOpenAppleCalendar ? "brandOutline" : "brandSolid"
-                      }
-                      size="medium"
-                      type="button"
-                      loading={calendarExportStatus === "sharing"}
-                      disabled={
-                        !showSavedOnly ||
-                        selectedSessions.length === 0 ||
-                        calendarExportStatus === "sharing"
-                      }
-                      title={
-                        selectedSessions.length === 0
-                          ? t("calendar.noSessions")
-                          : undefined
-                      }
-                      onClick={() => void exportSelectedSessionsCalendar()}
-                    >
-                      {calendarExportStatus === "sharing"
-                        ? t("calendar.sharing")
-                        : canShareCalendarFile
-                          ? t("calendar.share")
-                          : t("calendar.download")}
-                    </ActionButton>
-                    <ActionButton
-                      className="schedule-export__button"
-                      variant="brandOutline"
-                      size="medium"
-                      type="button"
-                      loading={imageExportStatus === "creating"}
-                      disabled={
-                        !showSavedOnly ||
-                        selectedSessions.length === 0 ||
-                        imageExportStatus === "creating"
-                      }
-                      title={
-                        selectedSessions.length === 0
-                          ? t("calendar.noSessions")
-                          : undefined
-                      }
-                      onClick={() => void downloadSelectedSessionsImage()}
-                    >
-                      {imageExportStatus === "creating"
-                        ? t("calendar.imageCreating")
-                        : t("calendar.imageDownload")}
-                    </ActionButton>
+                      <ActionButton
+                        className="schedule-export__button"
+                        variant="brandOutline"
+                        size="medium"
+                        type="button"
+                        loading={imageExportStatus === "creating"}
+                        disabled={
+                          !showSavedOnly ||
+                          selectedSessions.length === 0 ||
+                          imageExportStatus === "creating"
+                        }
+                        title={
+                          selectedSessions.length === 0
+                            ? t("calendar.noSessions")
+                            : undefined
+                        }
+                        onClick={() => void downloadSelectedSessionsImage()}
+                      >
+                        {imageExportStatus === "creating"
+                          ? t("calendar.imageCreating")
+                          : t("calendar.imageDownload")}
+                      </ActionButton>
+                    </div>
                   </div>
+                  {imageExportStatus === "error" && (
+                    <PageBanner.Root
+                      className="schedule-export__feedback"
+                      role="alert"
+                      tone="critical"
+                      variant="weak"
+                    >
+                      <PageBanner.Content>
+                        <PageBanner.Body>
+                          <PageBanner.Description>
+                            {t("calendar.imageError")}
+                          </PageBanner.Description>
+                        </PageBanner.Body>
+                      </PageBanner.Content>
+                    </PageBanner.Root>
+                  )}
+                  {calendarExportStatus === "fallback" && (
+                    <PageBanner.Root
+                      className="schedule-export__feedback"
+                      role="status"
+                      tone="informative"
+                      variant="weak"
+                    >
+                      <PageBanner.Content>
+                        <PageBanner.Body>
+                          <PageBanner.Description>
+                            {t("calendar.shareFallback")}
+                          </PageBanner.Description>
+                        </PageBanner.Body>
+                      </PageBanner.Content>
+                    </PageBanner.Root>
+                  )}
                 </div>
-                {imageExportStatus === "error" && (
-                  <PageBanner.Root
-                    className="schedule-export__feedback"
-                    role="alert"
-                    tone="critical"
-                    variant="weak"
-                  >
-                    <PageBanner.Content>
-                      <PageBanner.Body>
-                        <PageBanner.Description>
-                          {t("calendar.imageError")}
-                        </PageBanner.Description>
-                      </PageBanner.Body>
-                    </PageBanner.Content>
-                  </PageBanner.Root>
-                )}
-                {calendarExportStatus === "fallback" && (
-                  <PageBanner.Root
-                    className="schedule-export__feedback"
-                    role="status"
-                    tone="informative"
-                    variant="weak"
-                  >
-                    <PageBanner.Content>
-                      <PageBanner.Body>
-                        <PageBanner.Description>
-                          {t("calendar.shareFallback")}
-                        </PageBanner.Description>
-                      </PageBanner.Body>
-                    </PageBanner.Content>
-                  </PageBanner.Root>
-                )}
               </div>
             )}
           </div>

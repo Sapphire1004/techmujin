@@ -69,6 +69,7 @@ const resources = {
         regionLabel: "トラック別イベントタイムテーブル",
         mySchedule: "マイスケジュール",
         selectedCount: "{{count}}セッションを選択しました。",
+        addHint: "タップでマイスケジュールに追加",
         time: "時間",
       },
       session: {
@@ -212,6 +213,7 @@ const resources = {
         regionLabel: "Event timetable by track",
         mySchedule: "My schedule",
         selectedCount: "You selected {{count}} sessions.",
+        addHint: "Tap a session to add it to your schedule",
         time: "TIME",
       },
       session: {
@@ -354,6 +356,7 @@ const resources = {
         regionLabel: "트랙별 행사 타임테이블",
         mySchedule: "내 일정",
         selectedCount: "세션 {{count}}개를 선택했습니다.",
+        addHint: "세션을 눌러 내 일정에 추가하세요",
         time: "시간",
       },
       session: {

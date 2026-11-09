@@ -426,6 +426,25 @@ main {
   gap: var(--space-sm);
 }
 
+.schedule-utility {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+}
+
+.schedule-utility > * {
+  grid-area: 1 / 1;
+  align-self: center;
+}
+
+.schedule-add-hint {
+  margin: 0;
+}
+
+.schedule-add-hint[data-visible="false"] {
+  visibility: hidden;
+}
+
 .schedule-export {
   display: grid;
   width: 100%;
@@ -800,8 +819,13 @@ button[data-state="error"] {
     gap: var(--space-lg);
   }
 
+  .masthead__utility-row .schedule-utility,
   .masthead__utility-row .schedule-export {
     width: auto;
+  }
+
+  .schedule-add-hint {
+    text-align: end;
   }
 
   .timetable-grid {
