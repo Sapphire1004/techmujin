@@ -437,14 +437,6 @@ main {
   align-self: center;
 }
 
-.schedule-add-hint {
-  margin: 0;
-}
-
-.schedule-add-hint[data-visible="false"] {
-  visibility: hidden;
-}
-
 .schedule-export {
   display: grid;
   width: 100%;
@@ -619,9 +611,9 @@ main {
   margin: var(--space-3xs) var(--space-2xs);
   padding: var(--space-xs);
   overflow: hidden;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3xs);
+  flex-direction: row;
+  align-items: stretch;
+  gap: var(--space-xs);
   border: var(--rule-hair) solid var(--color-rule);
   border-radius: var(--radius-md);
   background: var(--color-paper-2);
@@ -630,14 +622,46 @@ main {
   transition: transform var(--dur-micro) var(--ease-out);
 }
 
-.session-block > * {
+.session-block > *,
+.session-block__content > * {
   max-width: 100%;
 }
 
-.session-block > strong {
+.session-block > strong,
+.session-block__content > strong {
   min-width: 0;
   overflow: hidden;
   overflow-wrap: anywhere;
+}
+
+.session-block__content {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3xs);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  text-align: start;
+}
+
+.session-block__action {
+  width: 6rem;
+  min-width: 6rem;
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  align-self: center;
+  gap: var(--space-2xs);
+  padding-inline: var(--space-xs);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  white-space: nowrap;
 }
 
 .session-block__tags {
@@ -702,6 +726,10 @@ main {
   padding-block: var(--space-2xs);
 }
 
+.session-block[data-compact="true"] .session-block__content {
+  justify-content: center;
+}
+
 .session-block[data-format="break"] {
   flex-direction: row;
   align-items: center;
@@ -719,11 +747,6 @@ main {
 .session-block[data-format="break"] strong {
   font-size: var(--text-xs);
   white-space: nowrap;
-}
-
-.session-block[data-format="break"]:disabled {
-  border-color: var(--color-rule);
-  opacity: 1;
 }
 
 .empty-state {
@@ -824,12 +847,19 @@ button[data-state="error"] {
     width: auto;
   }
 
-  .schedule-add-hint {
-    text-align: end;
-  }
-
   .timetable-grid {
     min-width: 100%;
+  }
+}
+
+@media (max-width: 24rem) {
+  .timetable-grid[data-track-count="1"] {
+    grid-template-columns: 5.25rem minmax(0, 1fr);
+  }
+
+  .session-block__action {
+    width: 5.5rem;
+    min-width: 5.5rem;
   }
 }
 

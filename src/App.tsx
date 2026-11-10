@@ -261,16 +261,6 @@ function Timetable({
 
             {activeView === "program" && (
               <div className="schedule-utility">
-                <Text
-                  as="p"
-                  className="schedule-add-hint"
-                  color="fg.neutralMuted"
-                  textStyle="t3Regular"
-                  data-visible={!showSavedOnly}
-                  aria-hidden={showSavedOnly}
-                >
-                  {t("schedule.addHint")}
-                </Text>
                 <div
                   className="schedule-export"
                   data-visible={showSavedOnly}
@@ -508,42 +498,33 @@ function Timetable({
                   const sessionTitle = session.title;
                   const speakerName = session.speaker;
                   const gridColumn = "2 / -1";
+                  const sessionLabel = isBreak
+                    ? t("session.breakLabel", {
+                        start: session.startTime,
+                        end: session.endTime,
+                        title: sessionTitle,
+                      })
+                    : t("session.cardLabel", {
+                        start: session.startTime,
+                        end: session.endTime,
+                        title: sessionTitle,
+                        action: t(isSelected ? "session.remove" : "session.add"),
+                        conflict: hasConflict ? t("session.conflictSuffix") : "",
+                      });
 
                   return (
-                    <button
+                    <article
                       className="session-block"
                       data-compact={isCompact}
                       data-conflict={hasConflict}
                       data-format={session.format}
                       data-state={isSelected ? "success" : "default"}
-                      type="button"
                       key={session.id}
-                      aria-pressed={isBreak ? undefined : isSelected}
-                      aria-label={
-                        isBreak
-                          ? t("session.breakLabel", {
-                              start: session.startTime,
-                              end: session.endTime,
-                              title: sessionTitle,
-                            })
-                          : t("session.cardLabel", {
-                              start: session.startTime,
-                              end: session.endTime,
-                              title: sessionTitle,
-                              action: t(
-                                isSelected ? "session.remove" : "session.add",
-                              ),
-                              conflict: hasConflict
-                                ? t("session.conflictSuffix")
-                                : "",
-                            })
-                      }
-                      disabled={isBreak}
+                      aria-label={isBreak ? sessionLabel : undefined}
                       style={{
                         gridColumn,
                         gridRow: `${startSlot + 2} / ${endSlot + 2}`,
                       }}
-                      onClick={isBreak ? undefined : () => toggleSession(session.id)}
                     >
                       {isBreak ? (
                         <Text as="strong" maxLines={1} textStyle="t2Bold">
@@ -551,74 +532,94 @@ function Timetable({
                         </Text>
                       ) : (
                         <>
-                          <span className="session-block__tags">
-                            {session.tags.map((tag) => (
-                              <Badge
-                                className="session-block__badge"
-                                key={tag}
-                                size="medium"
-                                tone="neutral"
-                                variant="weak"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {hasConflict ? (
-                              <Badge
-                                className="session-block__badge"
-                                size="medium"
-                                tone="critical"
-                                variant="weak"
-                              >
-                                {t("session.conflict")}
-                              </Badge>
-                            ) : isSelected ? (
-                              <Badge
-                                className="session-block__badge"
-                                size="medium"
-                                tone="brand"
-                                variant="weak"
-                              >
-                                {t("session.selected")}
-                              </Badge>
-                            ) : null}
-                          </span>
-                          <Text as="strong" maxLines={2} textStyle="t3Bold">
-                            {sessionTitle}
-                          </Text>
-                          {session.speaker && (
-                            <span className="session-block__speaker">
-                              {session.speakerImage ? (
-                                <img
-                                  className="session-block__avatar"
-                                  src={session.speakerImage}
-                                  alt=""
-                                  width={24}
-                                  height={24}
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              ) : (
-                                <span
-                                  className="session-block__avatar session-block__avatar--fallback"
-                                  aria-hidden="true"
+                          <button
+                            className="session-block__content"
+                            type="button"
+                            aria-pressed={isSelected}
+                            aria-label={sessionLabel}
+                            onClick={() => toggleSession(session.id)}
+                          >
+                            <span className="session-block__tags">
+                              {session.tags.map((tag) => (
+                                <Badge
+                                  className="session-block__badge"
+                                  key={tag}
+                                  size="medium"
+                                  tone="neutral"
+                                  variant="weak"
                                 >
-                                  {speakerName.slice(0, 1)}
-                                </span>
-                              )}
-                              <Text
-                                className="session-block__speaker-name"
-                                color="fg.neutralMuted"
-                                maxLines={1}
-                                textStyle="t2Regular"
-                              >
-                                {speakerName}
-                              </Text>
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {hasConflict ? (
+                                <Badge
+                                  className="session-block__badge"
+                                  size="medium"
+                                  tone="critical"
+                                  variant="weak"
+                                >
+                                  {t("session.conflict")}
+                                </Badge>
+                              ) : isSelected ? (
+                                <Badge
+                                  className="session-block__badge"
+                                  size="medium"
+                                  tone="brand"
+                                  variant="weak"
+                                >
+                                  {t("session.selected")}
+                                </Badge>
+                              ) : null}
                             </span>
-                          )}
+                            <Text as="strong" maxLines={2} textStyle="t3Bold">
+                              {sessionTitle}
+                            </Text>
+                            {session.speaker && (
+                              <span className="session-block__speaker">
+                                {session.speakerImage ? (
+                                  <img
+                                    className="session-block__avatar"
+                                    src={session.speakerImage}
+                                    alt=""
+                                    width={24}
+                                    height={24}
+                                    loading="lazy"
+                                    decoding="async"
+                                  />
+                                ) : (
+                                  <span
+                                    className="session-block__avatar session-block__avatar--fallback"
+                                    aria-hidden="true"
+                                  >
+                                    {speakerName.slice(0, 1)}
+                                  </span>
+                                )}
+                                <Text
+                                  className="session-block__speaker-name"
+                                  color="fg.neutralMuted"
+                                  maxLines={1}
+                                  textStyle="t2Regular"
+                                >
+                                  {speakerName}
+                                </Text>
+                              </span>
+                            )}
+                          </button>
+                          <ActionButton
+                            className="session-block__action"
+                            variant={isSelected ? "brandSolid" : "brandOutline"}
+                            size="small"
+                            type="button"
+                            aria-pressed={isSelected}
+                            aria-label={sessionLabel}
+                            onClick={() => toggleSession(session.id)}
+                          >
+                            <span aria-hidden="true">{isSelected ? "✓" : "＋"}</span>
+                            {t(isSelected ? "session.addedButton" : "session.addButton")}
+                          </ActionButton>
                         </>
                       )}
-                    </button>
+                    </article>
                   );
                 })}
               </div>
