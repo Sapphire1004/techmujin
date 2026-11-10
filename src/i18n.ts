@@ -69,6 +69,8 @@ const resources = {
         regionLabel: "トラック別イベントタイムテーブル",
         mySchedule: "マイスケジュール",
         selectedCount: "{{count}}セッションを選択しました。",
+        clearAll: "選択をすべて解除",
+        clearAllButton: "すべて解除",
         time: "時間",
       },
       session: {
@@ -84,7 +86,7 @@ const resources = {
       },
       empty: {
         title: "表示するセッションがありません。",
-        body: "絞り込みを変更するか、全スケジュールを確認してください。",
+        body: "セッション情報の更新をお待ちください。",
         reset: "全スケジュールを見る",
       },
       calendar: {
@@ -214,6 +216,8 @@ const resources = {
         regionLabel: "Event timetable by track",
         mySchedule: "My schedule",
         selectedCount: "You selected {{count}} sessions.",
+        clearAll: "Clear all selected sessions",
+        clearAllButton: "Clear all",
         time: "TIME",
       },
       session: {
@@ -229,7 +233,7 @@ const resources = {
       },
       empty: {
         title: "No sessions to display.",
-        body: "Change the filter or return to the full schedule.",
+        body: "Please check back for session updates.",
         reset: "View full schedule",
       },
       calendar: {
@@ -358,6 +362,8 @@ const resources = {
         regionLabel: "트랙별 행사 타임테이블",
         mySchedule: "내 일정",
         selectedCount: "세션 {{count}}개를 선택했습니다.",
+        clearAll: "선택한 일정 전체 해제",
+        clearAllButton: "전체 해제",
         time: "시간",
       },
       session: {
@@ -373,7 +379,7 @@ const resources = {
       },
       empty: {
         title: "표시할 세션이 없습니다.",
-        body: "필터를 바꾸거나 전체 일정을 다시 확인해 주세요.",
+        body: "세션 정보가 업데이트될 때까지 기다려 주세요.",
         reset: "전체 일정 보기",
       },
       calendar: {

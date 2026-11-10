@@ -49,7 +49,6 @@ function Timetable({
   booths: BoothsState;
 }) {
   const { t, i18n } = useTranslation();
-  const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
   >("idle");
@@ -58,7 +57,7 @@ function Timetable({
   >("idle");
   const [canShareCalendarFile] = useState(supportsCalendarFileShare);
   const [canOpenAppleCalendar] = useState(isAppleMobileSafari);
-  const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
+  const { selectedSet, storageStatus, toggleSession, clearSchedule } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
   const timeBoundaries = useMemo(
@@ -112,14 +111,10 @@ function Timetable({
   }, [selectedSessions]);
 
   const visibleSessions = useMemo(
-    () =>
-      sessions
-        .filter((session) => !showSavedOnly || selectedSet.has(session.id))
-        .sort((first, second) => first.startTime.localeCompare(second.startTime)),
-    [selectedSet, sessions, showSavedOnly],
+    () => [...sessions].sort((first, second) => first.startTime.localeCompare(second.startTime)),
+    [sessions],
   );
-  const savedColumnCount = conflictIds.size > 0 ? 2 : 1;
-  const gridTrackCount = showSavedOnly ? savedColumnCount : 1;
+  const gridTrackCount = 1;
 
   const gridStyle = {
     "--track-count": gridTrackCount,
@@ -261,23 +256,32 @@ function Timetable({
 
             {activeView === "program" && (
               <div className="schedule-utility">
-                <div
-                  className="schedule-export"
-                  data-visible={showSavedOnly}
-                  aria-hidden={!showSavedOnly}
-                >
+                <div className="schedule-export">
                   <div className="schedule-export__toolbar">
-                    <Text
-                      as="p"
-                      className="schedule-export__count"
-                      color="fg.neutralMuted"
-                      textStyle="t3Regular"
-                      aria-live="polite"
-                    >
-                      {t("schedule.selectedCount", {
-                        count: selectedSessions.length,
-                      })}
-                    </Text>
+                    <div className="schedule-export__selection">
+                      <Text
+                        as="p"
+                        className="schedule-export__count"
+                        color="fg.neutralMuted"
+                        textStyle="t3Regular"
+                        aria-live="polite"
+                      >
+                        {t("schedule.selectedCount", {
+                          count: selectedSessions.length,
+                        })}
+                      </Text>
+                      <ActionButton
+                        className="schedule-export__clear"
+                        variant="brandOutline"
+                        size="small"
+                        type="button"
+                        aria-label={t("schedule.clearAll")}
+                        disabled={selectedSessions.length === 0}
+                        onClick={clearSchedule}
+                      >
+                        {t("schedule.clearAllButton")}
+                      </ActionButton>
+                    </div>
                     <div className="schedule-export__actions">
                       {canOpenAppleCalendar && (
                         <ActionButton
@@ -285,7 +289,7 @@ function Timetable({
                           variant="brandSolid"
                           size="medium"
                           type="button"
-                          disabled={!showSavedOnly || selectedSessions.length === 0}
+                          disabled={selectedSessions.length === 0}
                           title={
                             selectedSessions.length === 0
                               ? t("calendar.noSessions")
@@ -305,7 +309,6 @@ function Timetable({
                         type="button"
                         loading={calendarExportStatus === "sharing"}
                         disabled={
-                          !showSavedOnly ||
                           selectedSessions.length === 0 ||
                           calendarExportStatus === "sharing"
                         }
@@ -329,7 +332,6 @@ function Timetable({
                         type="button"
                         loading={imageExportStatus === "creating"}
                         disabled={
-                          !showSavedOnly ||
                           selectedSessions.length === 0 ||
                           imageExportStatus === "creating"
                         }
@@ -391,17 +393,6 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "program"}
         >
-          <ActionButton
-            className="saved-filter"
-            variant={showSavedOnly ? "brandSolid" : "brandOutline"}
-            size="small"
-            type="button"
-            aria-pressed={showSavedOnly}
-            onClick={() => setShowSavedOnly((current) => !current)}
-          >
-            {t("filters.mySchedule", { count: selectedSessions.length })}
-          </ActionButton>
-
           {storageStatus === "unavailable" && (
             <p className="storage-warning" role="status">
               {t("storage.unavailable")}
@@ -418,32 +409,19 @@ function Timetable({
             >
               <div
                 className="timetable-grid"
-                data-has-conflicts={showSavedOnly && conflictIds.size > 0}
                 data-track-count={gridTrackCount}
-                data-view={showSavedOnly ? "saved" : "all"}
                 style={gridStyle}
               >
                 <div className="time-corner">{t("schedule.time")}</div>
 
-                {showSavedOnly ? (
-                  <div
-                    className="track-heading track-heading--saved"
-                    style={{ gridColumn: "2 / -1", gridRow: 1 }}
-                  >
-                    <Text as="strong" textStyle="t5Bold">
-                      {t("schedule.mySchedule")}
-                    </Text>
-                  </div>
-                ) : (
-                  <div
-                    className="track-heading track-heading--saved"
-                    style={{ gridColumn: 2, gridRow: 1 }}
-                  >
-                    <Text as="strong" textStyle="t5Bold">
-                      {t("schedule.program")}
-                    </Text>
-                  </div>
-                )}
+                <div
+                  className="track-heading track-heading--saved"
+                  style={{ gridColumn: 2, gridRow: 1 }}
+                >
+                  <Text as="strong" textStyle="t5Bold">
+                    {t("schedule.program")}
+                  </Text>
+                </div>
 
                 {timeSlots.map((time, index) => (
                   <div
@@ -628,17 +606,6 @@ function Timetable({
             <div className="empty-state">
               <h3>{t("empty.title")}</h3>
               <p>{t("empty.body")}</p>
-              <ActionButton
-                className="reset-button"
-                variant="brandSolid"
-                size="small"
-                type="button"
-                onClick={() => {
-                  setShowSavedOnly(false);
-                }}
-              >
-                {t("empty.reset")}
-              </ActionButton>
             </div>
           )}
           </section>

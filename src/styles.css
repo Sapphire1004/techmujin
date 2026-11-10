@@ -393,24 +393,6 @@ main {
   gap: var(--space-lg);
 }
 
-.saved-filter,
-.reset-button {
-  white-space: nowrap;
-}
-
-.saved-filter {
-  position: fixed;
-  z-index: var(--z-modal);
-  inset-inline-end: max(
-    var(--space-md),
-    calc((100vw - var(--page-max)) / 2 + var(--page-gutter))
-  );
-  inset-block-end: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
-  min-height: 3rem;
-  padding-inline: var(--space-lg);
-  box-shadow: var(--shadow-floating-action);
-}
-
 .storage-warning {
   margin: 0;
   padding: var(--space-sm) var(--space-md);
@@ -444,14 +426,25 @@ main {
   gap: var(--space-xs);
 }
 
-.schedule-export[data-visible="false"] {
-  visibility: hidden;
-  pointer-events: none;
-}
-
 .schedule-export__toolbar {
   display: grid;
   gap: var(--space-xs);
+}
+
+.schedule-export__selection {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.schedule-export__clear {
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  padding-inline: var(--space-sm);
+  font-size: var(--text-xs);
+  white-space: nowrap;
 }
 
 .schedule-export__count {
@@ -504,16 +497,6 @@ main {
 .timetable-grid[data-track-count="1"] {
   grid-template-columns: 6.75rem minmax(14rem, 1fr);
   min-width: 100%;
-}
-
-.timetable-grid[data-view="saved"] {
-  grid-template-columns: 6.75rem repeat(var(--track-count), minmax(0, 1fr));
-  min-width: 100%;
-}
-
-.timetable-grid[data-view="saved"][data-has-conflicts="true"] {
-  grid-template-columns: 6.75rem repeat(2, minmax(11rem, 1fr));
-  min-width: 31rem;
 }
 
 .time-corner,
@@ -715,7 +698,7 @@ main {
   color: var(--color-ink);
 }
 
-.timetable-grid[data-view="saved"] .session-block[data-conflict="true"] {
+.session-block[data-conflict="true"] {
   border-color: var(--seed-color-stroke-critical-solid);
   background: var(--seed-color-bg-critical-weak);
 }
@@ -767,10 +750,6 @@ main {
   color: var(--color-muted);
 }
 
-.reset-button {
-  margin-top: var(--space-sm);
-}
-
 button:disabled,
 button[aria-disabled="true"] {
   cursor: not-allowed;
@@ -802,7 +781,7 @@ button[data-state="error"] {
     color: var(--color-ink);
   }
 
-  .timetable-grid[data-view="saved"] .session-block[data-conflict="true"]:hover {
+  .session-block[data-conflict="true"]:hover {
     background: var(--seed-color-bg-critical-weak-pressed);
   }
 }
@@ -864,9 +843,7 @@ button[data-state="error"] {
 }
 
 @media (pointer: coarse) {
-  .language-switch__button,
-  .saved-filter,
-  .reset-button {
+  .language-switch__button {
     min-width: 2.75rem;
     min-height: 2.75rem;
   }
@@ -881,16 +858,6 @@ button[data-state="error"] {
     scroll-behavior: auto !important;
     transition-duration: var(--dur-micro) !important;
   }
-}
-
-.saved-filter:not(:disabled) {
-  border-color: transparent;
-  background: var(--tm-color-brand-gradient);
-  color: var(--tm-color-on-brand);
-}
-
-.saved-filter {
-  box-shadow: var(--shadow-floating-action);
 }
 
 .seed-action-button--variant_brandOutline {
