@@ -272,7 +272,7 @@ function Timetable({
                     <div className="schedule-export__actions">
                       {canOpenAppleCalendar && (
                         <ActionButton
-                          className="schedule-export__button"
+                          className="schedule-export__button schedule-export__button--apple"
                           variant="brandSolid"
                           size="medium"
                           type="button"

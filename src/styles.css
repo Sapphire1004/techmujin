@@ -444,7 +444,7 @@ main {
 
 .schedule-export__actions {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-column: 1 / -1;
   grid-row: 2;
   gap: var(--space-xs);
@@ -452,7 +452,12 @@ main {
 
 .schedule-export__button {
   width: 100%;
+  min-width: 0;
   white-space: nowrap;
+}
+
+.schedule-export__button--apple {
+  grid-column: 1 / -1;
 }
 
 .schedule-export__clear {
@@ -832,6 +837,11 @@ button[data-state="error"] {
 }
 
 @media (max-width: 24rem) {
+  .schedule-export__button {
+    padding-inline: var(--space-xs);
+    font-size: var(--text-xs);
+  }
+
   .schedule-export__count {
     font-size: var(--text-xs);
   }
