@@ -258,30 +258,17 @@ function Timetable({
               <div className="schedule-utility">
                 <div className="schedule-export">
                   <div className="schedule-export__toolbar">
-                    <div className="schedule-export__selection">
-                      <Text
-                        as="p"
-                        className="schedule-export__count"
-                        color="fg.neutralMuted"
-                        textStyle="t3Regular"
-                        aria-live="polite"
-                      >
-                        {t("schedule.selectedCount", {
-                          count: selectedSessions.length,
-                        })}
-                      </Text>
-                      <ActionButton
-                        className="schedule-export__clear"
-                        variant="brandOutline"
-                        size="small"
-                        type="button"
-                        aria-label={t("schedule.clearAll")}
-                        disabled={selectedSessions.length === 0}
-                        onClick={clearSchedule}
-                      >
-                        {t("schedule.clearAllButton")}
-                      </ActionButton>
-                    </div>
+                    <Text
+                      as="p"
+                      className="schedule-export__count"
+                      color="fg.neutralMuted"
+                      textStyle="t3Regular"
+                      aria-live="polite"
+                    >
+                      {t("schedule.selectedCount", {
+                        count: selectedSessions.length,
+                      })}
+                    </Text>
                     <div className="schedule-export__actions">
                       {canOpenAppleCalendar && (
                         <ActionButton
@@ -347,6 +334,17 @@ function Timetable({
                           : t("calendar.imageDownload")}
                       </ActionButton>
                     </div>
+                    <ActionButton
+                      className="schedule-export__button schedule-export__clear"
+                      variant="brandOutline"
+                      size="medium"
+                      type="button"
+                      aria-label={t("schedule.clearAll")}
+                      disabled={selectedSessions.length === 0}
+                      onClick={clearSchedule}
+                    >
+                      {t("schedule.clearAllButton")}
+                    </ActionButton>
                   </div>
                   {imageExportStatus === "error" && (
                     <PageBanner.Root

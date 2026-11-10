@@ -428,26 +428,14 @@ main {
 
 .schedule-export__toolbar {
   display: grid;
-  gap: var(--space-xs);
-}
-
-.schedule-export__selection {
-  display: flex;
-  min-width: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
   gap: var(--space-xs);
-}
-
-.schedule-export__clear {
-  min-height: 2.75rem;
-  flex: 0 0 auto;
-  padding-inline: var(--space-sm);
-  font-size: var(--text-xs);
-  white-space: nowrap;
 }
 
 .schedule-export__count {
+  grid-column: 1;
+  grid-row: 1;
   min-width: 0;
   margin: 0;
   font-variant-numeric: tabular-nums;
@@ -456,12 +444,21 @@ main {
 
 .schedule-export__actions {
   display: grid;
+  grid-column: 1 / -1;
+  grid-row: 2;
   gap: var(--space-xs);
 }
 
 .schedule-export__button {
   width: 100%;
   white-space: nowrap;
+}
+
+.schedule-export__clear {
+  grid-column: 2;
+  grid-row: 1;
+  width: auto;
+  flex: 0 0 auto;
 }
 
 .schedule-export__feedback {
