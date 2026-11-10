@@ -444,6 +444,7 @@ main {
 
 .schedule-export__actions {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-column: 1 / -1;
   grid-row: 2;
   gap: var(--space-xs);
@@ -791,7 +792,9 @@ button[data-state="error"] {
   .masthead {
     padding-block-start: var(--space-xl);
   }
+}
 
+@media (min-width: 901px) {
   .schedule-export__toolbar {
     display: flex;
     align-items: center;
