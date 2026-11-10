@@ -197,6 +197,19 @@ export function isAppleMobileSafari(deviceInfo?: AppleDeviceInfo) {
   return isSafari && !isOtherIosBrowser;
 }
 
+export function isMobileCalendarDevice(deviceInfo?: AppleDeviceInfo) {
+  const device =
+    deviceInfo ?? (typeof navigator === "undefined" ? null : navigator);
+  if (!device) return false;
+
+  return (
+    isAppleMobileDevice(device) ||
+    /Android|Mobile/i.test(device.userAgent) ||
+    (!deviceInfo && typeof window !== "undefined" &&
+      window.matchMedia("(max-width: 900px) and (pointer: coarse)").matches)
+  );
+}
+
 export function openCalendarFileForImport(calendarFile: CalendarFile) {
   const file = createCalendarShareFile(calendarFile);
   const objectUrl = URL.createObjectURL(file);
