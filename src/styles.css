@@ -829,6 +829,10 @@ button[data-state="error"] {
 }
 
 @media (max-width: 24rem) {
+  .schedule-export__count {
+    font-size: var(--text-xs);
+  }
+
   .timetable-grid[data-track-count="1"] {
     grid-template-columns: 5.25rem minmax(0, 1fr);
   }
