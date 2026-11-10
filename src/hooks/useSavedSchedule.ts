@@ -85,6 +85,8 @@ export function useSavedSchedule() {
     );
   }, []);
 
+  const clearSchedule = useCallback(() => setSelectedIds([]), []);
+
   const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 
   return {
@@ -92,5 +94,6 @@ export function useSavedSchedule() {
     selectedSet,
     storageStatus: status,
     toggleSession,
+    clearSchedule,
   };
 }
