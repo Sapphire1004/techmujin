@@ -9,8 +9,8 @@ walkingRoute.search = new URLSearchParams({
 
 export const accessInfo = {
   walkingMinutes: 15,
-  trainMinutes: 90,
   busStand: 2,
+  busRoutes: { takeda: "10・11", sekisuiji: "12" },
   walkingRouteUrl: walkingRoute.href,
   busGuideUrl: "https://ykbus.jp/route_bus/kofu_station_north_bus_terminal",
   parking: {

@@ -21,7 +21,21 @@ export function AccessDirections() {
   const { t } = useTranslation();
   return (
     <div className="access-directions">
-      <p className="access-directions__notice">{t("access.transport.publicTransport")}</p>
+      <section className="access-directions__section" aria-labelledby="access-parking-heading">
+        <Text as="h2" id="access-parking-heading" textStyle="t7Bold">
+          {t("access.transport.parkingTitle")}
+        </Text>
+        <DirectionCard label={t("access.transport.car.label")} title={accessInfo.parking.name}>
+          <strong className="access-direction__price">
+            {t("access.transport.car.price", { price: accessInfo.parking.dailyPrice })}
+          </strong>
+          <p>{t("access.transport.car.body")}</p>
+          <a className="access-direction__link" href={accessInfo.parking.mapUrl} target="_blank" rel="noreferrer">
+            {t("access.transport.car.link")}
+          </a>
+        </DirectionCard>
+        <p className="access-directions__notice">{t("access.transport.publicTransport")}</p>
+      </section>
 
       <section className="access-directions__section" aria-labelledby="access-station-heading">
         <Text as="h2" id="access-station-heading" textStyle="t7Bold">
@@ -29,45 +43,26 @@ export function AccessDirections() {
         </Text>
         <div className="access-directions__grid">
           <DirectionCard
+            label={t("access.transport.bus.label")}
+            title={t("access.transport.bus.title", { stand: accessInfo.busStand })}
+          >
+            <strong>{t("access.transport.bus.operator")}</strong>
+            <ul>
+              <li>{t("access.transport.bus.takeda", { routes: accessInfo.busRoutes.takeda })}</li>
+              <li>{t("access.transport.bus.sekisuiji", { routes: accessInfo.busRoutes.sekisuiji })}</li>
+            </ul>
+            <p>{t("access.transport.bus.alight")}</p>
+            <a className="access-direction__link" href={accessInfo.busGuideUrl} target="_blank" rel="noreferrer">
+              {t("access.transport.bus.link")}
+            </a>
+          </DirectionCard>
+          <DirectionCard
             label={t("access.transport.walk.label")}
             title={t("access.transport.walk.title", { minutes: accessInfo.walkingMinutes })}
           >
             <p>{t("access.transport.walk.body")}</p>
             <a className="access-direction__link" href={accessInfo.walkingRouteUrl} target="_blank" rel="noreferrer">
               {t("access.transport.walk.link")}
-            </a>
-          </DirectionCard>
-          <DirectionCard
-            label={t("access.transport.bus.label")}
-            title={t("access.transport.bus.title", { stand: accessInfo.busStand })}
-          >
-            <ol>
-              <li>{t("access.transport.bus.board")}</li>
-              <li>{t("access.transport.bus.alight")}</li>
-            </ol>
-            <a className="access-direction__link" href={accessInfo.busGuideUrl} target="_blank" rel="noreferrer">
-              {t("access.transport.bus.link")}
-            </a>
-          </DirectionCard>
-        </div>
-      </section>
-
-      <section className="access-directions__section" aria-labelledby="access-arrival-heading">
-        <Text as="h2" id="access-arrival-heading" textStyle="t7Bold">
-          {t("access.transport.arrivalTitle")}
-        </Text>
-        <div className="access-directions__grid">
-          <DirectionCard label={t("access.transport.train.label")} title={t("access.transport.train.title")}>
-            <p>{t("access.transport.train.body", { minutes: accessInfo.trainMinutes })}</p>
-            <p>{t("access.transport.train.arrival")}</p>
-          </DirectionCard>
-          <DirectionCard label={t("access.transport.car.label")} title={accessInfo.parking.name}>
-            <strong className="access-direction__price">
-              {t("access.transport.car.price", { price: accessInfo.parking.dailyPrice })}
-            </strong>
-            <p>{t("access.transport.car.body")}</p>
-            <a className="access-direction__link" href={accessInfo.parking.mapUrl} target="_blank" rel="noreferrer">
-              {t("access.transport.car.link")}
             </a>
           </DirectionCard>
         </div>

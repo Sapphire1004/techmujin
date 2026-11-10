@@ -116,15 +116,6 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
         className="venue-guide__panel"
         hidden={view !== "access"}
       >
-        <div className="venue-access-map">
-          <iframe
-            src={venueGuide.venue.mapEmbedUrl}
-            title={t("venue.mapEmbedTitle")}
-            loading="lazy"
-            allowFullScreen
-            referrerPolicy="strict-origin-when-cross-origin"
-          />
-        </div>
         <div className="venue-summary venue-summary--access">
           <div className="venue-summary__item">
             <span>{t("venue.venueLabel")}</span>
@@ -139,6 +130,15 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
           >
             {t("venue.openGoogleMaps")}
           </a>
+        </div>
+        <div className="venue-access-map">
+          <iframe
+            src={venueGuide.venue.mapEmbedUrl}
+            title={t("venue.mapEmbedTitle")}
+            loading="lazy"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
+          />
         </div>
         {view === "access" && <AccessDirections />}
       </div>

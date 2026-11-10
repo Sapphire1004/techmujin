@@ -1543,13 +1543,13 @@ button[data-state="error"] {
 }
 
 .access-direction p,
-.access-direction ol {
+.access-direction ul {
   color: var(--color-muted);
   font-size: var(--text-sm);
   line-height: 1.65;
 }
 
-.access-direction ol {
+.access-direction ul {
   margin: 0;
   padding-inline-start: 1.25rem;
 }

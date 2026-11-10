@@ -113,7 +113,7 @@ const resources = {
         transport: {
           publicTransport: "駐車場には限りがあるため、できるだけ電車・バスなどの公共交通機関をご利用ください。",
           stationTitle: "甲府駅から会場へ",
-          arrivalTitle: "電車・車でお越しの方",
+          parkingTitle: "駐車場のご案内",
           walk: {
             label: "徒歩",
             title: "甲府駅北口から約{{minutes}}分",
@@ -123,20 +123,16 @@ const resources = {
           bus: {
             label: "バス",
             title: "甲府駅北口 {{stand}}番のりば",
-            board: "武田神社・積翠寺方面のバスに乗車します。",
+            operator: "山梨交通",
+            takeda: "{{routes}}系統：武田神社行き",
+            sekisuiji: "{{routes}}系統：積翠寺行き",
             alight: "「山梨大学」で下車してください。",
             link: "のりば・時刻表を確認する",
-          },
-          train: {
-            label: "電車",
-            title: "新宿駅 → 甲府駅",
-            body: "特急あずさ・かいじで約{{minutes}}分です。",
-            arrival: "甲府駅に到着したら北口へ。会場までは徒歩またはバスをご利用ください。",
           },
           car: {
             label: "車・駐車場",
             price: "1日{{price}}円",
-            body: "会場周辺のコインパーキングをご利用ください。満車の場合は駐車できないことがあります。",
+            body: "会場近くのコインパーキングです。",
             link: "駐車場をGoogleマップで見る",
           },
           sourceLabel: "交通案内の出典：",
@@ -289,7 +285,7 @@ const resources = {
         transport: {
           publicTransport: "Parking is limited. Please use public transportation such as trains or buses where possible.",
           stationTitle: "From Kofu Station to the venue",
-          arrivalTitle: "Arriving by train or car",
+          parkingTitle: "Parking",
           walk: {
             label: "On foot",
             title: "About {{minutes}} minutes from the North Exit",
@@ -299,20 +295,16 @@ const resources = {
           bus: {
             label: "Bus",
             title: "North Exit, bus stop {{stand}}",
-            board: "Take a bus toward Takeda Shrine (武田神社) or Sekisuiji (積翠寺).",
+            operator: "Yamanashi Kotsu",
+            takeda: "Routes {{routes}}: Takeda Shrine (武田神社)",
+            sekisuiji: "Route {{routes}}: Sekisuiji (積翠寺)",
             alight: "Get off at Yamanashi Daigaku (山梨大学).",
             link: "Bus stops and timetables",
-          },
-          train: {
-            label: "Train",
-            title: "Shinjuku Station → Kofu Station",
-            body: "The Azusa or Kaiji limited express takes about {{minutes}} minutes.",
-            arrival: "At Kofu Station, use the North Exit and continue on foot or by bus.",
           },
           car: {
             label: "Car / parking",
             price: "¥{{price}} per day",
-            body: "Use a nearby paid parking lot. Parking may be unavailable when the lots are full.",
+            body: "A paid parking lot near the venue.",
             link: "Find the parking lot in Google Maps",
           },
           sourceLabel: "Travel information:",
@@ -465,7 +457,7 @@ const resources = {
         transport: {
           publicTransport: "주차 공간이 한정되어 있으니 가능한 한 전철·버스 등 대중교통을 이용해 주세요.",
           stationTitle: "고후역에서 행사장까지",
-          arrivalTitle: "전철·자동차로 오시는 분",
+          parkingTitle: "주차장 안내",
           walk: {
             label: "도보",
             title: "고후역 북쪽 출구에서 약 {{minutes}}분",
@@ -475,20 +467,16 @@ const resources = {
           bus: {
             label: "버스",
             title: "고후역 북쪽 출구 {{stand}}번 승강장",
-            board: "다케다 신사(武田神社)·세키스이지(積翠寺) 방면 버스를 탑니다.",
+            operator: "야마나시교통(山梨交通)",
+            takeda: "{{routes}}번 계통: 다케다 신사(武田神社)행",
+            sekisuiji: "{{routes}}번 계통: 세키스이지(積翠寺)행",
             alight: "야마나시대학(山梨大学) 정류장에서 내려 주세요.",
             link: "승강장·시간표 확인하기",
-          },
-          train: {
-            label: "전철",
-            title: "신주쿠역 → 고후역",
-            body: "특급 아즈사·카이지로 약 {{minutes}}분이 소요됩니다.",
-            arrival: "고후역에 도착하면 북쪽 출구로 나와 도보 또는 버스로 이동해 주세요.",
           },
           car: {
             label: "자동차·주차장",
             price: "1일 {{price}}엔",
-            body: "행사장 주변 유료 주차장을 이용해 주세요. 만차인 경우 주차하지 못할 수 있습니다.",
+            body: "행사장 근처의 유료 주차장입니다.",
             link: "Google 지도에서 주차장 보기",
           },
           sourceLabel: "교통 안내 출처:",
