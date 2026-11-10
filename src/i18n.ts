@@ -92,7 +92,9 @@ const resources = {
       calendar: {
         download: "ICSをダウンロード",
         openApple: "Appleカレンダーに追加",
-        share: "ICSを共有",
+        add: "カレンダーに追加",
+        share: "カレンダーに共有",
+        unsupported: "このブラウザではカレンダーへの共有に対応していません。",
         sharing: "共有画面を開いています…",
         shareFallback:
           "共有できなかったため、ICSファイルをダウンロードしました。",
@@ -239,7 +241,9 @@ const resources = {
       calendar: {
         download: "Download ICS",
         openApple: "Add to Apple Calendar",
-        share: "Share ICS",
+        add: "Add to calendar",
+        share: "Share to calendar",
+        unsupported: "This browser does not support sharing to a calendar.",
         sharing: "Opening share menu…",
         shareFallback: "Sharing failed, so the ICS file was downloaded.",
         noSessions: "Select a session to use this feature.",
@@ -385,7 +389,9 @@ const resources = {
       calendar: {
         download: "ICS 다운로드",
         openApple: "Apple 캘린더에 추가",
-        share: "ICS 공유",
+        add: "캘린더에 추가",
+        share: "캘린더로 공유",
+        unsupported: "이 브라우저에서는 캘린더로 공유하는 기능을 지원하지 않습니다.",
         sharing: "공유 메뉴 여는 중…",
         shareFallback: "공유하지 못해 ICS 파일을 다운로드했습니다.",
         noSessions: "세션을 선택하면 사용할 수 있습니다.",

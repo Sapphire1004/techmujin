@@ -456,10 +456,6 @@ main {
   white-space: nowrap;
 }
 
-.schedule-export__button--apple {
-  grid-column: 1 / -1;
-}
-
 .schedule-export__clear {
   grid-column: 2;
   grid-row: 1;

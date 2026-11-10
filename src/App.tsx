@@ -5,6 +5,7 @@ import {
   createCalendarFile,
   downloadCalendarFile,
   isAppleMobileSafari,
+  isMobileCalendarDevice,
   isShareCancellation,
   openCalendarFileForImport,
   shareCalendarFile,
@@ -55,8 +56,13 @@ function Timetable({
   const [calendarExportStatus, setCalendarExportStatus] = useState<
     "idle" | "sharing" | "fallback"
   >("idle");
-  const [canShareCalendarFile] = useState(supportsCalendarFileShare);
+  const [isMobileCalendar] = useState(isMobileCalendarDevice);
+  const [canShareCalendarFile] = useState(
+    () => isMobileCalendar && supportsCalendarFileShare(),
+  );
   const [canOpenAppleCalendar] = useState(isAppleMobileSafari);
+  const isCalendarUnsupported =
+    isMobileCalendar && !canOpenAppleCalendar && !canShareCalendarFile;
   const { selectedSet, storageStatus, toggleSession, clearSchedule } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
@@ -149,7 +155,11 @@ function Timetable({
   }, [activeView, currentLanguage, t]);
 
   const exportSelectedSessionsCalendar = async () => {
-    if (selectedSessions.length === 0 || calendarExportStatus === "sharing") {
+    if (
+      selectedSessions.length === 0 ||
+      calendarExportStatus === "sharing" ||
+      isCalendarUnsupported
+    ) {
       return;
     }
 
@@ -270,47 +280,40 @@ function Timetable({
                       })}
                     </Text>
                     <div className="schedule-export__actions">
-                      {canOpenAppleCalendar && (
-                        <ActionButton
-                          className="schedule-export__button schedule-export__button--apple"
-                          variant="brandSolid"
-                          size="medium"
-                          type="button"
-                          disabled={selectedSessions.length === 0}
-                          title={
-                            selectedSessions.length === 0
-                              ? t("calendar.noSessions")
-                              : undefined
-                          }
-                          onClick={openSelectedSessionsInAppleCalendar}
-                        >
-                          {t("calendar.openApple")}
-                        </ActionButton>
-                      )}
                       <ActionButton
                         className="schedule-export__button"
-                        variant={
-                          canOpenAppleCalendar ? "brandOutline" : "brandSolid"
-                        }
+                        variant="brandSolid"
                         size="medium"
                         type="button"
                         loading={calendarExportStatus === "sharing"}
                         disabled={
                           selectedSessions.length === 0 ||
-                          calendarExportStatus === "sharing"
+                          calendarExportStatus === "sharing" ||
+                          isCalendarUnsupported
+                        }
+                        aria-label={
+                          canOpenAppleCalendar ? t("calendar.openApple") : undefined
                         }
                         title={
                           selectedSessions.length === 0
                             ? t("calendar.noSessions")
-                            : undefined
+                            : isCalendarUnsupported
+                              ? t("calendar.unsupported")
+                              : undefined
                         }
-                        onClick={() => void exportSelectedSessionsCalendar()}
+                        onClick={
+                          canOpenAppleCalendar
+                            ? openSelectedSessionsInAppleCalendar
+                            : () => void exportSelectedSessionsCalendar()
+                        }
                       >
                         {calendarExportStatus === "sharing"
                           ? t("calendar.sharing")
-                          : canShareCalendarFile
-                            ? t("calendar.share")
-                            : t("calendar.download")}
+                          : canOpenAppleCalendar
+                            ? t("calendar.add")
+                            : isMobileCalendar
+                              ? t("calendar.share")
+                              : t("calendar.download")}
                       </ActionButton>
                       <ActionButton
                         className="schedule-export__button"
