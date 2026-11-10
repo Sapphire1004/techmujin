@@ -25,15 +25,58 @@ export function AccessDirections() {
         <Text as="h2" id="access-parking-heading" textStyle="t7Bold">
           {t("access.transport.parkingTitle")}
         </Text>
-        <DirectionCard label={t("access.transport.car.label")} title={accessInfo.parking.name}>
-          <strong className="access-direction__price">
-            {t("access.transport.car.price", { price: accessInfo.parking.dailyPrice })}
-          </strong>
-          <p>{t("access.transport.car.body")}</p>
-          <a className="access-direction__link" href={accessInfo.parking.mapUrl} target="_blank" rel="noreferrer">
-            {t("access.transport.car.link")}
-          </a>
-        </DirectionCard>
+        <div className="access-parking-list">
+          {accessInfo.parkingLots.map((parking) => (
+            <DirectionCard
+              key={parking.id}
+              label={t(parking.sourceType === "event" ? "access.transport.car.eventListed" : "access.transport.car.nearby")}
+              title={parking.name}
+            >
+              <strong className="access-direction__price">
+                {t(`access.transport.car.prices.${parking.priceType}`, { price: parking.price })}
+              </strong>
+              {parking.sourceType === "event" && <p>{t("access.transport.car.eventDescription")}</p>}
+              {parking.address && <p>{parking.address}</p>}
+              {(parking.capacity !== undefined || parking.payment || parking.open24Hours) && (
+                <dl className="access-parking__facts">
+                  {parking.capacity !== undefined && (
+                    <div><dt>{t("access.transport.car.capacity")}</dt><dd>{t("access.transport.car.spaces", { count: parking.capacity })}</dd></div>
+                  )}
+                  {parking.payment && (
+                    <div><dt>{t("access.transport.car.payment")}</dt><dd>{t(`access.transport.car.payments.${parking.payment}`)}</dd></div>
+                  )}
+                  {parking.open24Hours && (
+                    <div><dt>{t("access.transport.car.hours")}</dt><dd>{t("access.transport.car.open24Hours")}</dd></div>
+                  )}
+                </dl>
+              )}
+              <div className="access-parking__links">
+                <a
+                  className="access-direction__link"
+                  href={parking.mapUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("access.transport.car.mapLabel", { name: parking.name })}
+                >
+                  {t("access.transport.car.link")}
+                </a>
+                <a
+                  className="access-direction__link"
+                  href={parking.sourceUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={t("access.transport.car.detailsLabel", { name: parking.name })}
+                >
+                  {t(parking.sourceType === "event" ? "access.transport.car.eventDetails" : "access.transport.car.operatorDetails")}
+                </a>
+              </div>
+            </DirectionCard>
+          ))}
+        </div>
+        <p className="access-parking__note">
+          {t("access.transport.car.verified", { date: accessInfo.parkingVerifiedAt })}{" "}
+          {t("access.transport.car.checkSigns")}
+        </p>
         <p className="access-directions__notice">{t("access.transport.publicTransport")}</p>
       </section>
 

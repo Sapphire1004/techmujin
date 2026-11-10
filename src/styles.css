@@ -1525,7 +1525,8 @@ button[data-state="error"] {
   font-size: var(--text-sm);
 }
 
-.access-directions__grid {
+.access-directions__grid,
+.access-parking-list {
   display: grid;
   gap: var(--space-md);
 }
@@ -1559,6 +1560,40 @@ button[data-state="error"] {
   font-size: var(--text-lg);
 }
 
+.access-parking__facts {
+  display: grid;
+  width: 100%;
+  gap: var(--space-xs);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.access-parking__facts div {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-sm);
+}
+
+.access-parking__facts dt,
+.access-parking__note {
+  color: var(--color-muted);
+}
+
+.access-parking__facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.access-parking__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-md);
+}
+
+.access-parking__note {
+  font-size: var(--text-xs);
+}
+
 .access-direction__link,
 .access-directions__source a {
   color: var(--color-accent);
@@ -1581,8 +1616,15 @@ button[data-state="error"] {
 }
 
 @media (min-width: 40rem) {
-  .access-directions__grid {
+  .access-directions__grid,
+  .access-parking-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 60rem) {
+  .access-parking-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
