@@ -44,8 +44,6 @@ for (const language of ["ja", "en", "ko"]) {
     const resource = rallyTranslations[language];
     assert.deepEqual(Object.keys(resource), ["rally"]);
     assert.ok(resource.rally.title);
-    assert.ok(resource.rally.prototype);
-    assert.ok(resource.rally.prototypeDescription);
     assert.ok(resource.rally.openWithCamera);
     assert.ok(resource.rally.scanInBrowser);
     for (const key of ["added", "duplicate", "invalid", "saveFailed", "retry"]) {

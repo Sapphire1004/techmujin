@@ -22,6 +22,12 @@ const resources = {
   ja: {
     translation: {
       ...rallyTranslations.ja,
+      booths: {
+        loading: "ブース情報を読み込んでいます。",
+        error: "ブース情報を取得できませんでした。もう一度お試しください。",
+        empty: "ブース情報を準備しています。",
+        retry: "再試行",
+      },
       meta: {
         title: "テックムジン タイムテーブル",
         description:
@@ -142,7 +148,7 @@ const resources = {
         boothNumber: "ブース {{number}}",
         boothsTitle: "出展予定ブース",
         boothsDescription:
-          "公式サイトでブース出展が案内されているコミュニティです。",
+          "出展ブースと参加コミュニティをご紹介します。",
         boothNumberPending: "番号未定",
         exhibitorLink: "公式ページ",
         noBoothsTitle: "出展情報を準備しています。",
@@ -159,6 +165,12 @@ const resources = {
   en: {
     translation: {
       ...rallyTranslations.en,
+      booths: {
+        loading: "Loading booth information…",
+        error: "Could not load booth information. Please try again.",
+        empty: "Booth information is being prepared.",
+        retry: "Try again",
+      },
       meta: {
         title: "TechMujin Timetable",
         description:
@@ -278,7 +290,7 @@ const resources = {
         boothNumber: "Booth {{number}}",
         boothsTitle: "Planned exhibitor booths",
         boothsDescription:
-          "Communities listed as booth exhibitors on the official website.",
+          "Explore exhibitor booths and participating communities.",
         boothNumberPending: "Number pending",
         exhibitorLink: "Official page",
         noBoothsTitle: "Exhibitor details are being prepared.",
@@ -295,6 +307,12 @@ const resources = {
   ko: {
     translation: {
       ...rallyTranslations.ko,
+      booths: {
+        loading: "부스 정보를 불러오는 중입니다.",
+        error: "부스 정보를 불러오지 못했습니다. 다시 시도해 주세요.",
+        empty: "부스 정보를 준비하고 있습니다.",
+        retry: "다시 시도",
+      },
       meta: {
         title: "테크무진 타임테이블",
         description:
@@ -413,7 +431,7 @@ const resources = {
         boothCount: "부스 {{count}}개",
         boothNumber: "부스 {{number}}",
         boothsTitle: "참가 예정 부스",
-        boothsDescription: "공식 사이트에 부스 참가로 안내된 커뮤니티입니다.",
+        boothsDescription: "참가 부스와 커뮤니티를 소개합니다.",
         boothNumberPending: "번호 미정",
         exhibitorLink: "공식 페이지",
         noBoothsTitle: "참가 정보를 준비하고 있습니다.",

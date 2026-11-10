@@ -11,6 +11,7 @@
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
+    "test:booths": "node --test tests/booths.test.mjs",
     "test:stamp-rally": "node --test tests/stamp-rally.test.mjs",
     "test:stamp-rally-ui": "node --test tests/stamp-rally-ui.test.mjs",
     "test:navigation": "node --test tests/navigation.test.mjs",
@@ -36,7 +37,7 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "6.1.1",
     "happy-dom": "21.0.4",
-    "techmujin-api": "github:techmujin/techmujin-api",
+    "techmujin-api": "github:techmujin/techmujin-api#876f3d18be599fc3edd6a62aab017898cece954e",
     "typescript": "7.0.2",
     "vite": "8.2.2",
     "wrangler": "4.156.0"

@@ -1,6 +1,9 @@
-import { lazy, Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { AppHeader } from "../components/AppHeader";
+import { BoothsStatus } from "../components/BoothsStatus";
+import { createStampSpots } from "../data/booths";
+import { useBooths, type BoothsState } from "../hooks/useBooths";
 import { saveLanguage, type SupportedLanguage } from "../i18n";
 import {
   getAppHash,
@@ -21,10 +24,12 @@ const StampRally = lazy(() =>
 export function StampRallyApp({
   renderTimetable,
 }: {
-  renderTimetable: (view: TimetableView) => ReactNode;
+  renderTimetable: (view: TimetableView, booths: BoothsState) => ReactNode;
 }) {
   const { t, i18n } = useTranslation();
-  const stampCard = useStampCard();
+  const booths = useBooths();
+  const spots = useMemo(() => createStampSpots(booths.data?.booths ?? []), [booths.data]);
+  const stampCard = useStampCard(spots);
   const { visitLink } = stampCard;
   const [linkResult, setLinkResult] = useState<StampLinkResult | null>(null);
   const [activeView, setActiveView] = useState<AppView>(() =>
@@ -55,7 +60,8 @@ export function StampRallyApp({
     const url = new URL(window.location.href);
     const view = getAppView(url.hash, url.search);
     setActiveView(view);
-    const result = visitLink(url);
+    // 取得中・通信失敗時にはQRのURLも記録も変更せず、取得成功後に処理します。
+    const result = booths.status === "success" ? visitLink(url) : null;
     if (result) setLinkResult(result);
     else if (view !== "stamp-rally") setLinkResult(null);
     if (result && (result.kind === "invalid" || result.persisted)) {
@@ -65,7 +71,7 @@ export function StampRallyApp({
       window.history.replaceState(window.history.state, "", url);
     }
     window.scrollTo({ top: 0, behavior: "instant" });
-  }, [visitLink]);
+  }, [visitLink, booths.status]);
 
   useEffect(() => {
     changeRoute();
@@ -102,7 +108,9 @@ export function StampRallyApp({
         onLanguageChange={changeLanguage}
         onViewChange={changeView}
       />
-      {activeView === "stamp-rally" ? (
+      {activeView === "stamp-rally" && (booths.status !== "success" || spots.length === 0) ? (
+        <main className="app-shell app-shell--status"><BoothsStatus state={booths} /></main>
+      ) : activeView === "stamp-rally" ? (
         <Suspense
           fallback={
             <div className="app-shell app-shell--status" role="status">
@@ -111,13 +119,14 @@ export function StampRallyApp({
           }
         >
           <StampRally
+            spots={spots}
             stampCard={stampCard}
             linkResult={linkResult}
             onRetryStamp={changeRoute}
           />
         </Suspense>
       ) : (
-        renderTimetable(activeView)
+        renderTimetable(activeView, booths)
       )}
     </div>
   );

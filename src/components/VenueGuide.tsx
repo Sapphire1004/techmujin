@@ -1,13 +1,39 @@
 import { useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
+import type { Booth } from "techmujin-api";
+import { getBoothTitle } from "../data/booths";
 import { venueGuideResult, type VenueFeature } from "../data/venue";
+import type { BoothsState } from "../hooks/useBooths";
+import { BoothsStatus } from "./BoothsStatus";
 
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 
 type VenueGuideProps = {
   view: "access" | "interior";
+  booths: BoothsState;
 };
+
+function BoothDetails({ booth }: { booth: Booth }) {
+  const { t } = useTranslation();
+  return (
+    <>
+      {booth.descriptionMarkdown && <p className="booth-card__description">{booth.descriptionMarkdown}</p>}
+      {booth.communities.map((community) => (
+        <div className="booth-card__community" key={community.id}>
+          {community.iconUrl && <img src={community.iconUrl} alt="" width={40} height={40} loading="lazy" />}
+          {(booth.title || booth.communities.length > 1) && <strong>{community.name}</strong>}
+          {community.descriptionMarkdown && <p className="booth-card__description">{community.descriptionMarkdown}</p>}
+          {community.url && (
+            <a href={community.url} target="_blank" rel="noreferrer">
+              {t("venue.exhibitorLink")} · {community.name}
+            </a>
+          )}
+        </div>
+      ))}
+    </>
+  );
+}
 
 function rectangleStyle(
   rectangle: Pick<VenueFeature, "x" | "y" | "width" | "height">,
@@ -20,7 +46,7 @@ function rectangleStyle(
   } as CSSProperties;
 }
 
-export function VenueGuide({ view }: VenueGuideProps) {
+export function VenueGuide({ view, booths }: VenueGuideProps) {
   const { t } = useTranslation();
   const venueGuide = venueGuideResult.success ? venueGuideResult.data : null;
   const [activePlanId, setActivePlanId] = useState(
@@ -46,12 +72,9 @@ export function VenueGuide({ view }: VenueGuideProps) {
   const selectedBooth = useMemo(
     () =>
       selectedFeature?.boothNumber
-        ? venueGuide?.booths.find(
-            ({ number, planId }) =>
-              number === selectedFeature.boothNumber && planId === activePlan?.id,
-          )
+        ? booths.data?.booths.find(({ number }) => number === selectedFeature.boothNumber)
         : null,
-    [activePlan?.id, selectedFeature?.boothNumber, venueGuide],
+    [selectedFeature?.boothNumber, booths.data],
   );
 
   if (!venueGuide || !activePlan) {
@@ -265,9 +288,7 @@ export function VenueGuide({ view }: VenueGuideProps) {
                 <dt>{t("venue.assignmentLabel")}</dt>
                 <dd>
                   {selectedBooth ? (
-                    <a href={selectedBooth.url} target="_blank" rel="noreferrer">
-                      {selectedBooth.name}
-                    </a>
+                    <><strong>{getBoothTitle(selectedBooth)}</strong><BoothDetails booth={selectedBooth} /></>
                   ) : (
                     t("venue.assignmentPending")
                   )}
@@ -308,37 +329,27 @@ export function VenueGuide({ view }: VenueGuideProps) {
               {t("venue.boothsDescription")}
             </Text>
           </div>
-          <Badge size="large" tone="brand" variant="weak">
-            {t("venue.boothCount", { count: venueGuide.booths.length })}
-          </Badge>
+          {booths.status === "success" && <Badge size="large" tone="brand" variant="weak">
+            {t("venue.boothCount", { count: booths.data.booths.length })}
+          </Badge>}
         </div>
 
-        {venueGuide.booths.length > 0 ? (
+        {booths.status === "success" && booths.data.booths.length > 0 ? (
           <div className="booth-directory__grid">
-            {venueGuide.booths.map((booth) => (
-              <article className="booth-card" key={booth.id}>
+            {booths.data.booths.map((booth) => (
+              <article className="booth-card" key={booth.number}>
                 <span className="booth-card__number">
-                  {booth.number
-                    ? t("venue.boothNumber", { number: booth.number })
-                    : t("venue.boothNumberPending")}
+                  {t("venue.boothNumber", { number: booth.number })}
                 </span>
                 <Text as="h4" textStyle="t5Bold">
-                  {booth.name}
+                  {getBoothTitle(booth)}
                 </Text>
-                <p>{booth.description}</p>
-                <a href={booth.url} target="_blank" rel="noreferrer">
-                  {t("venue.exhibitorLink")}
-                </a>
+                <BoothDetails booth={booth} />
               </article>
             ))}
           </div>
         ) : (
-          <div className="venue-state venue-state--empty">
-            <Text as="h4" textStyle="t5Bold">
-              {t("venue.noBoothsTitle")}
-            </Text>
-            <p>{t("venue.noBoothsBody")}</p>
-          </div>
+          <BoothsStatus state={booths} />
         )}
       </section>
 

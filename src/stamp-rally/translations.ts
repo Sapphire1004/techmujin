@@ -1,13 +1,11 @@
 export const rallyTranslations = {
   ja: {
       rally: {
-        prototype: "試作版",
-        prototypeDescription: "チェックポイント名・配置は仮の設定です。",
         loading: "スタンプラリーを読み込んでいます。",
         metaTitle: "テック無尽 スタンプラリー",
         metaDescription: "会場のQRコードを読み取り、スタンプを集めるテック無尽のスタンプラリーです。",
         title: "スタンプラリー",
-        note: "会場の5つのチェックポイントを巡って、スタンプを集めましょう。",
+        note: "会場の{{count}}か所のブースを巡って、スタンプを集めましょう。",
         join: "参加する",
         scan: "QRを読み取る",
         scanInBrowser: "この画面でQRを読む",
@@ -23,7 +21,7 @@ export const rallyTranslations = {
           label: "スタンプラリーの参加方法",
           join: { title: "見つける", description: "スマートフォンのカメラでQRを読み取る" },
           scan: { title: "集める", description: "表示されたURLを開いてスタンプを獲得" },
-          complete: { title: "完成する", description: "5個集めてコンプリート" },
+          complete: { title: "完成する", description: "{{count}}個集めてコンプリート" },
         },
         progress: {
           label: "スタンプ収集の進み具合",
@@ -36,7 +34,7 @@ export const rallyTranslations = {
           completeTitle: "すべて集まりました！",
           readyDescription: "QRのURLを開くと、自動で参加してスタンプを獲得できます。",
           joinedDescription: "チェックポイントのQRを読み取り、URLを開きましょう。",
-          completeDescription: "5つのチェックポイントをすべて巡りました。",
+          completeDescription: "{{count}}か所のブースをすべて巡りました。",
           remaining: "コンプリートまであと{{count}}個",
           allCollected: "すべてのスタンプを獲得しました",
         },
@@ -90,13 +88,11 @@ export const rallyTranslations = {
   },
   en: {
       rally: {
-        prototype: "Prototype",
-        prototypeDescription: "Checkpoint names and locations are placeholders.",
         loading: "Loading stamp rally…",
         metaTitle: "TechMujin Stamp Rally",
         metaDescription: "Collect stamps by scanning QR codes around the TechMujin venue.",
         title: "Stamp Rally",
-        note: "Visit five checkpoints around the venue and collect every stamp.",
+        note: "Visit {{count}} booths around the venue and collect every stamp.",
         join: "Join the rally",
         scan: "Scan QR code",
         scanInBrowser: "Scan QR on this page",
@@ -112,7 +108,7 @@ export const rallyTranslations = {
           label: "How to join the stamp rally",
           join: { title: "Discover", description: "Scan a QR code with your phone’s camera" },
           scan: { title: "Collect", description: "Open the displayed URL to collect a stamp" },
-          complete: { title: "Complete", description: "Collect all five stamps" },
+          complete: { title: "Complete", description: "Collect all {{count}} stamps" },
         },
         progress: {
           label: "Stamp collection progress",
@@ -125,7 +121,7 @@ export const rallyTranslations = {
           completeTitle: "Collection complete!",
           readyDescription: "Open a QR code’s URL to join automatically and collect a stamp.",
           joinedDescription: "Scan a checkpoint’s QR code and open its URL.",
-          completeDescription: "You visited all five checkpoints.",
+          completeDescription: "You visited all {{count}} booths.",
           remaining: "{{count}} stamps remaining",
           allCollected: "All stamps collected",
         },
@@ -179,13 +175,11 @@ export const rallyTranslations = {
   },
   ko: {
       rally: {
-        prototype: "임시 버전",
-        prototypeDescription: "체크포인트 이름·위치는 임시 설정입니다.",
         loading: "스탬프 랠리를 불러오는 중입니다.",
         metaTitle: "테크무진 스탬프 랠리",
         metaDescription: "행사장의 QR 코드를 스캔하고 스탬프를 모으는 테크무진 스탬프 랠리입니다.",
         title: "스탬프 랠리",
-        note: "행사장의 체크포인트 5곳을 돌며 스탬프를 모아보세요.",
+        note: "행사장의 부스 {{count}}곳을 돌며 스탬프를 모아보세요.",
         join: "참여하기",
         scan: "QR 스캔하기",
         scanInBrowser: "이 화면에서 QR 읽기",
@@ -201,7 +195,7 @@ export const rallyTranslations = {
           label: "스탬프 랠리 참여 방법",
           join: { title: "발견하기", description: "휴대폰 기본 카메라로 QR 읽기" },
           scan: { title: "모으기", description: "표시된 URL을 열어 스탬프 획득" },
-          complete: { title: "완성하기", description: "5개를 모아 완주" },
+          complete: { title: "완성하기", description: "{{count}}개를 모아 완주" },
         },
         progress: {
           label: "스탬프 수집 진행도",
@@ -214,7 +208,7 @@ export const rallyTranslations = {
           completeTitle: "모든 스탬프를 모았습니다!",
           readyDescription: "QR의 URL을 열면 자동으로 참여하고 스탬프를 받을 수 있습니다.",
           joinedDescription: "체크포인트의 QR을 읽고 URL을 열어보세요.",
-          completeDescription: "체크포인트 5곳을 모두 방문했습니다.",
+          completeDescription: "부스 {{count}}곳을 모두 방문했습니다.",
           remaining: "완주까지 {{count}}개 남음",
           allCollected: "모든 스탬프를 획득했습니다",
         },

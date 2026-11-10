@@ -1,46 +1,14 @@
 export const STAMP_RALLY_STORAGE_KEY = "techmujin:stamp-rally:v1";
 export const STAMP_LINK_PARAMETER = "stamp";
 
-export const STAMP_SPOTS = [
-  {
-    id: "spot-1",
-    number: "01",
-    title: "チェックポイント 1",
-    description: "会場内のスタンプスポット",
-    payload: "stamprally:v1:spot-1",
-  },
-  {
-    id: "spot-2",
-    number: "02",
-    title: "チェックポイント 2",
-    description: "会場内のスタンプスポット",
-    payload: "stamprally:v1:spot-2",
-  },
-  {
-    id: "spot-3",
-    number: "03",
-    title: "チェックポイント 3",
-    description: "会場内のスタンプスポット",
-    payload: "stamprally:v1:spot-3",
-  },
-  {
-    id: "spot-4",
-    number: "04",
-    title: "チェックポイント 4",
-    description: "会場内のスタンプスポット",
-    payload: "stamprally:v1:spot-4",
-  },
-  {
-    id: "spot-5",
-    number: "05",
-    title: "チェックポイント 5",
-    description: "会場内のスタンプスポット",
-    payload: "stamprally:v1:spot-5",
-  },
-] as const;
-
-export type StampSpot = (typeof STAMP_SPOTS)[number];
-export type StampSpotId = StampSpot["id"];
+export type StampSpotId = `spot-${string}`;
+export type StampSpot = {
+  id: StampSpotId;
+  number: string;
+  title: string;
+  iconUrl: string | null;
+  payload: string;
+};
 
 export type StampCard = {
   version: 1;
@@ -58,10 +26,14 @@ export function createEmptyStampCard(): StampCard {
   return { version: 1, joinedAt: null, visits: {} };
 }
 
-export function getStampLinkSpot(url: URL): StampSpot | undefined {
+export function getStampLinkSpot(url: URL, spots: readonly StampSpot[]): StampSpot | undefined {
   const values = url.searchParams.getAll(STAMP_LINK_PARAMETER);
   if (values.length !== 1) return undefined;
-  return STAMP_SPOTS.find((spot) => spot.id === values[0]);
+  return spots.find((spot) => spot.id === values[0]);
+}
+
+export function countCollectedStamps(card: StampCard, spots: readonly StampSpot[]): number {
+  return spots.filter(({ id }) => Boolean(card.visits[id])).length;
 }
 
 export function createStampLink(spotId: StampSpotId, appUrl: string): string {
@@ -77,11 +49,11 @@ export function mergeStampCards(first: StampCard, second: StampCard): StampCard 
     .filter((value): value is string => value !== null)
     .sort((a, b) => Date.parse(a) - Date.parse(b))[0] ?? null;
   const visits: StampCard["visits"] = { ...first.visits };
-  for (const spot of STAMP_SPOTS) {
-    const previous = visits[spot.id];
-    const incoming = second.visits[spot.id];
+  for (const id of Object.keys(second.visits) as StampSpotId[]) {
+    const previous = visits[id];
+    const incoming = second.visits[id];
     if (incoming && (!previous || Date.parse(incoming) < Date.parse(previous))) {
-      visits[spot.id] = incoming;
+      visits[id] = incoming;
     }
   }
   return { version: 1, joinedAt, visits };
@@ -109,9 +81,9 @@ export function parseStampCard(raw: string): StampCard | null {
 
     const visits: StampCard["visits"] = {};
     for (const [id, visitedAt] of Object.entries(value.visits)) {
-      const spot = STAMP_SPOTS.find((candidate) => candidate.id === id);
-      if (!spot || !isDate(visitedAt) || value.joinedAt === null) return null;
-      visits[spot.id] = visitedAt;
+      // API取得前やブース削除後も、過去の有効な記録は保存形式のまま保持します。
+      if (!id.startsWith("spot-") || id.length <= 5 || !isDate(visitedAt) || value.joinedAt === null) return null;
+      visits[id as StampSpotId] = visitedAt;
     }
 
     return { version: 1, joinedAt: value.joinedAt, visits };
@@ -124,17 +96,18 @@ export function scanStampCard(
   card: StampCard,
   payload: string,
   visitedAt: string,
+  spots: readonly StampSpot[],
   appUrl?: string,
 ): StampScanResult {
   if (!card.joinedAt) return { kind: "not-joined", card };
 
-  let spot = STAMP_SPOTS.find((candidate) => candidate.payload === payload);
+  let spot = spots.find((candidate) => candidate.payload === payload);
   if (!spot && appUrl) {
     try {
       const url = new URL(payload);
       const app = new URL(appUrl);
       if (url.origin === app.origin && url.pathname === app.pathname) {
-        spot = getStampLinkSpot(url);
+        spot = getStampLinkSpot(url, spots);
       }
     } catch {
       // URLではないQRデータは無効として扱います。
@@ -157,12 +130,13 @@ export function claimStampLink(
   card: StampCard,
   url: URL,
   visitedAt: string,
+  spots: readonly StampSpot[],
 ): StampScanResult | null {
   if (!url.searchParams.has(STAMP_LINK_PARAMETER)) return null;
-  const spot = getStampLinkSpot(url);
+  const spot = getStampLinkSpot(url, spots);
   if (!spot) return { kind: "invalid", card };
 
   // QRのURLを開く操作を参加として扱い、最初の1個もその場で記録します。
   const joinedCard = card.joinedAt ? card : { ...card, joinedAt: visitedAt };
-  return scanStampCard(joinedCard, spot.payload, visitedAt);
+  return scanStampCard(joinedCard, spot.payload, visitedAt, spots);
 }

@@ -10,16 +10,18 @@ import {
   getCameraErrorCode,
   startQrCamera,
 } from "./qr";
-import { STAMP_SPOTS } from "./rally";
+import { countCollectedStamps, type StampSpot } from "./rally";
 import type { StampSaveResult } from "./useStampCard";
 
 type CameraState = "off" | "starting" | "on";
 
 export function ScannerDialog({
+  spots,
   onScan,
   onClose,
   onViewCard,
 }: {
+  spots: readonly StampSpot[];
   onScan: (payload: string) => StampSaveResult;
   onClose: () => void;
   onViewCard: (spotId?: string) => void;
@@ -269,7 +271,7 @@ export function ScannerDialog({
           )}
           {validResult && !saveFailed && (
             <div className="rally-scan-result__progress">
-              <div><strong>{Object.keys(scanResult.card.visits).length}</strong><span> / {STAMP_SPOTS.length}</span></div>
+              <div><strong>{countCollectedStamps(scanResult.card, spots)}</strong><span> / {spots.length}</span></div>
               <p>{t("rally.scanner.collectedCount")}</p>
             </div>
           )}

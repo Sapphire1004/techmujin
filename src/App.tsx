@@ -17,6 +17,7 @@ import {
 import { VenueGuide } from "./components/VenueGuide";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
+import type { BoothsState } from "./hooks/useBooths";
 import type { SupportedLanguage } from "./i18n";
 import type { TimetableView } from "./navigation";
 import type { ScheduleData, Session } from "./types";
@@ -41,9 +42,11 @@ function sessionsOverlap(first: Session, second: Session) {
 function Timetable({
   schedule,
   activeView,
+  booths,
 }: {
   schedule: ScheduleData;
   activeView: TimetableView;
+  booths: BoothsState;
 }) {
   const { t, i18n } = useTranslation();
   const [showSavedOnly, setShowSavedOnly] = useState(false);
@@ -633,7 +636,7 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "access"}
         >
-          <VenueGuide view="access" />
+          <VenueGuide view="access" booths={booths} />
         </div>
 
         <div
@@ -641,14 +644,14 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "venue"}
         >
-          <VenueGuide view="interior" />
+          <VenueGuide view="interior" booths={booths} />
         </div>
         </main>
       </div>
   );
 }
 
-function TimetableRoute({ activeView }: { activeView: TimetableView }) {
+function TimetableRoute({ activeView, booths }: { activeView: TimetableView; booths: BoothsState }) {
   const { t } = useTranslation();
   const timetable = useTimetable();
 
@@ -690,13 +693,13 @@ function TimetableRoute({ activeView }: { activeView: TimetableView }) {
     );
   }
 
-  return <Timetable schedule={timetable.data} activeView={activeView} />;
+  return <Timetable schedule={timetable.data} activeView={activeView} booths={booths} />;
 }
 
 function App() {
   return (
     <StampRallyApp
-      renderTimetable={(activeView) => <TimetableRoute activeView={activeView} />}
+      renderTimetable={(activeView, booths) => <TimetableRoute activeView={activeView} booths={booths} />}
     />
   );
 }
