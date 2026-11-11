@@ -116,46 +116,42 @@ const resources = {
         heroTitle: "アクセス",
         heroNote: "山梨大学甲府キャンパスへのアクセスを確認できます。",
         transport: {
-          publicTransport: "駐車場には限りがあるため、できるだけ電車・バスなどの公共交通機関をご利用ください。",
-          stationTitle: "甲府駅から会場へ",
-          parkingTitle: "駐車場のご案内",
+          routesLabel: "交通アクセス",
+          sourceLink: "公式サイトのアクセス案内",
+          train: {
+            label: "電車",
+            body: "新宿駅から特急あずさ・かいじで約90分「甲府駅」下車"
+          },
           walk: {
             label: "徒歩",
-            title: "甲府駅北口から約{{minutes}}分",
-            body: "北口を出て、武田通りを北へ進むと山梨大学甲府キャンパスに到着します。",
-            link: "甲府駅からの徒歩ルートを見る",
+            body: "甲府駅北口から約15分"
           },
           bus: {
             label: "バス",
-            title: "甲府駅北口 {{stand}}番のりば",
-            operator: "山梨交通",
-            takeda: "{{routes}}系統：武田神社行き",
-            sekisuiji: "{{routes}}系統：積翠寺行き",
-            alight: "「山梨大学」で下車してください。",
-            link: "のりば・時刻表を確認する",
+            body: "「甲府駅北口」2番のりばから武田神社・積翠寺方面「山梨大学」下車"
           },
           car: {
-            eventListed: "イベント公式案内掲載",
-            eventDescription: "公式イベントサイトで会場から最も近い駐車場として案内されています。",
-            nearby: "周辺の駐車場",
-            prices: { daily: "1日{{price}}円", ticket24h: "24時間チケット{{price}}円", maximum24h: "24時間最大{{price}}円" },
-            capacity: "収容台数",
-            spaces: "{{count}}台",
-            payment: "支払い",
-            payments: { prepaid: "前払いチケット式", cashPostpaid: "現金のみ・後払い" },
-            hours: "営業時間",
-            open24Hours: "24時間",
-            link: "Googleマップで見る",
-            mapLabel: "{{name}}をGoogleマップで見る",
-            detailsLabel: "{{name}}の料金・利用条件を見る",
-            eventDetails: "イベント公式の案内",
-            operatorDetails: "運営会社の料金案内",
-            verified: "{{date}}確認。",
-            checkSigns: "掲載情報は参考情報です。料金・営業時間・利用条件は変更される場合があります。ご利用前に現地の表示および各運営会社の最新情報をご確認ください。",
+            label: "車",
+            body: "会場周辺のコインパーキングをご利用ください。"
           },
-          sourceLabel: "交通案内の出典：",
-          eventSource: "公式イベントサイト",
-          universitySource: "山梨大学の交通案内",
+          zones: {
+            title: "会場は3つのゾーンで構成されます",
+            stage: {
+              name: "ステージエリア",
+              place: "ホール前方",
+              description: "コミュニティ紹介・LT・テック無尽ラジオなど、発表コンテンツが進行します。"
+            },
+            booths: {
+              name: "ブースエリア",
+              place: "ホール内後方",
+              description: "コミュニティ・協賛企業の展示ブースが並びます。終日開設。"
+            },
+            communication: {
+              name: "コミュニケーションスペース",
+              place: "ホール外",
+              description: "座って話せる、終日開放のスペース。発表の途中で抜けて話しても大丈夫です。"
+            }
+          }
         },
       },
       venue: {
@@ -306,46 +302,42 @@ const resources = {
         heroTitle: "Access",
         heroNote: "Find directions to the University of Yamanashi Kofu Campus.",
         transport: {
-          publicTransport: "Parking is limited. Please use public transportation such as trains or buses where possible.",
-          stationTitle: "From Kofu Station to the venue",
-          parkingTitle: "Parking",
+          routesLabel: "Getting to the venue",
+          sourceLink: "Access information on the official website",
+          train: {
+            label: "Train",
+            body: "Take the Azusa or Kaiji limited express from Shinjuku Station to Kofu Station (about 90 minutes)."
+          },
           walk: {
             label: "On foot",
-            title: "About {{minutes}} minutes from the North Exit",
-            body: "Leave Kofu Station through the North Exit and follow Takeda Street north to the Kofu Campus.",
-            link: "Walking directions from Kofu Station",
+            body: "About 15 minutes from Kofu Station's North Exit."
           },
           bus: {
             label: "Bus",
-            title: "North Exit, bus stop {{stand}}",
-            operator: "Yamanashi Kotsu",
-            takeda: "Routes {{routes}}: Takeda Shrine (武田神社)",
-            sekisuiji: "Route {{routes}}: Sekisuiji (積翠寺)",
-            alight: "Get off at Yamanashi Daigaku (山梨大学).",
-            link: "Bus stops and timetables",
+            body: "From stop 2 at Kofu Station's North Exit, take a bus toward Takeda Shrine or Sekisuiji and get off at Yamanashi University."
           },
           car: {
-            eventListed: "Listed on the event website",
-            eventDescription: "The event website lists this as the closest parking lot to the venue.",
-            nearby: "Nearby parking",
-            prices: { daily: "¥{{price}} per day", ticket24h: "24-hour ticket: ¥{{price}}", maximum24h: "24-hour maximum: ¥{{price}}" },
-            capacity: "Capacity",
-            spaces: "{{count}} spaces",
-            payment: "Payment",
-            payments: { prepaid: "Prepaid ticket", cashPostpaid: "Cash only, pay before leaving" },
-            hours: "Hours",
-            open24Hours: "24 hours",
-            link: "Open in Google Maps",
-            mapLabel: "Open {{name}} in Google Maps",
-            detailsLabel: "View rates and conditions for {{name}}",
-            eventDetails: "Event parking information",
-            operatorDetails: "Operator rates and details",
-            verified: "Checked {{date}}.",
-            checkSigns: "This information is provided for reference. Rates, opening hours, and terms of use may change. Before parking, check the on-site signs and the operator's latest information.",
+            label: "Car",
+            body: "Please use paid parking lots near the venue."
           },
-          sourceLabel: "Travel information:",
-          eventSource: "Official event website",
-          universitySource: "University access guide",
+          zones: {
+            title: "The venue has three zones",
+            stage: {
+              name: "Stage area",
+              place: "Front of the hall",
+              description: "Community introductions, lightning talks, Tech Mujin Radio, and other presentations take place here."
+            },
+            booths: {
+              name: "Booth area",
+              place: "Rear of the hall",
+              description: "Exhibition booths from communities and sponsors are open throughout the day."
+            },
+            communication: {
+              name: "Communication space",
+              place: "Outside the hall",
+              description: "A seated space open throughout the day. You are welcome to step out during presentations to chat."
+            }
+          }
         },
       },
       venue: {
@@ -496,46 +488,42 @@ const resources = {
         heroTitle: "오시는 길",
         heroNote: "야마나시대학교 고후 캠퍼스로 오는 길을 확인할 수 있습니다.",
         transport: {
-          publicTransport: "주차 공간이 한정되어 있으니 가능한 한 전철·버스 등 대중교통을 이용해 주세요.",
-          stationTitle: "고후역에서 행사장까지",
-          parkingTitle: "주차장 안내",
+          routesLabel: "교통 안내",
+          sourceLink: "공식 사이트의 접근 안내",
+          train: {
+            label: "전철",
+            body: "신주쿠역에서 특급 아즈사·카이지로 약 90분, 고후역에서 하차합니다."
+          },
           walk: {
             label: "도보",
-            title: "고후역 북쪽 출구에서 약 {{minutes}}분",
-            body: "북쪽 출구로 나와 다케다도리(武田通り)를 따라 북쪽으로 이동하면 고후 캠퍼스에 도착합니다.",
-            link: "고후역에서 출발하는 도보 경로 보기",
+            body: "고후역 북쪽 출구에서 약 15분입니다."
           },
           bus: {
             label: "버스",
-            title: "고후역 북쪽 출구 {{stand}}번 승강장",
-            operator: "야마나시교통(山梨交通)",
-            takeda: "{{routes}}번 계통: 다케다 신사(武田神社)행",
-            sekisuiji: "{{routes}}번 계통: 세키스이지(積翠寺)행",
-            alight: "야마나시대학(山梨大学) 정류장에서 내려 주세요.",
-            link: "승강장·시간표 확인하기",
+            body: "고후역 북쪽 출구 2번 승강장에서 다케다 신사·세키스이지 방면 버스를 타고 야마나시 대학에서 하차합니다."
           },
           car: {
-            eventListed: "공식 행사 안내에 소개된 주차장",
-            eventDescription: "공식 행사 사이트에서 행사장과 가장 가까운 주차장으로 안내하고 있습니다.",
-            nearby: "주변 주차장",
-            prices: { daily: "1일 {{price}}엔", ticket24h: "24시간 선불권 {{price}}엔", maximum24h: "24시간 최대 {{price}}엔" },
-            capacity: "주차 대수",
-            spaces: "{{count}}대",
-            payment: "결제 방식",
-            payments: { prepaid: "선불 주차권", cashPostpaid: "현금만 가능·후불" },
-            hours: "운영 시간",
-            open24Hours: "24시간",
-            link: "Google 지도에서 보기",
-            mapLabel: "Google 지도에서 {{name}} 보기",
-            detailsLabel: "{{name}} 요금·이용 조건 보기",
-            eventDetails: "공식 행사 주차 안내",
-            operatorDetails: "운영사 요금 안내",
-            verified: "{{date}} 확인.",
-            checkSigns: "안내된 정보는 참고용입니다. 요금·운영시간·이용 조건은 변경될 수 있으니, 이용 전에 현장 표시와 각 운영사의 최신 안내를 확인해 주세요.",
+            label: "자동차",
+            body: "행사장 주변의 유료 주차장을 이용해 주세요."
           },
-          sourceLabel: "교통 안내 출처:",
-          eventSource: "공식 행사 사이트",
-          universitySource: "야마나시대학교 교통 안내",
+          zones: {
+            title: "행사장은 3개 구역으로 구성됩니다",
+            stage: {
+              name: "스테이지 구역",
+              place: "홀 앞쪽",
+              description: "커뮤니티 소개·LT·테크무진 라디오 등 발표 프로그램이 진행됩니다."
+            },
+            booths: {
+              name: "부스 구역",
+              place: "홀 뒤쪽",
+              description: "커뮤니티와 협찬 기업의 전시 부스가 있으며, 하루 종일 운영합니다."
+            },
+            communication: {
+              name: "교류 공간",
+              place: "홀 바깥",
+              description: "앉아서 이야기할 수 있는 공간으로 하루 종일 개방합니다. 발표 도중 나와서 이야기해도 괜찮습니다."
+            }
+          }
         },
       },
       venue: {
