@@ -5,6 +5,7 @@ import {
   createCalendarFile,
   downloadCalendarFile,
   isAppleMobileSafari,
+  isMobileCalendarDevice,
   isShareCancellation,
   openCalendarFileForImport,
   shareCalendarFile,
@@ -49,16 +50,20 @@ function Timetable({
   booths: BoothsState;
 }) {
   const { t, i18n } = useTranslation();
-  const [showSavedOnly, setShowSavedOnly] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
   >("idle");
   const [calendarExportStatus, setCalendarExportStatus] = useState<
     "idle" | "sharing" | "fallback"
   >("idle");
-  const [canShareCalendarFile] = useState(supportsCalendarFileShare);
+  const [isMobileCalendar] = useState(isMobileCalendarDevice);
+  const [canShareCalendarFile] = useState(
+    () => isMobileCalendar && supportsCalendarFileShare(),
+  );
   const [canOpenAppleCalendar] = useState(isAppleMobileSafari);
-  const { selectedSet, storageStatus, toggleSession } = useSavedSchedule();
+  const isCalendarUnsupported =
+    isMobileCalendar && !canOpenAppleCalendar && !canShareCalendarFile;
+  const { selectedSet, storageStatus, toggleSession, clearSchedule } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
   const timeBoundaries = useMemo(
@@ -112,14 +117,10 @@ function Timetable({
   }, [selectedSessions]);
 
   const visibleSessions = useMemo(
-    () =>
-      sessions
-        .filter((session) => !showSavedOnly || selectedSet.has(session.id))
-        .sort((first, second) => first.startTime.localeCompare(second.startTime)),
-    [selectedSet, sessions, showSavedOnly],
+    () => [...sessions].sort((first, second) => first.startTime.localeCompare(second.startTime)),
+    [sessions],
   );
-  const savedColumnCount = conflictIds.size > 0 ? 2 : 1;
-  const gridTrackCount = showSavedOnly ? savedColumnCount : 1;
+  const gridTrackCount = 1;
 
   const gridStyle = {
     "--track-count": gridTrackCount,
@@ -154,7 +155,11 @@ function Timetable({
   }, [activeView, currentLanguage, t]);
 
   const exportSelectedSessionsCalendar = async () => {
-    if (selectedSessions.length === 0 || calendarExportStatus === "sharing") {
+    if (
+      selectedSessions.length === 0 ||
+      calendarExportStatus === "sharing" ||
+      isCalendarUnsupported
+    ) {
       return;
     }
 
@@ -261,21 +266,7 @@ function Timetable({
 
             {activeView === "program" && (
               <div className="schedule-utility">
-                <Text
-                  as="p"
-                  className="schedule-add-hint"
-                  color="fg.neutralMuted"
-                  textStyle="t3Regular"
-                  data-visible={!showSavedOnly}
-                  aria-hidden={showSavedOnly}
-                >
-                  {t("schedule.addHint")}
-                </Text>
-                <div
-                  className="schedule-export"
-                  data-visible={showSavedOnly}
-                  aria-hidden={!showSavedOnly}
-                >
+                <div className="schedule-export">
                   <div className="schedule-export__toolbar">
                     <Text
                       as="p"
@@ -289,48 +280,40 @@ function Timetable({
                       })}
                     </Text>
                     <div className="schedule-export__actions">
-                      {canOpenAppleCalendar && (
-                        <ActionButton
-                          className="schedule-export__button"
-                          variant="brandSolid"
-                          size="medium"
-                          type="button"
-                          disabled={!showSavedOnly || selectedSessions.length === 0}
-                          title={
-                            selectedSessions.length === 0
-                              ? t("calendar.noSessions")
-                              : undefined
-                          }
-                          onClick={openSelectedSessionsInAppleCalendar}
-                        >
-                          {t("calendar.openApple")}
-                        </ActionButton>
-                      )}
                       <ActionButton
                         className="schedule-export__button"
-                        variant={
-                          canOpenAppleCalendar ? "brandOutline" : "brandSolid"
-                        }
+                        variant="brandSolid"
                         size="medium"
                         type="button"
                         loading={calendarExportStatus === "sharing"}
                         disabled={
-                          !showSavedOnly ||
                           selectedSessions.length === 0 ||
-                          calendarExportStatus === "sharing"
+                          calendarExportStatus === "sharing" ||
+                          isCalendarUnsupported
+                        }
+                        aria-label={
+                          canOpenAppleCalendar ? t("calendar.openApple") : undefined
                         }
                         title={
                           selectedSessions.length === 0
                             ? t("calendar.noSessions")
-                            : undefined
+                            : isCalendarUnsupported
+                              ? t("calendar.unsupported")
+                              : undefined
                         }
-                        onClick={() => void exportSelectedSessionsCalendar()}
+                        onClick={
+                          canOpenAppleCalendar
+                            ? openSelectedSessionsInAppleCalendar
+                            : () => void exportSelectedSessionsCalendar()
+                        }
                       >
                         {calendarExportStatus === "sharing"
                           ? t("calendar.sharing")
-                          : canShareCalendarFile
-                            ? t("calendar.share")
-                            : t("calendar.download")}
+                          : canOpenAppleCalendar
+                            ? t("calendar.add")
+                            : isMobileCalendar
+                              ? t("calendar.share")
+                              : t("calendar.download")}
                       </ActionButton>
                       <ActionButton
                         className="schedule-export__button"
@@ -339,7 +322,6 @@ function Timetable({
                         type="button"
                         loading={imageExportStatus === "creating"}
                         disabled={
-                          !showSavedOnly ||
                           selectedSessions.length === 0 ||
                           imageExportStatus === "creating"
                         }
@@ -355,6 +337,17 @@ function Timetable({
                           : t("calendar.imageDownload")}
                       </ActionButton>
                     </div>
+                    <ActionButton
+                      className="schedule-export__button schedule-export__clear"
+                      variant="brandOutline"
+                      size="medium"
+                      type="button"
+                      aria-label={t("schedule.clearAll")}
+                      disabled={selectedSessions.length === 0}
+                      onClick={clearSchedule}
+                    >
+                      {t("schedule.clearAllButton")}
+                    </ActionButton>
                   </div>
                   {imageExportStatus === "error" && (
                     <PageBanner.Root
@@ -401,17 +394,6 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "program"}
         >
-          <ActionButton
-            className="saved-filter"
-            variant={showSavedOnly ? "brandSolid" : "brandOutline"}
-            size="small"
-            type="button"
-            aria-pressed={showSavedOnly}
-            onClick={() => setShowSavedOnly((current) => !current)}
-          >
-            {t("filters.mySchedule", { count: selectedSessions.length })}
-          </ActionButton>
-
           {storageStatus === "unavailable" && (
             <p className="storage-warning" role="status">
               {t("storage.unavailable")}
@@ -428,32 +410,19 @@ function Timetable({
             >
               <div
                 className="timetable-grid"
-                data-has-conflicts={showSavedOnly && conflictIds.size > 0}
                 data-track-count={gridTrackCount}
-                data-view={showSavedOnly ? "saved" : "all"}
                 style={gridStyle}
               >
                 <div className="time-corner">{t("schedule.time")}</div>
 
-                {showSavedOnly ? (
-                  <div
-                    className="track-heading track-heading--saved"
-                    style={{ gridColumn: "2 / -1", gridRow: 1 }}
-                  >
-                    <Text as="strong" textStyle="t5Bold">
-                      {t("schedule.mySchedule")}
-                    </Text>
-                  </div>
-                ) : (
-                  <div
-                    className="track-heading track-heading--saved"
-                    style={{ gridColumn: 2, gridRow: 1 }}
-                  >
-                    <Text as="strong" textStyle="t5Bold">
-                      {t("schedule.program")}
-                    </Text>
-                  </div>
-                )}
+                <div
+                  className="track-heading track-heading--saved"
+                  style={{ gridColumn: 2, gridRow: 1 }}
+                >
+                  <Text as="strong" textStyle="t5Bold">
+                    {t("schedule.program")}
+                  </Text>
+                </div>
 
                 {timeSlots.map((time, index) => (
                   <div
@@ -508,42 +477,33 @@ function Timetable({
                   const sessionTitle = session.title;
                   const speakerName = session.speaker;
                   const gridColumn = "2 / -1";
+                  const sessionLabel = isBreak
+                    ? t("session.breakLabel", {
+                        start: session.startTime,
+                        end: session.endTime,
+                        title: sessionTitle,
+                      })
+                    : t("session.cardLabel", {
+                        start: session.startTime,
+                        end: session.endTime,
+                        title: sessionTitle,
+                        action: t(isSelected ? "session.remove" : "session.add"),
+                        conflict: hasConflict ? t("session.conflictSuffix") : "",
+                      });
 
                   return (
-                    <button
+                    <article
                       className="session-block"
                       data-compact={isCompact}
                       data-conflict={hasConflict}
                       data-format={session.format}
                       data-state={isSelected ? "success" : "default"}
-                      type="button"
                       key={session.id}
-                      aria-pressed={isBreak ? undefined : isSelected}
-                      aria-label={
-                        isBreak
-                          ? t("session.breakLabel", {
-                              start: session.startTime,
-                              end: session.endTime,
-                              title: sessionTitle,
-                            })
-                          : t("session.cardLabel", {
-                              start: session.startTime,
-                              end: session.endTime,
-                              title: sessionTitle,
-                              action: t(
-                                isSelected ? "session.remove" : "session.add",
-                              ),
-                              conflict: hasConflict
-                                ? t("session.conflictSuffix")
-                                : "",
-                            })
-                      }
-                      disabled={isBreak}
+                      aria-label={isBreak ? sessionLabel : undefined}
                       style={{
                         gridColumn,
                         gridRow: `${startSlot + 2} / ${endSlot + 2}`,
                       }}
-                      onClick={isBreak ? undefined : () => toggleSession(session.id)}
                     >
                       {isBreak ? (
                         <Text as="strong" maxLines={1} textStyle="t2Bold">
@@ -551,74 +511,94 @@ function Timetable({
                         </Text>
                       ) : (
                         <>
-                          <span className="session-block__tags">
-                            {session.tags.map((tag) => (
-                              <Badge
-                                className="session-block__badge"
-                                key={tag}
-                                size="medium"
-                                tone="neutral"
-                                variant="weak"
-                              >
-                                {tag}
-                              </Badge>
-                            ))}
-                            {hasConflict ? (
-                              <Badge
-                                className="session-block__badge"
-                                size="medium"
-                                tone="critical"
-                                variant="weak"
-                              >
-                                {t("session.conflict")}
-                              </Badge>
-                            ) : isSelected ? (
-                              <Badge
-                                className="session-block__badge"
-                                size="medium"
-                                tone="brand"
-                                variant="weak"
-                              >
-                                {t("session.selected")}
-                              </Badge>
-                            ) : null}
-                          </span>
-                          <Text as="strong" maxLines={2} textStyle="t3Bold">
-                            {sessionTitle}
-                          </Text>
-                          {session.speaker && (
-                            <span className="session-block__speaker">
-                              {session.speakerImage ? (
-                                <img
-                                  className="session-block__avatar"
-                                  src={session.speakerImage}
-                                  alt=""
-                                  width={24}
-                                  height={24}
-                                  loading="lazy"
-                                  decoding="async"
-                                />
-                              ) : (
-                                <span
-                                  className="session-block__avatar session-block__avatar--fallback"
-                                  aria-hidden="true"
+                          <button
+                            className="session-block__content"
+                            type="button"
+                            aria-pressed={isSelected}
+                            aria-label={sessionLabel}
+                            onClick={() => toggleSession(session.id)}
+                          >
+                            <span className="session-block__tags">
+                              {session.tags.map((tag) => (
+                                <Badge
+                                  className="session-block__badge"
+                                  key={tag}
+                                  size="medium"
+                                  tone="neutral"
+                                  variant="weak"
                                 >
-                                  {speakerName.slice(0, 1)}
-                                </span>
-                              )}
-                              <Text
-                                className="session-block__speaker-name"
-                                color="fg.neutralMuted"
-                                maxLines={1}
-                                textStyle="t2Regular"
-                              >
-                                {speakerName}
-                              </Text>
+                                  {tag}
+                                </Badge>
+                              ))}
+                              {hasConflict ? (
+                                <Badge
+                                  className="session-block__badge"
+                                  size="medium"
+                                  tone="critical"
+                                  variant="weak"
+                                >
+                                  {t("session.conflict")}
+                                </Badge>
+                              ) : isSelected ? (
+                                <Badge
+                                  className="session-block__badge"
+                                  size="medium"
+                                  tone="brand"
+                                  variant="weak"
+                                >
+                                  {t("session.selected")}
+                                </Badge>
+                              ) : null}
                             </span>
-                          )}
+                            <Text as="strong" maxLines={2} textStyle="t3Bold">
+                              {sessionTitle}
+                            </Text>
+                            {session.speaker && (
+                              <span className="session-block__speaker">
+                                {session.speakerImage ? (
+                                  <img
+                                    className="session-block__avatar"
+                                    src={session.speakerImage}
+                                    alt=""
+                                    width={24}
+                                    height={24}
+                                    loading="lazy"
+                                    decoding="async"
+                                  />
+                                ) : (
+                                  <span
+                                    className="session-block__avatar session-block__avatar--fallback"
+                                    aria-hidden="true"
+                                  >
+                                    {speakerName.slice(0, 1)}
+                                  </span>
+                                )}
+                                <Text
+                                  className="session-block__speaker-name"
+                                  color="fg.neutralMuted"
+                                  maxLines={1}
+                                  textStyle="t2Regular"
+                                >
+                                  {speakerName}
+                                </Text>
+                              </span>
+                            )}
+                          </button>
+                          <ActionButton
+                            className="session-block__action"
+                            variant={isSelected ? "brandSolid" : "brandOutline"}
+                            size="small"
+                            type="button"
+                            aria-pressed={isSelected}
+                            aria-label={sessionLabel}
+                            onClick={() => toggleSession(session.id)}
+                          >
+                            <span aria-hidden="true">{isSelected ? "✓" : "＋"}</span>
+                            {t(isSelected ? "session.addedButton" : "session.addButton")}
+                          </ActionButton>
                         </>
                       )}
-                    </button>
+                    </article>
                   );
                 })}
               </div>
@@ -627,17 +607,6 @@ function Timetable({
             <div className="empty-state">
               <h3>{t("empty.title")}</h3>
               <p>{t("empty.body")}</p>
-              <ActionButton
-                className="reset-button"
-                variant="brandSolid"
-                size="small"
-                type="button"
-                onClick={() => {
-                  setShowSavedOnly(false);
-                }}
-              >
-                {t("empty.reset")}
-              </ActionButton>
             </div>
           )}
           </section>
