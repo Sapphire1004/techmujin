@@ -102,8 +102,8 @@ function Timetable({
   const gridStyle = {
     "--track-count": gridTrackCount,
     "--slot-count": slotCount,
-    gridTemplateRows: ["var(--timetable-head)", ...timeRanges.map(({ isShortGap }) =>
-      isShortGap ? "var(--timetable-transition)" : "var(--timetable-slot)")].join(" "),
+    gridTemplateRows: ["var(--timetable-head)", ...timeRanges.map(({ isEmptyGap }) =>
+      isEmptyGap ? "var(--timetable-transition)" : "var(--timetable-slot)")].join(" "),
   } as CSSProperties;
 
   const currentLanguage = (i18n.resolvedLanguage ?? "ja").split(
@@ -427,18 +427,18 @@ function Timetable({
                   </Text>
                 </div>
 
-                {timeRanges.map(({ startTime, isShortGap }, index) => (
+                {timeRanges.map(({ startTime, isEmptyGap }, index) => (
                   <div
-                    className={isShortGap ? "time-transition" : "time-gridline"}
-                    data-marker={!isShortGap}
+                    className={isEmptyGap ? "time-transition" : "time-gridline"}
+                    data-marker={!isEmptyGap}
                     aria-hidden="true"
                     key={startTime}
                     style={{ gridRow: index + 2 }}
                   />
                 ))}
 
-                {timeRanges.map(({ startTime, endTime, isShortGap }) => {
-                  if (isShortGap) return null;
+                {timeRanges.map(({ startTime, endTime, isEmptyGap }) => {
+                  if (isEmptyGap) return null;
                   const startSlot = boundaryIndexes.get(startTime) ?? 0;
                   const endSlot = boundaryIndexes.get(endTime) ?? startSlot + 1;
 

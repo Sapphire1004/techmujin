@@ -26,8 +26,8 @@ export function createTimetableLayout(
     return {
       startTime,
       endTime,
-      // 発表や明示された休憩を短縮せず、2分以下の空き時間だけ圧縮します。
-      isShortGap: end - start <= 2 && !occupied.some((session) =>
+      // 発表や明示された休憩を短縮せず、未割当の空き時間だけ圧縮します。
+      isEmptyGap: !occupied.some((session) =>
         session.start < end && session.end > start),
     };
   });
