@@ -386,7 +386,7 @@ function Timetable({
           <ActionButton
             className="schedule-review-trigger"
             variant="brandSolid"
-            size="medium"
+            size="small"
             type="button"
             aria-haspopup="dialog"
             aria-controls="selected-schedule-dialog"
