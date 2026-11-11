@@ -21,13 +21,25 @@ export function SelectedScheduleDialog({ sessions, conflictIds, onClose }: {
       returnFocusRef.current = previousFocus;
     }
     const previousOverflow = document.body.style.overflow;
+    const shell = dialog?.closest<HTMLElement>(".app-shell");
+    const shellStyle = shell && getComputedStyle(shell);
+    const scrollContainer = shell && /auto|scroll/.test(shellStyle?.overflowY || shellStyle?.overflow || "") ? shell : null;
+    const containerOverflow = scrollContainer?.style.overflow ?? "";
+    const containerTop = scrollContainer?.scrollTop ?? 0;
+    const containerLeft = scrollContainer?.scrollLeft ?? 0;
     const { scrollX, scrollY } = window;
     document.body.style.overflow = "hidden";
+    if (scrollContainer) scrollContainer.style.overflow = "hidden";
     if (dialog && !dialog.open) dialog.showModal();
     closeRef.current?.focus({ preventScroll: true });
 
     return () => {
       document.body.style.overflow = previousOverflow;
+      if (scrollContainer) {
+        scrollContainer.style.overflow = containerOverflow;
+        scrollContainer.scrollTop = containerTop;
+        scrollContainer.scrollLeft = containerLeft;
+      }
       if (returnFocusRef.current?.isConnected) {
         returnFocusRef.current.focus({ preventScroll: true });
       }

@@ -121,17 +121,25 @@ export function AppHeader({
   }, []);
 
   useEffect(() => {
-    const update = () => setIsScrolled(window.scrollY > 40);
-    window.addEventListener("scroll", update, { passive: true });
-    return () => window.removeEventListener("scroll", update);
-  }, []);
+    const update = () => {
+      const shell = document.querySelector('.app-frame[data-active-view="program"] > .app-shell');
+      setIsScrolled(window.scrollY > 40 || (shell?.scrollTop ?? 0) > 40);
+    };
+    update();
+    window.addEventListener("scroll", update, { passive: true, capture: true });
+    return () => window.removeEventListener("scroll", update, true);
+  }, [activeView]);
 
   useEffect(() => {
     if (!isMenuOpen) return;
     const previousOverflow = document.body.style.overflow;
+    const shell = document.querySelector<HTMLElement>('.app-frame[data-active-view="program"] > .app-shell');
+    const shellOverflow = shell?.style.overflow ?? "";
     document.body.style.overflow = "hidden";
+    if (shell) shell.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previousOverflow;
+      if (shell) shell.style.overflow = shellOverflow;
     };
   }, [isMenuOpen]);
 

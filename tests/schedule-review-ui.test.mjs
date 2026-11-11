@@ -116,6 +116,21 @@ test("Escape相当のcancelでも閉じ、フォーカスを戻す", async () =>
   assert.equal(dom.document.activeElement.id, "review-trigger");
 });
 
+test("モバイル用スクロール領域もロックし、閉じた後に位置を復元する", async () => {
+  await render();
+  const shell = container.firstElementChild;
+  shell.className = "app-shell";
+  shell.style.overflow = "auto";
+  shell.scrollTop = 420;
+  const dialog = await open();
+  assert.equal(shell.style.overflow, "hidden");
+  shell.scrollTop = 0;
+  await act(async () => dialog.querySelector("header button").click());
+  assert.equal(shell.style.overflow, "auto");
+  assert.equal(shell.scrollTop, 420);
+  assert.equal(dom.document.activeElement.id, "review-trigger");
+});
+
 test("別タブの変更などで選択がなくなっても、空表示と閉じる操作を維持する", async () => {
   await render();
   await open();
