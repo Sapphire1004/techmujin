@@ -249,22 +249,17 @@ function Timetable({
               <div className="schedule-utility">
                 <div className="schedule-export">
                   <div className="schedule-export__toolbar">
-                    <ActionButton
+                    <Text
+                      as="p"
                       className="schedule-export__count"
-                      variant="ghost"
-                      size="medium"
-                      type="button"
+                      color="fg.neutralMuted"
+                      textStyle="t3Regular"
                       aria-live="polite"
-                      aria-haspopup="dialog"
-                      aria-controls="selected-schedule-dialog"
-                      aria-expanded={isReviewOpen}
-                      disabled={selectedSessions.length === 0}
-                      onClick={() => setIsReviewOpen(true)}
                     >
-                      {t("schedule.reviewButton", {
+                      {t("schedule.selectedCount", {
                         count: selectedSessions.length,
                       })}
-                    </ActionButton>
+                    </Text>
                     <div className="schedule-export__actions">
                       <ActionButton
                         className="schedule-export__button"
@@ -388,6 +383,20 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "program"}
         >
+          <ActionButton
+            className="schedule-review-trigger"
+            variant="brandSolid"
+            size="medium"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="selected-schedule-dialog"
+            aria-expanded={isReviewOpen}
+            disabled={selectedSessions.length === 0}
+            onClick={() => setIsReviewOpen(true)}
+          >
+            {t("schedule.reviewButton", { count: selectedSessions.length })}
+          </ActionButton>
+
           {storageStatus === "unavailable" && (
             <p className="storage-warning" role="status">
               {t("storage.unavailable")}

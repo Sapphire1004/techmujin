@@ -438,14 +438,33 @@ main {
   grid-row: 1;
   min-width: 0;
   margin: 0;
-  max-width: 100%;
-  justify-self: start;
-  padding-inline: 0;
-  color: var(--color-accent);
   font-variant-numeric: tabular-nums;
-  text-decoration: underline;
-  text-underline-offset: 0.2em;
   white-space: nowrap;
+}
+
+.schedule-review-trigger {
+  position: fixed;
+  z-index: var(--z-modal);
+  inset-inline-end: max(
+    var(--space-md),
+    env(safe-area-inset-right, 0px),
+    calc((100vw - var(--page-max)) / 2 + var(--page-gutter))
+  );
+  inset-block-end: calc(var(--space-lg) + env(safe-area-inset-bottom, 0px));
+  max-width: calc(100vw - var(--space-md) * 2);
+  min-height: 3rem;
+  padding-inline: var(--space-lg);
+  box-shadow: var(--shadow-floating-action);
+}
+
+.schedule-review-trigger:not(:disabled) {
+  border-color: transparent;
+  background: var(--tm-color-brand-gradient);
+  color: var(--tm-color-on-brand);
+}
+
+#program-panel {
+  padding-bottom: var(--space-lg);
 }
 
 .schedule-export__actions {
