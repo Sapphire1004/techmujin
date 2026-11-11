@@ -115,6 +115,44 @@ const resources = {
         metaDescription: "テックムジン2026会場へのアクセス情報です。",
         heroTitle: "アクセス",
         heroNote: "山梨大学甲府キャンパスへのアクセスを確認できます。",
+        transport: {
+          routesLabel: "交通アクセス",
+          sourceLink: "公式サイトのアクセス案内",
+          train: {
+            label: "電車",
+            body: "新宿駅から特急あずさ・かいじで約90分「甲府駅」下車"
+          },
+          walk: {
+            label: "徒歩",
+            body: "甲府駅北口から約15分"
+          },
+          bus: {
+            label: "バス",
+            body: "「甲府駅北口」2番のりばから武田神社・積翠寺方面「山梨大学」下車"
+          },
+          car: {
+            label: "車",
+            body: "会場周辺のコインパーキングをご利用ください。"
+          },
+          zones: {
+            title: "会場は3つのゾーンで構成されます",
+            stage: {
+              name: "ステージエリア",
+              place: "ホール前方",
+              description: "コミュニティ紹介・LT・テック無尽ラジオなど、発表コンテンツが進行します。"
+            },
+            booths: {
+              name: "ブースエリア",
+              place: "ホール内後方",
+              description: "コミュニティ・協賛企業の展示ブースが並びます。終日開設。"
+            },
+            communication: {
+              name: "コミュニケーションスペース",
+              place: "ホール外",
+              description: "座って話せる、終日開放のスペース。発表の途中で抜けて話しても大丈夫です。"
+            }
+          }
+        },
       },
       venue: {
         metaTitle: "テックムジン 会場内マップ",
@@ -263,6 +301,44 @@ const resources = {
         metaDescription: "Access information for the TechMujin 2026 venue.",
         heroTitle: "Access",
         heroNote: "Find directions to the University of Yamanashi Kofu Campus.",
+        transport: {
+          routesLabel: "Getting to the venue",
+          sourceLink: "Access information on the official website",
+          train: {
+            label: "Train",
+            body: "Take the Azusa or Kaiji limited express from Shinjuku Station to Kofu Station (about 90 minutes)."
+          },
+          walk: {
+            label: "On foot",
+            body: "About 15 minutes from Kofu Station's North Exit."
+          },
+          bus: {
+            label: "Bus",
+            body: "From stop 2 at Kofu Station's North Exit, take a bus toward Takeda Shrine or Sekisuiji and get off at Yamanashi University."
+          },
+          car: {
+            label: "Car",
+            body: "Please use paid parking lots near the venue."
+          },
+          zones: {
+            title: "The venue has three zones",
+            stage: {
+              name: "Stage area",
+              place: "Front of the hall",
+              description: "Community introductions, lightning talks, Tech Mujin Radio, and other presentations take place here."
+            },
+            booths: {
+              name: "Booth area",
+              place: "Rear of the hall",
+              description: "Exhibition booths from communities and sponsors are open throughout the day."
+            },
+            communication: {
+              name: "Communication space",
+              place: "Outside the hall",
+              description: "A seated space open throughout the day. You are welcome to step out during presentations to chat."
+            }
+          }
+        },
       },
       venue: {
         metaTitle: "TechMujin Interior Map",
@@ -411,6 +487,44 @@ const resources = {
         metaDescription: "TechMujin 2026 행사장 접근 정보입니다.",
         heroTitle: "오시는 길",
         heroNote: "야마나시대학교 고후 캠퍼스로 오는 길을 확인할 수 있습니다.",
+        transport: {
+          routesLabel: "교통 안내",
+          sourceLink: "공식 사이트의 접근 안내",
+          train: {
+            label: "전철",
+            body: "신주쿠역에서 특급 아즈사·카이지로 약 90분, 고후역에서 하차합니다."
+          },
+          walk: {
+            label: "도보",
+            body: "고후역 북쪽 출구에서 약 15분입니다."
+          },
+          bus: {
+            label: "버스",
+            body: "고후역 북쪽 출구 2번 승강장에서 다케다 신사·세키스이지 방면 버스를 타고 야마나시 대학에서 하차합니다."
+          },
+          car: {
+            label: "자동차",
+            body: "행사장 주변의 유료 주차장을 이용해 주세요."
+          },
+          zones: {
+            title: "행사장은 3개 구역으로 구성됩니다",
+            stage: {
+              name: "스테이지 구역",
+              place: "홀 앞쪽",
+              description: "커뮤니티 소개·LT·테크무진 라디오 등 발표 프로그램이 진행됩니다."
+            },
+            booths: {
+              name: "부스 구역",
+              place: "홀 뒤쪽",
+              description: "커뮤니티와 협찬 기업의 전시 부스가 있으며, 하루 종일 운영합니다."
+            },
+            communication: {
+              name: "교류 공간",
+              place: "홀 바깥",
+              description: "앉아서 이야기할 수 있는 공간으로 하루 종일 개방합니다. 발표 도중 나와서 이야기해도 괜찮습니다."
+            }
+          }
+        },
       },
       venue: {
         metaTitle: "TechMujin 행사장 내부 지도",

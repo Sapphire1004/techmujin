@@ -1507,6 +1507,118 @@ button[data-state="error"] {
   border-radius: 0;
 }
 
+.access-directions,
+.access-zones {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-md);
+}
+
+.access-directions {
+  gap: var(--space-xl);
+}
+
+.access-directions h2,
+.access-directions h3,
+.access-directions p {
+  margin: 0;
+}
+
+.access-routes {
+  display: grid;
+  margin: 0;
+}
+
+.access-route {
+  display: grid;
+  grid-template-columns: 3.5rem minmax(0, 1fr);
+  gap: var(--space-md);
+  padding-block: var(--space-md);
+  border-bottom: var(--rule-hair) solid var(--color-rule);
+}
+
+.access-route:first-child {
+  padding-top: 0;
+}
+
+.access-route dt {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.access-route dd {
+  min-width: 0;
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+
+.access-zone-list {
+  display: grid;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.access-zone {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-2);
+}
+
+.access-zone__icon {
+  width: 3rem;
+  height: 3rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--color-accent);
+}
+
+.access-zone__tint {
+  fill: var(--tm-color-brand-weak);
+  stroke: none;
+}
+
+.access-zone__place {
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.access-zone__description {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+.access-directions__source {
+  color: var(--color-muted);
+  font-size: var(--text-xs);
+}
+
+.access-directions__source a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 60rem) {
+  .access-zone-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .venue-guide__source {
   margin: 0;
   color: var(--color-muted);

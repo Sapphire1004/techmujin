@@ -6,6 +6,7 @@ import { getBoothTitle } from "../data/booths";
 import { venueGuideResult, type VenueFeature } from "../data/venue";
 import type { BoothsState } from "../hooks/useBooths";
 import { BoothsStatus } from "./BoothsStatus";
+import { AccessDirections } from "./AccessDirections";
 
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 
@@ -139,6 +140,7 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
             referrerPolicy="strict-origin-when-cross-origin"
           />
         </div>
+        {view === "access" && <AccessDirections />}
       </div>
 
       <div
