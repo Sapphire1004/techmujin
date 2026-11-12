@@ -71,6 +71,7 @@ export function StampRallyApp({
       window.history.replaceState(window.history.state, "", url);
     }
     window.scrollTo({ top: 0, behavior: "instant" });
+    document.querySelector('.app-frame[data-active-view="program"] > .app-shell')?.scrollTo({ top: 0, behavior: "instant" });
   }, [visitLink, booths.status]);
 
   useEffect(() => {
@@ -93,6 +94,7 @@ export function StampRallyApp({
     setLinkResult(null);
     setActiveView(view);
     window.scrollTo({ top: 0, behavior: "instant" });
+    document.querySelector('.app-frame[data-active-view="program"] > .app-shell')?.scrollTo({ top: 0, behavior: "instant" });
   };
 
   const changeLanguage = (language: SupportedLanguage) => {
@@ -101,7 +103,7 @@ export function StampRallyApp({
   };
 
   return (
-    <div className="app-frame">
+    <div className="app-frame" data-active-view={activeView}>
       <AppHeader
         activeView={activeView}
         currentLanguage={currentLanguage}

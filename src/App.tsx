@@ -16,6 +16,8 @@ import {
   downloadScheduleImageFile,
 } from "./calendar/image";
 import { VenueGuide } from "./components/VenueGuide";
+import { SelectedScheduleDialog } from "./components/SelectedScheduleDialog";
+import { createTimetableLayout, toMinutes } from "./timetable/layout";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
 import type { BoothsState } from "./hooks/useBooths";
@@ -23,11 +25,6 @@ import type { SupportedLanguage } from "./i18n";
 import type { TimetableView } from "./navigation";
 import type { ScheduleData, Session } from "./types";
 import { StampRallyApp } from "./stamp-rally/StampRallyApp";
-
-function toMinutes(time: string) {
-  const [hour, minute] = time.split(":").map(Number);
-  return hour * 60 + minute;
-}
 
 function sessionsOverlap(first: Session, second: Session) {
   if (first.id === second.id) {
@@ -50,6 +47,7 @@ function Timetable({
   booths: BoothsState;
 }) {
   const { t, i18n } = useTranslation();
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
   >("idle");
@@ -66,32 +64,11 @@ function Timetable({
   const { selectedSet, storageStatus, toggleSession, clearSchedule } = useSavedSchedule();
   const { eventSchedule, sessions } = schedule;
 
-  const timeBoundaries = useMemo(
-    () =>
-      Array.from(
-        new Set([
-          eventSchedule.startTime,
-          eventSchedule.endTime,
-          ...sessions.flatMap(({ startTime, endTime }) => [startTime, endTime]),
-        ]),
-      ).sort((first, second) => toMinutes(first) - toMinutes(second)),
-    [eventSchedule.endTime, eventSchedule.startTime, sessions],
-  );
-  const boundaryIndexes = useMemo(
-    () => new Map(timeBoundaries.map((time, index) => [time, index])),
-    [timeBoundaries],
-  );
-  const timeBoundarySet = useMemo(() => new Set(timeBoundaries), [timeBoundaries]);
-  const timeRanges = useMemo(
-    () =>
-      timeBoundaries.slice(0, -1).map((startTime, index) => ({
-        startTime,
-        endTime: timeBoundaries[index + 1],
-      })),
-    [timeBoundaries],
+  const { ranges: timeRanges, boundaryIndexes } = useMemo(
+    () => createTimetableLayout(eventSchedule, sessions),
+    [eventSchedule, sessions],
   );
   const slotCount = timeRanges.length;
-  const timeSlots = timeRanges.map(({ startTime }) => startTime);
 
   const selectedSessions = useMemo(
     () =>
@@ -125,11 +102,15 @@ function Timetable({
   const gridStyle = {
     "--track-count": gridTrackCount,
     "--slot-count": slotCount,
+    gridTemplateRows: ["var(--timetable-head)", ...timeRanges.map(({ isEmptyGap }) =>
+      isEmptyGap ? "var(--timetable-transition)" : "var(--timetable-slot)")].join(" "),
   } as CSSProperties;
 
   const currentLanguage = (i18n.resolvedLanguage ?? "ja").split(
     "-",
   )[0] as SupportedLanguage;
+
+  useEffect(() => setIsReviewOpen(false), [activeView]);
 
   useEffect(() => {
     document.documentElement.lang = currentLanguage;
@@ -387,6 +368,14 @@ function Timetable({
           </div>
         </header>
 
+        {isReviewOpen && activeView === "program" && (
+          <SelectedScheduleDialog
+            sessions={selectedSessions}
+            conflictIds={conflictIds}
+            onClose={() => setIsReviewOpen(false)}
+          />
+        )}
+
         <main>
 
         <div
@@ -394,6 +383,20 @@ function Timetable({
           className="app-panel"
           hidden={activeView !== "program"}
         >
+          <ActionButton
+            className="schedule-review-trigger"
+            variant="brandSolid"
+            size="small"
+            type="button"
+            aria-haspopup="dialog"
+            aria-controls="selected-schedule-dialog"
+            aria-expanded={isReviewOpen}
+            disabled={selectedSessions.length === 0}
+            onClick={() => setIsReviewOpen(true)}
+          >
+            {t("schedule.reviewButton", { count: selectedSessions.length })}
+          </ActionButton>
+
           {storageStatus === "unavailable" && (
             <p className="storage-warning" role="status">
               {t("storage.unavailable")}
@@ -424,16 +427,18 @@ function Timetable({
                   </Text>
                 </div>
 
-                {timeSlots.map((time, index) => (
+                {timeRanges.map(({ startTime, isEmptyGap }, index) => (
                   <div
-                    className="time-gridline"
-                    data-marker={timeBoundarySet.has(time)}
-                    key={time}
+                    className={isEmptyGap ? "time-transition" : "time-gridline"}
+                    data-marker={!isEmptyGap}
+                    aria-hidden="true"
+                    key={startTime}
                     style={{ gridRow: index + 2 }}
                   />
                 ))}
 
-                {timeRanges.map(({ startTime, endTime }) => {
+                {timeRanges.map(({ startTime, endTime, isEmptyGap }) => {
+                  if (isEmptyGap) return null;
                   const startSlot = boundaryIndexes.get(startTime) ?? 0;
                   const endSlot = boundaryIndexes.get(endTime) ?? startSlot + 1;
 
