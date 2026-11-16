@@ -6,6 +6,7 @@
 
 - タイムテーブルAPIからのセッション取得・表示
 - セッションを選択して「マイスケジュール」を作成
+- セッション未割当の空き時間を区切り線に圧縮し、選択した予定を時刻順のシート・ダイアログで確認
 - 選択した予定のICSファイル出力と、対応するモバイルブラウザーでの共有
 - 選択した予定のPNG画像出力
 - 公式サイトに合わせた交通アクセス・会場ゾーン案内（[情報の更新方法](./docs/access.md)）
@@ -87,6 +88,7 @@ pnpm test:booths
 pnpm test:stamp-rally
 pnpm test:stamp-rally-ui
 pnpm test:navigation
+pnpm test:timetable
 pnpm run check:cloudflare
 ```
 

@@ -581,3 +581,17 @@ test("プログラムとアクセスの切り替え後も選択した予定を�
   assert.equal(dom.localStorage.getItem("techmujin:timetable:v3"), saved);
   assert.ok(requests.length > beforeAccess);
 });
+
+test("予定確認を開いたまま履歴移動してもスクロールロックを解除する", async () => {
+  mockPageRequests();
+  await renderApp("#timetable");
+  await waitFor(".session-block__content");
+  await act(async () => container.querySelector(".session-block__content").click());
+  await act(async () => container.querySelector(".schedule-review-trigger").click());
+  assert.ok(container.querySelector(".schedule-review[open]"));
+  assert.equal(dom.document.body.style.overflow, "hidden");
+  await navigate(`${appUrl}#access`);
+  assert.ok(container.querySelector("#access-panel .access-routes"));
+  assert.equal(container.querySelector(".schedule-review"), null);
+  assert.equal(dom.document.body.style.overflow, "");
+});
