@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useMemo, useState, type CSSProperties } from "react";
 import { ActionButton, Badge, PageBanner, Text } from "@seed-design/react";
 import { useTranslation } from "react-i18next";
 import {
@@ -15,12 +15,9 @@ import {
   createScheduleImageFile,
   downloadScheduleImageFile,
 } from "./calendar/image";
-import { VenueGuide } from "./components/VenueGuide";
+import { VenuePage } from "./components/VenuePage";
 import { useSavedSchedule } from "./hooks/useSavedSchedule";
 import { useTimetable } from "./hooks/useTimetable";
-import type { BoothsState } from "./hooks/useBooths";
-import type { SupportedLanguage } from "./i18n";
-import type { TimetableView } from "./navigation";
 import type { ScheduleData, Session } from "./types";
 import { StampRallyApp } from "./stamp-rally/StampRallyApp";
 
@@ -40,16 +37,8 @@ function sessionsOverlap(first: Session, second: Session) {
   );
 }
 
-function Timetable({
-  schedule,
-  activeView,
-  booths,
-}: {
-  schedule: ScheduleData;
-  activeView: TimetableView;
-  booths: BoothsState;
-}) {
-  const { t, i18n } = useTranslation();
+function Timetable({ schedule }: { schedule: ScheduleData }) {
+  const { t } = useTranslation();
   const [imageExportStatus, setImageExportStatus] = useState<
     "idle" | "creating" | "error"
   >("idle");
@@ -126,33 +115,6 @@ function Timetable({
     "--track-count": gridTrackCount,
     "--slot-count": slotCount,
   } as CSSProperties;
-
-  const currentLanguage = (i18n.resolvedLanguage ?? "ja").split(
-    "-",
-  )[0] as SupportedLanguage;
-
-  useEffect(() => {
-    document.documentElement.lang = currentLanguage;
-    const metaTitleKey =
-      activeView === "program"
-        ? "meta.title"
-        : activeView === "access"
-          ? "access.metaTitle"
-          : "venue.metaTitle";
-    const metaDescriptionKey =
-      activeView === "program"
-        ? "meta.description"
-        : activeView === "access"
-          ? "access.metaDescription"
-          : "venue.metaDescription";
-    document.title = t(metaTitleKey);
-    document
-      .querySelector('meta[name="description"]')
-      ?.setAttribute(
-        "content",
-        t(metaDescriptionKey),
-      );
-  }, [activeView, currentLanguage, t]);
 
   const exportSelectedSessionsCalendar = async () => {
     if (
@@ -236,15 +198,11 @@ function Timetable({
   return (
       <div className="app-shell">
         <header className="masthead">
-          <Text as="h1" textStyle="screenTitle">
-            {t(
-              activeView === "program"
-                ? "hero.title"
-                : activeView === "access"
-                  ? "access.heroTitle"
-                  : "venue.heroTitle",
-            )}
-          </Text>
+          <div className="masthead__title-row">
+            <Text as="h1" textStyle="screenTitle">
+              {t("hero.title")}
+            </Text>
+          </div>
           <div className="masthead__utility-row">
             <Text
               as="p"
@@ -252,19 +210,12 @@ function Timetable({
               color="fg.neutralMuted"
               textStyle="t4Regular"
             >
-              {activeView === "program"
-                ? t("hero.note", {
-                    start: eventSchedule.startTime,
-                    end: eventSchedule.endTime,
-                  })
-                : t(
-                    activeView === "access"
-                      ? "access.heroNote"
-                      : "venue.heroNote",
-                  )}
+              {t("hero.note", {
+                start: eventSchedule.startTime,
+                end: eventSchedule.endTime,
+              })}
             </Text>
 
-            {activeView === "program" && (
               <div className="schedule-utility">
                 <div className="schedule-export">
                   <div className="schedule-export__toolbar">
@@ -383,7 +334,6 @@ function Timetable({
                   )}
                 </div>
               </div>
-            )}
           </div>
         </header>
 
@@ -392,7 +342,6 @@ function Timetable({
         <div
           id="program-panel"
           className="app-panel"
-          hidden={activeView !== "program"}
         >
           {storageStatus === "unavailable" && (
             <p className="storage-warning" role="status">
@@ -612,27 +561,12 @@ function Timetable({
           </section>
         </div>
 
-        <div
-          id="access-panel"
-          className="app-panel"
-          hidden={activeView !== "access"}
-        >
-          <VenueGuide view="access" booths={booths} />
-        </div>
-
-        <div
-          id="venue-panel"
-          className="app-panel"
-          hidden={activeView !== "venue"}
-        >
-          <VenueGuide view="interior" booths={booths} />
-        </div>
         </main>
       </div>
   );
 }
 
-function TimetableRoute({ activeView, booths }: { activeView: TimetableView; booths: BoothsState }) {
+function TimetableRoute() {
   const { t } = useTranslation();
   const timetable = useTimetable();
 
@@ -674,13 +608,15 @@ function TimetableRoute({ activeView, booths }: { activeView: TimetableView; boo
     );
   }
 
-  return <Timetable schedule={timetable.data} activeView={activeView} booths={booths} />;
+  return <Timetable schedule={timetable.data} />;
 }
 
 function App() {
   return (
     <StampRallyApp
-      renderTimetable={(activeView, booths) => <TimetableRoute activeView={activeView} booths={booths} />}
+      renderTimetable={(activeView, booths) => activeView === "program"
+        ? <TimetableRoute />
+        : <VenuePage view={activeView} booths={booths} />}
     />
   );
 }

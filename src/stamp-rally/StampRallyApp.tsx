@@ -101,7 +101,7 @@ export function StampRallyApp({
   };
 
   return (
-    <div className="app-frame">
+    <div className="app-frame" data-active-view={activeView}>
       <AppHeader
         activeView={activeView}
         currentLanguage={currentLanguage}
