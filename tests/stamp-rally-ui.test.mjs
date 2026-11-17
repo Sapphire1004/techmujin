@@ -32,6 +32,7 @@ const vite = await createServer({
 });
 const { StampRallyApp } = await vite.ssrLoadModule("/src/stamp-rally/StampRallyApp.tsx");
 const { VenueGuide } = await vite.ssrLoadModule("/src/components/VenueGuide.tsx");
+const { default: App } = await vite.ssrLoadModule("/src/App.tsx");
 const originalFetch = globalThis.fetch;
 let root;
 let container;
@@ -453,4 +454,144 @@ test("会場のブース一覧とスタンプカードが同じAPIの番号・�
   assert.match(booths[0].querySelector('.booth-card__number').textContent, /A-1/);
   assert.equal(booths[1].querySelector('a'), null);
   assert.equal(booths[2].querySelector('a'), null);
+});
+
+function makeTimetable() {
+  const { booths: _booths, ...metadata } = makeBoothList();
+  return {
+    ...metadata,
+    sessions: [{
+      id: "route-test-session",
+      kind: "session",
+      type: "talk",
+      group: null,
+      trackId: null,
+      title: "画面遷移の検証セッション",
+      startsAt: "2026-11-22T10:00:00+09:00",
+      endsAt: "2026-11-22T10:30:00+09:00",
+      communities: [],
+      speakers: [],
+      descriptionMarkdown: null,
+      message: null,
+      isCancelled: false,
+      links: [],
+    }],
+  };
+}
+
+function mockPageRequests({
+  timetable = () => new Response(JSON.stringify(makeTimetable())),
+  booths = () => new Response(JSON.stringify(makeBoothList())),
+} = {}) {
+  const timetableRequests = [];
+  globalThis.fetch = async (url, options) => {
+    if (String(url).endsWith("/timetable")) {
+      timetableRequests.push(options);
+      return timetable(options);
+    }
+    if (String(url).endsWith("/booths")) return booths(options);
+    throw new Error(`Unexpected request: ${url}`);
+  };
+  return timetableRequests;
+}
+
+async function renderApp(hash) {
+  dom.history.replaceState(null, "", `${appUrl}${hash}`);
+  await act(async () => root.render(createElement(StrictMode, null, createElement(App))));
+}
+
+async function waitFor(selector) {
+  for (let i = 0; i < 100 && !container.querySelector(selector); i++) {
+    await act(async () => { await new Promise(resolve => setTimeout(resolve, 10)); });
+  }
+  assert.ok(container.querySelector(selector), `${selector}が表示される`);
+}
+
+async function selectView(view) {
+  await act(async () => container.querySelector(`.site-header__nav button[aria-controls="${view}-panel"]`).click());
+}
+
+test("アクセスへの直接訪問はブースAPI失敗時も表示し、タイムテーブルを取得しない", async () => {
+  const requests = mockPageRequests({ booths: () => new Response("unavailable", { status: 500 }) });
+  await renderApp("#access");
+  assert.ok(container.querySelector("#access-panel iframe"));
+  assert.equal(container.querySelectorAll("#access-panel .access-route").length, 4);
+  assert.equal(container.querySelector(".masthead__title-row a").target, "_blank");
+  assert.match(container.querySelector(".masthead__title-row a").href, /google\.com\/maps\/search/);
+  assert.equal(container.querySelector(".load-state"), null);
+  assert.equal(dom.document.title, "テックムジン アクセス");
+  assert.equal(requests.length, 0);
+});
+
+test("会場内マップもタイムテーブルの取得なしで表示する", async () => {
+  const requests = mockPageRequests();
+  await renderApp("#venue");
+  assert.ok(container.querySelector("#venue-panel .venue-map__image"));
+  assert.ok(container.querySelector("#venue-panel .venue-zones"));
+  assert.equal(container.querySelector("#access-panel"), null);
+  assert.equal(container.querySelector(".load-state"), null);
+  assert.equal(requests.length, 0);
+});
+
+test("プログラムのAPI失敗後もアクセス画面へ移動できる", async (t) => {
+  t.mock.method(console, "error", () => {});
+  const requests = mockPageRequests({ timetable: () => new Response("unavailable", { status: 500 }) });
+  await renderApp("#timetable");
+  await waitFor('.load-state[role="alert"]');
+  const initialRequests = requests.length;
+  assert.ok(initialRequests > 0);
+  await selectView("access");
+  assert.ok(container.querySelector("#access-panel iframe"));
+  assert.equal(container.querySelector(".load-state"), null);
+  assert.equal(requests.length, initialRequests);
+  assert.equal(dom.document.title, "テックムジン アクセス");
+});
+
+test("プログラムの取得中にアクセスへ移動すると通信を中止して案内を表示する", async () => {
+  const requests = mockPageRequests({
+    timetable: ({ signal }) => new Promise((_resolve, reject) => {
+      const abort = () => reject(new DOMException("Aborted", "AbortError"));
+      if (signal.aborted) abort();
+      else signal.addEventListener("abort", abort, { once: true });
+    }),
+  });
+  await renderApp("#timetable");
+  assert.ok(container.querySelector('.load-state[role="status"]'));
+  assert.ok(requests.length > 0);
+  await selectView("access");
+  assert.ok(container.querySelector("#access-panel .access-routes"));
+  assert.equal(container.querySelector(".load-state"), null);
+  assert.ok(requests.every(({ signal }) => signal.aborted));
+});
+
+test("プログラムとアクセスの切り替え後も選択した予定を保持する", async () => {
+  const requests = mockPageRequests();
+  await renderApp("#timetable");
+  await waitFor(".session-block__content");
+  await act(async () => container.querySelector(".session-block__content").click());
+  assert.equal(container.querySelector(".session-block__content").getAttribute("aria-pressed"), "true");
+  const saved = dom.localStorage.getItem("techmujin:timetable:v3");
+  const beforeAccess = requests.length;
+  await selectView("access");
+  assert.equal(requests.length, beforeAccess);
+  assert.equal(dom.localStorage.getItem("techmujin:timetable:v3"), saved);
+  await selectView("program");
+  await waitFor(".session-block__content");
+  assert.equal(container.querySelector(".session-block__content").getAttribute("aria-pressed"), "true");
+  assert.equal(dom.localStorage.getItem("techmujin:timetable:v3"), saved);
+  assert.ok(requests.length > beforeAccess);
+});
+
+test("予定確認を開いたまま履歴移動してもスクロールロックを解除する", async () => {
+  mockPageRequests();
+  await renderApp("#timetable");
+  await waitFor(".session-block__content");
+  await act(async () => container.querySelector(".session-block__content").click());
+  await act(async () => container.querySelector(".schedule-review-trigger").click());
+  assert.ok(container.querySelector(".schedule-review[open]"));
+  assert.equal(dom.document.body.style.overflow, "hidden");
+  await navigate(`${appUrl}#access`);
+  assert.ok(container.querySelector("#access-panel .access-routes"));
+  assert.equal(container.querySelector(".schedule-review"), null);
+  assert.equal(dom.document.body.style.overflow, "");
 });

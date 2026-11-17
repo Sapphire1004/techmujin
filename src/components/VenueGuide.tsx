@@ -6,6 +6,8 @@ import { getBoothTitle } from "../data/booths";
 import { venueGuideResult, type VenueFeature } from "../data/venue";
 import type { BoothsState } from "../hooks/useBooths";
 import { BoothsStatus } from "./BoothsStatus";
+import { AccessDirections } from "./AccessDirections";
+import { VenueZones } from "./VenueZones";
 
 const ZOOM_LEVELS = [1, 1.5, 2, 3] as const;
 
@@ -112,24 +114,9 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
     >
       <div
         id="venue-access-panel"
-        className="venue-guide__panel"
+        className="venue-guide__panel venue-access-layout"
         hidden={view !== "access"}
       >
-        <div className="venue-summary venue-summary--access">
-          <div className="venue-summary__item">
-            <span>{t("venue.venueLabel")}</span>
-            <strong>{venueGuide.venue.name}</strong>
-            <small>{venueGuide.venue.address}</small>
-          </div>
-          <a
-            className="venue-summary__map-link"
-            href={venueGuide.venue.mapUrl}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {t("venue.openGoogleMaps")}
-          </a>
-        </div>
         <div className="venue-access-map">
           <iframe
             src={venueGuide.venue.mapEmbedUrl}
@@ -138,6 +125,13 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
             allowFullScreen
             referrerPolicy="strict-origin-when-cross-origin"
           />
+        </div>
+        <div className="venue-access-details">
+          <div className="venue-access-details__heading">
+            <h2>{venueGuide.venue.name}</h2>
+            <p>{venueGuide.venue.address}</p>
+          </div>
+          {view === "access" && <AccessDirections />}
         </div>
       </div>
 
@@ -318,6 +312,8 @@ export function VenueGuide({ view, booths }: VenueGuideProps) {
           </div>
         </aside>
       </div>
+
+      {view === "interior" && <VenueZones />}
 
       <section className="booth-directory" aria-labelledby="booth-directory-heading">
         <div className="booth-directory__heading">

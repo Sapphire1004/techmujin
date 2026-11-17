@@ -388,6 +388,25 @@ a:focus-visible,
   gap: var(--space-md);
 }
 
+.masthead__title-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+}
+
+.masthead__title-row .venue-summary__map-link {
+  flex: none;
+  align-self: center;
+  margin-inline-start: auto;
+}
+
+.app-frame[data-active-view="access"],
+.app-shell--access {
+  background: var(--tm-color-surface-secondary);
+}
+
 main {
   display: grid;
   gap: var(--space-lg);
@@ -1231,18 +1250,51 @@ button[data-state="error"] {
 }
 
 .venue-access-map {
+  width: 100%;
   min-width: 0;
+  min-height: 20rem;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
-  border: var(--rule-hair) solid var(--color-rule);
-  border-radius: var(--radius-md);
+  border-radius: var(--space-md);
   background: var(--color-paper-3);
+  box-shadow: 0 1.25rem 2.5rem -1.75rem color-mix(in srgb, var(--color-ink) 40%, transparent);
 }
 
 .venue-access-map iframe {
   display: block;
   width: 100%;
-  height: clamp(20rem, 52vw, 32rem);
+  height: 100%;
+  min-height: 20rem;
   border: 0;
+}
+
+.venue-access-layout {
+  align-items: center;
+  gap: var(--space-xl);
+}
+
+.venue-access-details,
+.venue-access-details__heading {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-lg);
+}
+
+.venue-access-details h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2.25vw, 1.875rem);
+  font-weight: 800;
+  line-height: 1.65;
+  text-wrap: balance;
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.venue-access-details__heading p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
 }
 
 .venue-guide__notice {
@@ -1706,6 +1758,121 @@ button[data-state="error"] {
   border-radius: 0;
 }
 
+.access-directions,
+.venue-zones {
+  display: grid;
+  min-width: 0;
+  gap: var(--space-md);
+}
+
+.access-directions {
+  gap: var(--space-xl);
+}
+
+.venue-zones h2,
+.venue-zones h3,
+.venue-zones p,
+.access-directions p {
+  margin: 0;
+}
+
+.access-routes {
+  display: grid;
+  gap: var(--space-xs);
+  margin: 0;
+}
+
+.access-route {
+  display: grid;
+  grid-template-columns: 4rem minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-sm);
+}
+
+.access-route dt {
+  padding: var(--space-xs) var(--space-sm);
+  border-radius: var(--radius-round);
+  background: var(--tm-color-brand-weak);
+  color: var(--color-accent);
+  font-weight: 700;
+  text-align: center;
+}
+
+.access-route dd {
+  min-width: 0;
+  margin: 0;
+  padding-block: var(--space-xs);
+  color: var(--color-ink);
+  line-height: 1.8;
+  overflow-wrap: anywhere;
+}
+
+.access-route__part,
+.access-route__phrase {
+  display: inline-block;
+  max-width: 100%;
+  text-wrap: pretty;
+  line-break: strict;
+}
+
+.venue-zone-list {
+  display: grid;
+  gap: var(--space-md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.venue-zone {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: var(--space-xs);
+  padding: var(--space-lg);
+  border: var(--rule-hair) solid var(--color-rule);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-2);
+}
+
+.venue-zone__icon {
+  width: 3rem;
+  height: 3rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  color: var(--color-accent);
+}
+
+.venue-zone__tint {
+  fill: var(--tm-color-brand-weak);
+  stroke: none;
+}
+
+.venue-zone__place {
+  color: var(--color-accent);
+  font-size: var(--text-sm);
+  font-weight: 700;
+}
+
+.venue-zone__description {
+  color: var(--color-muted);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+}
+
+@media (min-width: 60rem) {
+  .venue-access-layout {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .venue-zone-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
 .venue-guide__source {
   margin: 0;
   color: var(--color-muted);
@@ -1757,11 +1924,6 @@ button[data-state="error"] {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
   }
 
-  .venue-summary--access {
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-  }
-
   .venue-summary--interior {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -1805,10 +1967,6 @@ button[data-state="error"] {
   .venue-summary {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
     align-items: center;
-  }
-
-  .venue-summary--access {
-    grid-template-columns: minmax(0, 1fr) auto;
   }
 
   .venue-summary--interior {
