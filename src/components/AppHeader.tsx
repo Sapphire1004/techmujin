@@ -5,7 +5,7 @@ import {
   languageOptions,
   type SupportedLanguage,
 } from "../i18n";
-import type { AppView } from "../navigation";
+import { isVenueMapEnabled, type AppView } from "../navigation";
 
 export type { AppView } from "../navigation";
 
@@ -168,15 +168,17 @@ export function AppHeader({
             >
               {t("navigation.access")}
             </button>
-            <button
-              type="button"
-              data-active={activeView === "venue"}
-              aria-current={activeView === "venue" ? "page" : undefined}
-              aria-controls="venue-panel"
-              onClick={() => onViewChange("venue")}
-            >
-              {t("navigation.venue")}
-            </button>
+            {isVenueMapEnabled && (
+              <button
+                type="button"
+                data-active={activeView === "venue"}
+                aria-current={activeView === "venue" ? "page" : undefined}
+                aria-controls="venue-panel"
+                onClick={() => onViewChange("venue")}
+              >
+                {t("navigation.venue")}
+              </button>
+            )}
             <button
               type="button"
               data-active={activeView === "stamp-rally"}
@@ -261,16 +263,18 @@ export function AppHeader({
             >
               {t("navigation.access")}
             </button>
-            <button
-              ref={venueMenuButtonRef}
-              type="button"
-              data-active={activeView === "venue"}
-              aria-current={activeView === "venue" ? "page" : undefined}
-              aria-controls="venue-panel"
-              onClick={() => changeView("venue")}
-            >
-              {t("navigation.venue")}
-            </button>
+            {isVenueMapEnabled && (
+              <button
+                ref={venueMenuButtonRef}
+                type="button"
+                data-active={activeView === "venue"}
+                aria-current={activeView === "venue" ? "page" : undefined}
+                aria-controls="venue-panel"
+                onClick={() => changeView("venue")}
+              >
+                {t("navigation.venue")}
+              </button>
+            )}
             <button
               ref={rallyMenuButtonRef}
               type="button"
